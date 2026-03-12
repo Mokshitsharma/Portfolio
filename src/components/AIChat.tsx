@@ -36,7 +36,7 @@ const AIChat: React.FC = () => {
     playSound('message');
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.AIzaSyA69bLVCIVk350rwRgF6lNBinCTxVZ9esA });
+      const ai = new GoogleGenAI({ apiKey: process.env.AIzaSyA58zhFCxgk-t8OaIQ6g4W-Zc324QVA8-Y });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
