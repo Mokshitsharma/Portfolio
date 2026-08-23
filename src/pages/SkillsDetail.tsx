@@ -1,122 +1,109 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, BarChart3, Code2, Globe, Cpu, Cloud, Palette, Trophy, Zap } from 'lucide-react';
+import { ArrowLeft, Brain, BarChart3, Code2, Globe, Server, Smartphone, CreditCard, Briefcase } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const skillCategories = [
   {
-    id: 1,
-    title: "AI / Machine Learning Engineer",
-    icon: <Brain className="text-accent" />,
+    id: 0,
+    title: "Backend & Real-Time Systems",
+    icon: <Server className="text-accent" />,
+    description: "Movigo Production Stack",
     subCategories: [
       {
-        name: "Core ML Skills",
-        skills: ["Supervised & Unsupervised Learning", "Regression & Classification Modeling", "Model Evaluation (Accuracy, Precision, Recall, F1)", "Feature Engineering", "Data Preprocessing & Cleaning"]
+        name: "Core Backend",
+        skills: ["Node.js", "Express", "MongoDB / Mongoose", "REST APIs (372 endpoints in production)", "JWT Auth"]
       },
       {
-        name: "Libraries & Frameworks",
-        skills: ["Python", "NumPy", "Pandas", "Scikit-learn", "TensorFlow", "PyTorch"]
-      },
+        name: "Real-Time & Scheduling",
+        skills: ["Pusher Channels", "Race-Condition-Safe Concurrency", "node-cron"]
+      }
+    ]
+  },
+  {
+    id: 1,
+    title: "Mobile Engineering",
+    icon: <Smartphone className="text-accent" />,
+    description: "2 Apps on Play Store (47+/41+ Releases)",
+    subCategories: [
       {
-        name: "Special Areas",
-        skills: ["NLP (Sentiment Analysis, Text Classification)", "Model Training & Optimization", "Real-world dataset handling", "Performance tuning"]
+        name: "Flutter",
+        skills: ["Provider", "GetX Navigation", "Geolocator", "Google Maps", "Background Services", "FCM"]
       }
     ]
   },
   {
     id: 2,
-    title: "Data Scientist",
-    icon: <BarChart3 className="text-accent" />,
+    title: "Payments & Infrastructure",
+    icon: <CreditCard className="text-accent" />,
     subCategories: [
       {
-        name: "Data Analysis",
-        skills: ["Exploratory Data Analysis (EDA)", "Statistical Analysis", "Correlation & Pattern Identification", "Hypothesis Testing"]
+        name: "Payments",
+        skills: ["Razorpay", "Webhooks", "Idempotency Guards"]
       },
       {
-        name: "Data Handling",
-        skills: ["SQL", "Advanced Excel", "Data Cleaning & Transformation", "Large dataset processing"]
-      },
-      {
-        name: "Visualization",
-        skills: ["Matplotlib", "Seaborn", "Power BI", "Tableau"]
+        name: "Deployment & Ops",
+        skills: ["PM2", "Nginx", "cPanel & VPS Deployment", "Let's Encrypt SSL", "Git"]
       }
     ]
   },
   {
     id: 3,
-    title: "Python Developer (Data-Oriented)",
-    icon: <Code2 className="text-accent" />,
+    title: "Frontend",
+    icon: <Globe className="text-accent" />,
     subCategories: [
       {
-        name: "Development",
-        skills: ["Object-Oriented Programming (OOPS)", "API Integration (Reddit, Yahoo Finance)", "Script Automation", "Backend logic development", "File handling & JSON processing"]
+        name: "Web",
+        skills: ["React 18/19", "Next.js", "TanStack Query", "Recharts", "Tailwind CSS", "Three.js"]
       }
     ]
   },
   {
     id: 4,
-    title: "Web & ML Application Developer",
-    icon: <Globe className="text-accent" />,
+    title: "Machine Learning & AI",
+    icon: <Brain className="text-accent" />,
     subCategories: [
       {
-        name: "Web Technologies",
-        skills: ["Flask (Backend)", "HTML5", "CSS3", "JavaScript", "REST API Integration", "Deployment fundamentals", "Basic frontend structuring"]
+        name: "Modeling",
+        skills: ["Scikit-learn", "XGBoost", "PyTorch (LSTM, Temporal CNN)", "Stable-Baselines3 (PPO)", "hmmlearn"]
+      },
+      {
+        name: "Explainability & NLP",
+        skills: ["SHAP", "FinBERT", "LLM / Agentic Tooling (Claude, Gemini)"]
       }
     ]
   },
   {
     id: 5,
-    title: "AI Systems Builder",
-    icon: <Zap className="text-accent" />,
-    description: "Your Strongest Positioning",
+    title: "Data & BI",
+    icon: <BarChart3 className="text-accent" />,
     subCategories: [
       {
-        name: "Architecture & Design",
-        skills: ["End-to-end ML pipeline design", "Data ETL workflow design", "Real-time & offline model architecture", "System design thinking", "Performance optimization mindset", "Deployment planning"]
+        name: "Analysis & Reporting",
+        skills: ["Pandas", "NumPy", "Power BI", "SQL", "Recharts Dashboarding", "Automated Reporting (node-cron)"]
       }
     ]
   },
   {
     id: 6,
-    title: "Computer Science Foundations",
-    icon: <Cpu className="text-accent" />,
+    title: "Languages",
+    icon: <Code2 className="text-accent" />,
     subCategories: [
       {
-        name: "Core CS",
-        skills: ["Data Structures & Algorithms", "DBMS", "Operating Systems", "OOPS", "Prompt Engineering"]
+        name: "Core",
+        skills: ["JavaScript", "TypeScript", "Dart", "Python", "SQL", "HTML/CSS"]
       }
     ]
   },
   {
     id: 7,
-    title: "Cloud & Platforms",
-    icon: <Cloud className="text-accent" />,
+    title: "Operations & Leadership",
+    icon: <Briefcase className="text-accent" />,
+    description: "Not Just Engineering",
     subCategories: [
       {
-        name: "Cloud Skills",
-        skills: ["Google Cloud Arcade (Advanced Milestone)", "Cloud Skills Boost", "Basic cloud deployment exposure"]
-      }
-    ]
-  },
-  {
-    id: 8,
-    title: "Design & Presentation",
-    icon: <Palette className="text-accent" />,
-    subCategories: [
-      {
-        name: "Creative Tools",
-        skills: ["Canva", "Figma", "Photoshop", "Technical presentation design", "Visual storytelling"]
-      }
-    ]
-  },
-  {
-    id: 9,
-    title: "Competitive Programming & Practice",
-    icon: <Trophy className="text-accent" />,
-    subCategories: [
-      {
-        name: "Achievements",
-        skills: ["HackerRank 5⭐ (C++, SQL, Python)", "LeetCode problem solving"]
+        name: "Business & Team",
+        skills: ["Team Coordination (Calling & Field Teams)", "Business & Growth Decision-Making", "Config-Driven Business-Rule Systems"]
       }
     ]
   }
@@ -133,7 +120,7 @@ const SkillsDetail: React.FC = () => {
 
         <h1 className="text-5xl md:text-7xl font-bold mb-8 text-[var(--text-primary)]">Technical <span className="text-gradient">Skills</span></h1>
         <p className="text-[var(--text-secondary)] text-xl mb-16 max-w-3xl">
-          A comprehensive classification of my expertise across various domains, from AI engineering to core computer science foundations.
+          A comprehensive classification of my expertise — from production infrastructure and mobile engineering to explainable ML and the operational side of running Movigo.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -164,8 +151,8 @@ const SkillsDetail: React.FC = () => {
                     <h4 className="text-sm font-mono text-[var(--text-secondary)] uppercase tracking-widest mb-3">{sub.name}</h4>
                     <div className="flex flex-wrap gap-2">
                       {sub.skills.map((skill, j) => (
-                        <span 
-                          key={j} 
+                        <span
+                          key={j}
                           className="px-3 py-1.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-sm text-[var(--text-secondary)] hover:border-accent/30 hover:text-accent transition-all cursor-default"
                         >
                           {skill}

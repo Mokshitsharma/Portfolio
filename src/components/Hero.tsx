@@ -6,40 +6,12 @@ import { playSound } from '../utils/sounds';
 
 const Hero: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  // Build Typing Effect
-  const [buildText, setBuildText] = useState('');
-  const buildRoles = ['Production AI Systems', 'Scalable ML Pipelines', 'Predictive Analytics'];
-  const [buildIndex, setBuildIndex] = useState(0);
-  const [isBuildDeleting, setIsBuildDeleting] = useState(false);
-  
+
   // Role Typing Effect
   const [roleText, setRoleText] = useState('');
-  const roles = ['Machine Learning Engineer', 'AI Systems Architect', 'Data Science Specialist'];
+  const roles = ['Founding Engineer & Tech Lead', 'Full-Stack + Mobile Engineer', 'Applied ML Engineer'];
   const [roleIndex, setRoleIndex] = useState(0);
   const [isRoleDeleting, setIsRoleDeleting] = useState(false);
-
-  // Build Typing Effect Logic
-  useEffect(() => {
-    const handleTyping = () => {
-      const current = buildRoles[buildIndex];
-      if (isBuildDeleting) {
-        setBuildText(current.substring(0, buildText.length - 1));
-      } else {
-        setBuildText(current.substring(0, buildText.length + 1));
-      }
-
-      if (!isBuildDeleting && buildText === current) {
-        setTimeout(() => setIsBuildDeleting(true), 2000);
-      } else if (isBuildDeleting && buildText === '') {
-        setIsBuildDeleting(false);
-        setBuildIndex((prev) => (prev + 1) % buildRoles.length);
-      }
-    };
-
-    const timer = setTimeout(handleTyping, isBuildDeleting ? 50 : 150);
-    return () => clearTimeout(timer);
-  }, [buildText, isBuildDeleting, buildIndex]);
 
   // Role Typing Effect Logic
   useEffect(() => {
@@ -73,8 +45,11 @@ const Hero: React.FC = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+    const isMobile = window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Particles
-    const particlesCount = 2000;
+    const particlesCount = isMobile ? 600 : 2000;
     const posArray = new Float32Array(particlesCount * 3);
     for (let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 10;
@@ -108,9 +83,10 @@ const Hero: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove);
 
     // Animation
+    let frameId: number;
     const animate = () => {
-      requestAnimationFrame(animate);
-      
+      frameId = requestAnimationFrame(animate);
+
       particlesMesh.rotation.y += 0.001;
       particlesMesh.rotation.x += 0.0005;
 
@@ -121,7 +97,11 @@ const Hero: React.FC = () => {
       renderer.render(scene, camera);
     };
 
-    animate();
+    if (prefersReducedMotion) {
+      renderer.render(scene, camera);
+    } else {
+      animate();
+    }
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -134,6 +114,7 @@ const Hero: React.FC = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      if (frameId) cancelAnimationFrame(frameId);
       renderer.dispose();
     };
   }, []);
@@ -156,9 +137,9 @@ const Hero: React.FC = () => {
         </div>
         
         <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto font-light leading-relaxed">
-          Machine Learning Engineer focused on building <span className="text-white font-medium text-glow">production-ready AI systems</span> with measurable impact.
+          Founding Engineer who single-handedly built and runs <span className="text-white font-medium text-glow">Movigo</span>, a live logistics marketplace — full-stack, mobile, and real-time dispatch, ~136,000 lines, one team of one.
           <br />
-          I specialize in end-to-end ML development, combining a rigorous metrics-driven mindset with a passion for solving complex business problems through data-driven precision.
+          Alongside that, I own business operations and data analysis, and apply the same rigor to applied and explainable ML.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

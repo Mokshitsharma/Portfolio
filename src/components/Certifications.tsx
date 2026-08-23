@@ -1,26 +1,10 @@
 import React from 'react';
-import { Award, ShieldCheck, Zap, Star, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Zap, GraduationCap, Star, ExternalLink } from 'lucide-react';
 
 const certifications = [
   {
-    title: "Skillsoft GenAI Foundation",
-    description: "Mastered core Generative AI concepts, transformer architectures, and prompt engineering. Applied knowledge to build practical AI-driven automation workflows.",
-    icon: <Award className="text-purple-400" />,
-    issuer: "Skillsoft",
-    link: "https://drive.google.com/file/d/12LL5X1XFkZa-KYVsoCFUJZ7zyR9aB1wr/view?usp=sharing",
-    summary: "Foundational mastery of LLMs and generative architectures."
-  },
-  {
-    title: "GenAI Infosys Springboard",
-    description: "Advanced specialization in enterprise-level Generative AI implementation. Focused on RAG (Retrieval-Augmented Generation) and model fine-tuning strategies.",
-    icon: <Zap className="text-blue-400" />,
-    issuer: "Infosys Springboard",
-    link: "https://drive.google.com/file/d/1FGNt8vyrA4aseMvbjoMUGsXYuAgrszPy/view?usp=sharing",
-    summary: "Enterprise AI deployment and optimization specialist."
-  },
-  {
     title: "Google Data Analyst Professional Certificate",
-    description: "Rigorous 8-course program covering the full data lifecycle. Expertise in SQL, R, and Tableau for complex business intelligence reporting.",
+    description: "Rigorous 8-course program covering the full data lifecycle. Expertise in SQL, Advanced Excel, EDA, Power BI, and data visualization for business intelligence reporting.",
     icon: <ShieldCheck className="text-blue-400" />,
     issuer: "Google",
     link: "#",
@@ -28,27 +12,27 @@ const certifications = [
   },
   {
     title: "5 Days of Intensive AI Agents",
-    description: "Hands-on lab focusing on autonomous agent design. Built multi-agent systems for complex task decomposition and execution using Python.",
+    description: "Hands-on lab focusing on autonomous agent design. Built AI automation workflows using prompt engineering and agentic pipelines in Python.",
     icon: <Zap className="text-yellow-400" />,
     issuer: "Kaggle & Google",
     link: "https://drive.google.com/file/d/1NmhjV9PXbdtnp09OdMNtMaizlODUNfke/view?usp=sharing",
     summary: "Practical expertise in autonomous AI agent orchestration."
   },
   {
-    title: "Excel Infosys Springboard",
-    description: "Advanced certification in data modeling and statistical analysis using Excel. Expert in complex DAX-like formulas and automated reporting.",
-    icon: <Award className="text-emerald-400" />,
+    title: "Data Analyst Program",
+    description: "Data analysis, reporting, and business-intelligence fundamentals — from data cleaning through dashboarding.",
+    icon: <GraduationCap className="text-emerald-400" />,
     issuer: "Infosys Springboard",
-    link: "https://drive.google.com/file/d/1C0E6VwPqfuZyaZkVkLYWOFI5JvfWJ48R/view?usp=sharing",
-    summary: "Advanced data manipulation and modeling specialist."
+    link: "#",
+    summary: "Business-intelligence fundamentals and reporting."
   },
   {
-    title: "Freedom of AI - AI Masterclass",
-    description: "Deep dive into the latest AI trends and implementation strategies. Focused on bridging the gap between research and commercial AI products.",
-    icon: <Star className="text-orange-400" />,
-    issuer: "Freedom of AI",
-    link: "https://drive.google.com/file/d/1-0og7KJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing",
-    summary: "Strategic AI implementation and product thinking."
+    title: "5★ HackerRank",
+    description: "5-star rating across Python, SQL, and C++ — verified problem-solving proficiency.",
+    icon: <Star className="text-accent" />,
+    issuer: "HackerRank",
+    link: "#",
+    summary: "Verified proficiency in Python, SQL, and C++."
   }
 ];
 
@@ -62,7 +46,7 @@ const Certifications: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-16">
-          {certifications.slice(0, 3).map((cert, index) => (
+          {certifications.map((cert, index) => (
             <div key={index} className="glass-card p-8 group hover:bg-white/10 transition-all duration-500 flex flex-col justify-between">
               <div className="flex items-start gap-6 mb-6">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform shrink-0">
@@ -95,13 +79,13 @@ const Certifications: React.FC = () => {
         </div>
 
         <div className="flex justify-center">
-          <a 
-            href="https://drive.google.com/drive/folders/1-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3" 
-            target="_blank" 
+          <a
+            href="https://www.linkedin.com/in/mokshit-sharma-75b5ab305/details/certifications/"
+            target="_blank"
             rel="noopener noreferrer"
             className="glow-button flex items-center gap-2 group"
           >
-            View All Certifications
+            View All Certifications on LinkedIn
             <ExternalLink size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </a>
         </div>

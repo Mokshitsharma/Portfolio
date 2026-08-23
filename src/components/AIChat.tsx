@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
 import { playSound } from '../utils/sounds';
 
 const AIChat: React.FC = () => {
@@ -36,30 +35,18 @@ const AIChat: React.FC = () => {
     playSound('message');
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: userMessage }]
-          }
-        ],
-        config: {
-          systemInstruction: `You are Mokshit Sharma, a passionate AI/ML Engineer, Data Scientist, and Gen AI Specialist. 
-          Your tone is professional yet approachable, enthusiastic about technology, and helpful. 
-          You are proud of your projects like 'Reddit Sentiment Analysis', 'Zudio EDA', 'Credit Card Fraud Detection', and 'Zomato SQL Analysis'. 
-          You have experience in building intelligent systems, predictive models, and scalable AI solutions.
-          When people ask about your skills, mention your expertise in Python, NumPy, Pandas, Scikit-learn, TensorFlow, PyTorch, and NLP.
-          If they ask about your work, talk about your internships and certifications from Google, Kaggle, and HackerRank.
-          Keep your responses concise and engaging. Use technical terms correctly but explain them if needed. 
-          You are currently looking for opportunities to solve real-world problems using AI.
-          Answer as if you are Mokshit himself.`,
-          temperature: 0.7,
-        }
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage }),
       });
 
-      const botResponse = response.text || "I'm sorry, I couldn't process that. Could you try again?";
+      if (!res.ok) {
+        throw new Error(`Chat request failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      const botResponse = data.text || "I'm sorry, I couldn't process that. Could you try again?";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
       playSound('message');
     } catch (error) {

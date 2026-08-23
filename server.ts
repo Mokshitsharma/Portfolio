@@ -1,7 +1,10 @@
+import "dotenv/config";
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import { generateChatReply } from "./api/_lib/gemini.js";
+import { sendContactEmail } from "./api/_lib/mail.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +18,34 @@ async function startServer() {
   // API Routes
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
+  });
+
+  app.post("/api/chat", async (req, res) => {
+    const { message } = req.body;
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return res.status(400).json({ error: "A non-empty 'message' string is required." });
+    }
+    try {
+      const text = await generateChatReply(message);
+      res.json({ text });
+    } catch (error) {
+      console.error("Gemini API error:", error);
+      res.status(500).json({ error: "Failed to generate a response." });
+    }
+  });
+
+  app.post("/api/contact", async (req, res) => {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: "Name, email, and message are all required." });
+    }
+    try {
+      await sendContactEmail({ name, email, message });
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      res.status(500).json({ error: "Failed to send your message." });
+    }
   });
 
   // Vite middleware for development

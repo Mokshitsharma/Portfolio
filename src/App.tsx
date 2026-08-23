@@ -34,10 +34,12 @@ const ScrollToTop = () => {
 const Home = () => {
   useEffect(() => {
     // Page load animation
-    gsap.from('body', {
-      opacity: 0,
-      duration: 1.5,
-      ease: 'power3.out'
+    const ctx = gsap.context(() => {
+      gsap.from('body', {
+        opacity: 0,
+        duration: 1.5,
+        ease: 'power3.out'
+      });
     });
 
     // Smooth scroll for anchor links
@@ -55,14 +57,16 @@ const Home = () => {
         }
       });
     });
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <>
       <Hero />
-      <CTA 
-        title="Open to ML / Data Science Internships" 
-        subtitle="Ready to contribute to high-impact AI projects and production-ready ML systems with a focus on measurable results."
+      <CTA
+        title="Building Movigo — Open to Interesting Conversations"
+        subtitle="Founding engineer running a live logistics marketplace end-to-end — engineering, operations, and applied explainable AI, alongside a final-year AI & Data Science degree."
       />
       <AboutMe />
       <WhyWorkWithMe />
@@ -73,9 +77,9 @@ const Home = () => {
       <Certifications />
       <CurrentlyLearning />
       <Achievements />
-      <CTA 
-        title="Let's Build Intelligent Systems Together" 
-        subtitle="Currently seeking internship opportunities where I can apply my ML expertise to solve complex business challenges."
+      <CTA
+        title="Let's Build Intelligent Systems Together"
+        subtitle="Interested in the intersection of production infrastructure and applied AI — reach out if you want to talk about either."
         showSocials={true}
       />
       <Contact />

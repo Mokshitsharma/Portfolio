@@ -4,23 +4,23 @@ import { BookOpen, Rocket, ShieldCheck, Database, LayoutGrid } from 'lucide-reac
 const CurrentlyLearning: React.FC = () => {
   const topics = [
     {
-      title: "Advanced Recommendation Systems",
-      description: "Collaborative filtering, deep learning for recommendations, and cold-start problem optimization.",
+      title: "Data Structures & Algorithms",
+      description: "Working through Striver's A2Z DSA sheet to sharpen core problem-solving fundamentals.",
       icon: <LayoutGrid className="text-accent" />
     },
     {
-      title: "Model Explainability (SHAP, LIME)",
-      description: "Techniques for interpreting complex black-box models to build trust and ensure ethical AI.",
+      title: "ML / DL Fundamentals",
+      description: "Deepening core machine learning and deep learning theory through the CampusX and Krish Naik tracks.",
       icon: <ShieldCheck className="text-accent" />
     },
     {
-      title: "MLOps & Deployment Pipelines",
-      description: "Automating the ML lifecycle with CI/CD, model monitoring, and versioning for scalable systems.",
+      title: "LangChain, LangGraph & RAG/MCP",
+      description: "Building agentic AI applications with retrieval-augmented generation and the Model Context Protocol.",
       icon: <Rocket className="text-accent" />
     },
     {
-      title: "Scalable ML System Design",
-      description: "Architecting high-performance systems for real-time inference and large-scale data processing.",
+      title: "Real-time System Design",
+      description: "Grounded in Movigo's own dispatch engine — architecting for high-throughput, real-time, geo-distributed workloads.",
       icon: <Database className="text-accent" />
     }
   ];

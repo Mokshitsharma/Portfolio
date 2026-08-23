@@ -1,62 +1,54 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Github, ExternalLink, Code2, Database, TrendingUp, UserCheck, ArrowRight, Smile, ShieldCheck } from 'lucide-react';
+import { Github, ExternalLink, ArrowRight, Rocket, Users, TrendingUp, UserCheck, LifeBuoy } from 'lucide-react';
 import gsap from 'gsap';
 
 const projects = [
   {
-    title: "Sensei AI Trading System",
-    problem: "Traditional trading analysis lacks real-time tactical depth and reinforcement learning-based decision support.",
-    stack: ["Python", "Streamlit", "LSTM", "PPO"],
-    metrics: "82% Prediction Accuracy",
+    title: "Movigo",
+    problem: "An outsourced dev team spent ~6 months and delivered only UI mockups — no working software.",
+    stack: ["Node.js", "Express", "MongoDB", "Flutter", "Pusher", "Razorpay", "PM2", "Nginx"],
+    metrics: "136,000+ LOC · 372 Endpoints",
+    github: "",
+    demo: "",
+    featured: true,
+    icon: <Rocket className="text-accent" />
+  },
+  {
+    title: "Movigo FieldOps v2",
+    problem: "A real ~20-employee field operation needed a config-driven, auditable workforce platform — not a generic HR tool.",
+    stack: ["Node.js/TS", "Express", "Sequelize/MariaDB", "Socket.io", "Next.js", "Flutter"],
+    metrics: "27-Entity Schema · ~70 Endpoints",
+    github: "",
+    demo: "",
+    icon: <Users className="text-accent" />
+  },
+  {
+    title: "Sensei AI",
+    problem: "Traditional trading analysis lacks explainability and multi-model tactical depth.",
+    stack: ["Python", "PyTorch", "Stable-Baselines3", "SHAP", "FinBERT"],
+    metrics: "~5,300 LOC · All 50 Nifty Stocks",
     github: "https://github.com/Mokshitsharma/Sensei",
-    demo: "#",
+    demo: "",
     icon: <TrendingUp className="text-accent" />
   },
   {
-    title: "MoodMate Emotion Detection",
-    problem: "Detecting human emotions in real-time for interactive AI applications and mental health monitoring.",
-    stack: ["Python", "Streamlit", "OpenCV", "Deep Learning"],
-    metrics: "Real-time Processing",
-    github: "https://github.com/Mokshitsharma/MoodMate",
-    demo: "#",
-    icon: <Smile className="text-accent" />
-  },
-  {
-    title: "Finsight Stock Analyzer",
-    problem: "Retail investors need accessible, real-time data visualization and event impact analysis to understand market volatility.",
-    stack: ["Python", "Streamlit", "Plotly", "Yahoo Finance API"],
-    metrics: "Event-Driven Insights",
-    github: "https://github.com/Mokshitsharma/Finsight_Smart_Stock_Event_Impact_Analyzer",
-    demo: "#",
-    icon: <Database className="text-accent" />
-  },
-  {
-    title: "Customer Churn Prediction",
-    problem: "Businesses lose significant revenue due to customer churn and lack predictive tools to identify at-risk customers.",
-    stack: ["Python", "Pandas", "Scikit-learn", "Jupyter"],
-    metrics: "91% Precision Rate",
+    title: "Customer Churn — Explainable AI",
+    problem: "Churn predictions are of little use to business teams without plain-English reasons behind them.",
+    stack: ["XGBoost", "SHAP", "Streamlit"],
+    metrics: "~0.85 ROC-AUC",
     github: "https://github.com/Mokshitsharma/Customer-Churn-Prediction",
-    demo: "#",
-    icon: <TrendingUp className="text-accent" />
+    demo: "",
+    icon: <UserCheck className="text-accent" />
   },
   {
-    title: "Credit Card Fraud Detection",
-    problem: "Financial institutions lose billions to fraud; real-time detection is critical for security.",
-    stack: ["Python", "Scikit-learn", "Anomaly Detection"],
-    metrics: "99.8% Detection Rate",
-    github: "https://github.com/Mokshitsharma/Credit-Card-fraud-detection",
-    demo: "#",
-    icon: <ShieldCheck className="text-accent" />
-  },
-  {
-    title: "Zomato SQL Analysis",
-    problem: "Extracting meaningful business insights from large-scale restaurant databases for market analysis.",
-    stack: ["SQL", "Power BI", "Data Viz"],
-    metrics: "Business Intelligence",
-    github: "https://github.com/Mokshitsharma/Zomato-SQL-EDA-Visualization",
-    demo: "#",
-    icon: <Database className="text-accent" />
+    title: "Disaster-Response AI Agent",
+    problem: "Disaster response needs fast, tool-augmented guidance, not a static chatbot.",
+    stack: ["Python", "Anthropic Claude", "Streamlit"],
+    metrics: "~1,700 LOC",
+    github: "",
+    demo: "",
+    icon: <LifeBuoy className="text-accent" />
   }
 ];
 
@@ -71,10 +63,10 @@ const ProjectCard: React.FC<{ project: typeof projects[0] }> = ({ project }) => 
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
+
       const rotateX = (y - centerY) / 10;
       const rotateY = (centerX - x) / 10;
 
@@ -106,29 +98,36 @@ const ProjectCard: React.FC<{ project: typeof projects[0] }> = ({ project }) => 
   }, []);
 
   return (
-    <div 
+    <div
       ref={cardRef}
-      className="glass-card p-8 flex flex-col h-full group transition-all duration-500 hover:border-accent/40 hover:shadow-[0_0_30px_rgba(0,210,255,0.1)]"
+      className={`glass-card p-8 flex flex-col h-full group transition-all duration-500 hover:border-accent/40 hover:shadow-[0_0_30px_rgba(254,250,205,0.1)] ${project.featured ? 'border-accent/40 ring-1 ring-accent/20' : ''}`}
     >
       <div className="mb-6 flex items-center justify-between">
         <div className="p-3 rounded-xl bg-accent/10">
           {project.icon}
         </div>
         <div className="flex gap-3">
-          <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-accent transition-colors">
-            <Github size={20} />
-          </a>
-          <a href={project.demo} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-accent transition-colors">
-            <ExternalLink size={20} />
-          </a>
+          {project.github && project.github !== '#' && (
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-accent transition-colors">
+              <Github size={20} />
+            </a>
+          )}
+          {project.demo && project.demo !== '#' && (
+            <a href={project.demo} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-accent transition-colors">
+              <ExternalLink size={20} />
+            </a>
+          )}
         </div>
       </div>
 
+      {project.featured && (
+        <span className="text-[10px] font-mono text-accent uppercase tracking-widest mb-2">Flagship Project</span>
+      )}
       <h3 className="text-2xl font-bold mb-4 group-hover:text-accent transition-colors text-white">{project.title}</h3>
-      
+
       <div className="mb-6 flex-grow">
         <p className="text-sm text-slate-300 mb-4 line-clamp-3">
-          <span className="text-white font-medium">Problem:</span> {project.problem}
+          {project.problem}
         </p>
         <div className="flex flex-wrap gap-2 mb-4">
           {project.stack.map((tech, i) => (
@@ -140,7 +139,7 @@ const ProjectCard: React.FC<{ project: typeof projects[0] }> = ({ project }) => 
       </div>
 
       <div className="pt-6 border-t border-white/10 flex items-center justify-between">
-        <span className="text-xs font-mono text-accent uppercase tracking-widest">Performance</span>
+        <span className="text-xs font-mono text-accent uppercase tracking-widest">Scale</span>
         <span className="text-sm font-bold text-white">{project.metrics}</span>
       </div>
     </div>
@@ -154,7 +153,7 @@ const Projects: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <h2 className="text-4xl md:text-6xl font-bold mb-4">Featured <span className="text-gradient">Projects</span></h2>
-            <p className="text-slate-400 max-w-xl">A selection of my work in AI, Machine Learning, and Data Science, focused on solving complex problems with elegant code.</p>
+            <p className="text-slate-400 max-w-xl">From a live production marketplace to explainable AI research — a selection of what I've built.</p>
           </div>
           <a href="https://github.com/Mokshitsharma" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline flex items-center gap-2 font-medium">
             View all on GitHub <ExternalLink size={16} />

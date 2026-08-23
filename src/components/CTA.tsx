@@ -8,9 +8,9 @@ interface CTAProps {
   showSocials?: boolean;
 }
 
-const CTA: React.FC<CTAProps> = ({ 
-  title = "Open to ML / Data Science Internships", 
-  subtitle = "Ready to contribute to high-impact AI projects and production-ready ML systems.",
+const CTA: React.FC<CTAProps> = ({
+  title = "Building Movigo — Open to Interesting Conversations",
+  subtitle = "Always happy to talk shop about production systems, AI/ML, or founder life.",
   showSocials = true
 }) => {
   return (

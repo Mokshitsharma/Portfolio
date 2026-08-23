@@ -1,28 +1,48 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Brain, BarChart3, Code2, Globe, Zap, ArrowRight } from 'lucide-react';
+import { Brain, BarChart3, Code2, Globe, Server, ArrowRight, Smartphone, CreditCard, Briefcase } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const skillGroups = [
   {
-    title: "Programming",
+    title: "Languages",
     icon: <Code2 className="text-accent" />,
-    skills: ["Python (Advanced)", "SQL", "C++", "R", "JavaScript", "TypeScript"]
+    skills: ["JavaScript", "TypeScript", "Dart", "Python", "SQL", "HTML/CSS"]
   },
   {
-    title: "Machine Learning / AI",
+    title: "Mobile",
+    icon: <Smartphone className="text-accent" />,
+    skills: ["Flutter", "Provider", "GetX Navigation", "Geolocator", "Google Maps", "Background Services", "FCM"]
+  },
+  {
+    title: "Backend & Real-Time",
+    icon: <Server className="text-accent" />,
+    skills: ["Node.js", "Express", "MongoDB / Mongoose", "REST APIs (372 endpoints in prod)", "JWT Auth", "Pusher Channels", "node-cron"]
+  },
+  {
+    title: "Payments & Infra",
+    icon: <CreditCard className="text-accent" />,
+    skills: ["Razorpay (Webhooks, Idempotency)", "PM2", "Nginx", "cPanel & VPS Deployment", "Let's Encrypt SSL", "Git"]
+  },
+  {
+    title: "Frontend",
+    icon: <Globe className="text-accent" />,
+    skills: ["React 18/19", "Next.js", "TanStack Query", "Recharts", "Tailwind CSS", "Three.js"]
+  },
+  {
+    title: "Machine Learning & AI",
     icon: <Brain className="text-accent" />,
-    skills: ["Supervised Learning", "Neural Networks", "NLP", "Computer Vision", "Scikit-learn", "TensorFlow", "PyTorch"]
+    skills: ["Scikit-learn", "XGBoost", "PyTorch (LSTM, TCN)", "Stable-Baselines3 (PPO)", "SHAP", "FinBERT", "LLM/Agentic Tooling (Claude, Gemini)"]
   },
   {
-    title: "Data Tools",
+    title: "Data & BI",
     icon: <BarChart3 className="text-accent" />,
-    skills: ["Pandas", "NumPy", "Matplotlib", "Power BI", "Tableau", "Excel (Advanced)"]
+    skills: ["Pandas", "NumPy", "Power BI", "SQL", "Recharts Dashboarding", "Automated Reporting (node-cron)"]
   },
   {
-    title: "Deployment / Cloud",
-    icon: <Zap className="text-accent" />,
-    skills: ["Docker", "Flask", "FastAPI", "AWS", "Google Cloud", "Git/GitHub"]
+    title: "Operations & Leadership",
+    icon: <Briefcase className="text-accent" />,
+    skills: ["Team Coordination", "Business & Growth Decisions", "Config-Driven Business-Rule Systems"]
   }
 ];
 
@@ -40,7 +60,7 @@ const Skills: React.FC = () => {
           <span className="text-accent font-mono text-sm tracking-[0.3em] uppercase mb-4 block">Expertise</span>
           <h2 className="text-4xl md:text-6xl font-bold mb-4">Technical <span className="text-gradient">Arsenal</span></h2>
           <p className="text-slate-400 max-w-2xl mx-auto text-lg font-light">
-            A structured overview of my technical proficiency and the tools I use to build production-ready AI systems.
+            From production infrastructure to explainable ML — the full stack behind Movigo and my applied AI work.
           </p>
         </div>
 
@@ -51,7 +71,7 @@ const Skills: React.FC = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6, ease: 'easeOut' }}
+              transition={{ delay: (index % 4) * 0.1, duration: 0.6, ease: 'easeOut' }}
               className="glass-card p-8 group hover:border-accent/30 transition-all duration-500 flex flex-col"
             >
               <div className="flex items-center gap-4 mb-6">
@@ -63,8 +83,8 @@ const Skills: React.FC = () => {
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {group.skills.map((skill, skillIndex) => (
-                  <span 
-                    key={skillIndex} 
+                  <span
+                    key={skillIndex}
                     className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 hover:border-accent/30 hover:text-accent transition-all cursor-default"
                   >
                     {skill}

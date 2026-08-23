@@ -1,42 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Trophy, Star, Award, GraduationCap, Github } from 'lucide-react';
+import { Code2, Server, Smartphone, GraduationCap } from 'lucide-react';
 import gsap from 'gsap';
 
 const achievements = [
   {
-    title: "GitHub Repos",
-    value: 28,
+    title: "Lines of Code",
+    value: 136000,
     suffix: "+",
-    label: "Open Source Projects",
-    icon: <Github className="text-white" />
+    label: "Production Code (Movigo)",
+    icon: <Code2 className="text-white" />
   },
   {
-    title: "Certifications",
-    value: 12,
-    suffix: "+",
-    label: "Professional Growth",
-    icon: <Trophy className="text-emerald-400" />
-  },
-  {
-    title: "Projects Built",
-    value: 15,
-    suffix: "+",
-    label: "End-to-End Systems",
-    icon: <Star className="text-yellow-400" />
-  },
-  {
-    title: "Internships",
-    value: 4,
+    title: "API Endpoints",
+    value: 372,
     suffix: "",
-    label: "Real-world Experience",
-    icon: <Award className="text-blue-400" />
+    label: "In Production",
+    icon: <Server className="text-emerald-400" />
   },
   {
-    title: "HackerRank",
-    value: 5,
-    suffix: "★",
-    label: "Python & SQL",
-    icon: <Star className="text-accent" />
+    title: "App Releases",
+    value: 47,
+    suffix: "+ / 41+",
+    label: "Driver / Retailer (Play Store)",
+    icon: <Smartphone className="text-blue-400" />
+  },
+  {
+    title: "CGPA",
+    value: 8.2,
+    suffix: "",
+    label: "B.Tech + M.Tech Dual Degree",
+    icon: <GraduationCap className="text-accent" />
   }
 ];
 
@@ -63,7 +56,7 @@ const Counter: React.FC<{ value: number; suffix: string }> = ({ value, suffix })
 
   return (
     <span ref={ref} className="text-3xl md:text-4xl font-bold text-white">
-      {value % 1 === 0 ? Math.floor(count) : count.toFixed(1)}{suffix}
+      {value % 1 === 0 ? Math.floor(count).toLocaleString() : count.toFixed(1)}{suffix}
     </span>
   );
 };
@@ -72,7 +65,7 @@ const Achievements: React.FC = () => {
   return (
     <section className="py-24">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {achievements.map((item, index) => (
             <div key={index} className="glass-card p-6 text-center group hover:bg-white/10 transition-colors">
               <div className="flex justify-center mb-4">

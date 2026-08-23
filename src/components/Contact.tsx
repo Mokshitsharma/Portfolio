@@ -1,7 +1,34 @@
-import React from 'react';
-import { Mail, Send, Github, Linkedin, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Send, Github, Linkedin, MapPin, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+
+type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 
 const Contact: React.FC = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<SubmitStatus>('idle');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setStatus('error');
+    }
+  };
+
   return (
     <section id="contact" className="py-24">
       <div className="container mx-auto px-6">
@@ -46,37 +73,69 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="glass-card p-8 md:p-10">
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Name</label>
-                    <input 
-                      type="text" 
+                    <label htmlFor="contact-name" className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Name</label>
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
                       placeholder="John Doe"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:border-accent/50 focus:outline-none transition-all placeholder:text-[var(--text-secondary)]/50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Email</label>
-                    <input 
-                      type="email" 
+                    <label htmlFor="contact-email" className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Email</label>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
                       placeholder="john@example.com"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:border-accent/50 focus:outline-none transition-all placeholder:text-[var(--text-secondary)]/50"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Message</label>
-                  <textarea 
+                  <label htmlFor="contact-message" className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-widest ml-1">Message</label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
                     rows={5}
                     placeholder="Tell me about your project..."
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:border-accent/50 focus:outline-none transition-all resize-none placeholder:text-[var(--text-secondary)]/50"
                   />
                 </div>
-                <button type="submit" className="glow-button w-full flex items-center justify-center gap-2">
-                  Send Message
-                  <Send size={18} />
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="glow-button w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {status === 'loading' ? (
+                    <>Sending <Loader2 size={18} className="animate-spin" /></>
+                  ) : (
+                    <>Send Message <Send size={18} /></>
+                  )}
                 </button>
+                {status === 'success' && (
+                  <p className="flex items-center gap-2 text-emerald-400 text-sm">
+                    <CheckCircle2 size={16} /> Message sent — I'll get back to you soon.
+                  </p>
+                )}
+                {status === 'error' && (
+                  <p className="flex items-center gap-2 text-red-400 text-sm">
+                    <AlertCircle size={16} /> Something went wrong. Please email me directly instead.
+                  </p>
+                )}
               </form>
             </div>
           </div>

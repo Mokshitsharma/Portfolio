@@ -34,8 +34,16 @@ const Scrolltelling: React.FC = () => {
     },
     {
       chapter: "04",
+      title: "The Builder's Leap",
+      description: "Internships taught me the craft; joining Movigo as founding engineer forced me to own it. An outsourced team had spent six months and delivered only UI mockups — I rebuilt the entire product from zero as the sole engineer, architecting the Node.js backend, building the Flutter apps for drivers and retailers, and designing the real-time dispatch engine that routes deliveries as they happen. This wasn't a class project with a due date; it's a live system with real users depending on it to work today.",
+      period: "Founding Movigo",
+      icon: "🚀",
+      quote: "The best way to learn engineering is to be the only engineer."
+    },
+    {
+      chapter: "05",
       title: "Vision: The AI Architect",
-      description: "My ultimate goal is to transition from a builder of models to an Architect of Intelligence. I am motivated by projects that bridge the gap between human intuition and machine precision—like my AI Cricket Tactical Engine or Stock Impact Analyzer. I don't just build for the sake of tech; I build to empower decision-makers with systems that are as ethical as they are efficient.",
+      description: "My ultimate goal is to keep building at the intersection of production infrastructure and applied intelligence. I am motivated by projects that bridge the gap between human intuition and machine precision—like Sensei AI's explainable trading signals, and by Movigo's own dispatch and pricing systems. I don't just build for the sake of tech; I build to empower decision-makers with systems that are as ethical as they are efficient.",
       period: "Future Horizon",
       icon: "🏗️",
       quote: "The best way to predict the future is to design it."

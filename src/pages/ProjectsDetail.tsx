@@ -1,20 +1,67 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Github, ExternalLink, Code2, Database, TrendingUp, UserCheck, Info, Smile, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, Code2, Database, TrendingUp, UserCheck, Info, Smile, ShieldCheck, Rocket, Users, LifeBuoy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-const projects = [
+const featuredProjects = [
+  {
+    id: 'movigo',
+    title: "Movigo",
+    description: "Rebuilt the entire product from zero as sole engineer — real-time dispatch engine, two production Flutter apps, admin console, payments, and self-managed VPS infrastructure.",
+    problem: "An outsourced dev team spent ~6 months and delivered only UI mockups — no working software.",
+    stack: ["Node.js", "Express", "MongoDB", "Flutter", "Pusher", "Razorpay", "PM2", "Nginx"],
+    metrics: "136,000+ LOC · 372 Endpoints · 47+/41+ Releases",
+    github: "",
+    demo: "",
+    icon: <Rocket size={32} />
+  },
+  {
+    id: 'fieldops',
+    title: "Movigo FieldOps v2",
+    description: "3-tier field-workforce management platform built for a real ~20-employee field operation — 27-entity schema, ~70-endpoint REST + Socket.io API covering GPS attendance, driver/retailer onboarding, call logging, and HR workflows. Config-driven, auditable points/gamification engine (19 scorable actions, DB-configurable weights, cron-automated monthly resets) and Android foreground-service GPS tracking with batched, retry-on-failure location uploads. JWT refresh-token auth across backend, web, and mobile.",
+    problem: "A real ~20-employee field operation needed a config-driven, auditable workforce platform — not a generic HR tool.",
+    stack: ["Node.js/TypeScript", "Express", "Sequelize/MariaDB", "Socket.io", "Next.js", "Flutter"],
+    metrics: "27-Entity Schema · ~70 Endpoints",
+    github: "",
+    demo: "",
+    icon: <Users size={32} />
+  },
   {
     id: 'sensei',
-    title: "Sensei AI Trading System",
-    description: "Developed an AI-driven trading intelligence platform that integrates deep learning models (LSTM, TCN) and reinforcement learning (PPO) to generate buy/sell/hold decisions for NIFTY 50 stocks. Designed a modular signal pipeline combining technical indicators, fundamentals, and news sentiment analysis.",
-    problem: "Traditional trading analysis lacks real-time tactical depth and reinforcement learning-based decision support.",
-    stack: ["Python", "Streamlit", "LSTM", "PPO", "NLP"],
-    metrics: "82% Prediction Accuracy",
+    title: "Sensei AI",
+    description: "Fuses 5 AI model families — Random Forest + SHAP, PyTorch LSTM & Temporal CNN, a PPO reinforcement-learning agent on a custom Gymnasium trading environment, and an HMM regime detector. Integrates FinBERT financial NLP on live Google News RSS; aggregates all signals into a scored voting engine (−5…+5) producing BUY/SELL/HOLD with confidence and SHAP-based feature attribution. Includes a 5-method support/resistance detector, intraday/swing setup generator, and a backtesting engine (Sharpe ratio, max drawdown).",
+    problem: "Traditional trading analysis lacks explainability and multi-model tactical depth.",
+    stack: ["Python", "PyTorch", "Stable-Baselines3", "SHAP", "FinBERT", "Streamlit"],
+    metrics: "~5,300 LOC · 31 Commits · All 50 Nifty Stocks",
     github: "https://github.com/Mokshitsharma/Sensei",
-    demo: "#",
+    demo: "",
     icon: <TrendingUp size={32} />
   },
+  {
+    id: 'churn',
+    title: "Customer Churn — Explainable AI",
+    description: "End-to-end churn system — XGBoost classifier with SHAP TreeExplainer producing per-customer and global feature attributions, translated into plain-English reasons and business-actionable retention suggestions via an interactive dashboard.",
+    problem: "Churn predictions are of little use to business teams without plain-English reasons behind them.",
+    stack: ["XGBoost", "SHAP (TreeExplainer)", "Streamlit"],
+    metrics: "~0.85 ROC-AUC",
+    github: "https://github.com/Mokshitsharma/Customer-Churn-Prediction",
+    demo: "",
+    icon: <UserCheck size={32} />
+  },
+  {
+    id: 'disaster',
+    title: "Disaster-Response AI Agent",
+    description: "Agentic LLM assistant with tool-calling, persistent conversation memory, real-time web search, and interactive mapping for multi-disaster safety guidance.",
+    problem: "Disaster response needs fast, tool-augmented guidance, not a static chatbot.",
+    stack: ["Python", "Anthropic Claude (tool-use)", "Streamlit"],
+    metrics: "~1,700 LOC",
+    github: "",
+    demo: "",
+    icon: <LifeBuoy size={32} />
+  }
+];
+
+const earlierProjects = [
   {
     id: 'moodmate',
     title: "MoodMate Emotion Detection",
@@ -23,8 +70,8 @@ const projects = [
     stack: ["Python", "Streamlit", "OpenCV", "Deep Learning"],
     metrics: "Real-time Processing",
     github: "https://github.com/Mokshitsharma/MoodMate",
-    demo: "#",
-    icon: <Smile size={32} />
+    demo: "",
+    icon: <Smile size={28} />
   },
   {
     id: 'finsight',
@@ -34,19 +81,8 @@ const projects = [
     stack: ["Python", "Streamlit", "Plotly", "Yahoo Finance API"],
     metrics: "Event-Driven Insights",
     github: "https://github.com/Mokshitsharma/Finsight_Smart_Stock_Event_Impact_Analyzer",
-    demo: "#",
-    icon: <Database size={32} />
-  },
-  {
-    id: 'churn',
-    title: "Customer Churn Prediction",
-    description: "Predicting customer retention with AI-driven insights. Built a machine learning pipeline to analyze customer behavior and predict the likelihood of churn, enabling businesses to take proactive retention measures.",
-    problem: "Businesses lose significant revenue due to customer churn and lack predictive tools to identify at-risk customers.",
-    stack: ["Python", "Pandas", "Scikit-learn", "Jupyter"],
-    metrics: "91% Precision Rate",
-    github: "https://github.com/Mokshitsharma/Customer-Churn-Prediction",
-    demo: "#",
-    icon: <TrendingUp size={32} />
+    demo: "",
+    icon: <Database size={28} />
   },
   {
     id: 'sentiment',
@@ -56,8 +92,8 @@ const projects = [
     stack: ["Python", "NLP", "TF-IDF", "Scikit-learn"],
     metrics: "87% Accuracy",
     github: "https://github.com/Mokshitsharma/Sentiment_analysis",
-    demo: "#",
-    icon: <Code2 size={32} />
+    demo: "",
+    icon: <Code2 size={28} />
   },
   {
     id: 'zudio',
@@ -67,8 +103,8 @@ const projects = [
     stack: ["Python", "Pandas", "Matplotlib", "Seaborn"],
     metrics: "Data-Driven Insights",
     github: "https://github.com/Mokshitsharma/Zudio-Data-Analysis-EDA",
-    demo: "#",
-    icon: <Database size={32} />
+    demo: "",
+    icon: <Database size={28} />
   },
   {
     id: 'fraud',
@@ -78,8 +114,8 @@ const projects = [
     stack: ["Python", "Scikit-learn", "Random Forest", "XGBoost"],
     metrics: "99.8% Detection Rate",
     github: "https://github.com/Mokshitsharma/Credit-Card-fraud-detection",
-    demo: "#",
-    icon: <ShieldCheck size={32} />
+    demo: "",
+    icon: <ShieldCheck size={28} />
   },
   {
     id: 'zomato',
@@ -89,8 +125,8 @@ const projects = [
     stack: ["SQL", "Power BI", "Data Visualization"],
     metrics: "Business Intelligence",
     github: "https://github.com/Mokshitsharma/Zomato-SQL-EDA-Visualization",
-    demo: "#",
-    icon: <Database size={32} />
+    demo: "",
+    icon: <Database size={28} />
   },
   {
     id: 'house',
@@ -100,13 +136,15 @@ const projects = [
     stack: ["Python", "Regression", "Ensemble Methods"],
     metrics: "Low RMSE Score",
     github: "https://github.com/Mokshitsharma/House-Price-Regression-Generic-Tabular-Regressor-",
-    demo: "#",
-    icon: <TrendingUp size={32} />
+    demo: "",
+    icon: <TrendingUp size={28} />
   }
 ];
 
+const allProjects = [...featuredProjects, ...earlierProjects];
+
 const ProjectsDetail: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<typeof allProjects[0] | null>(null);
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] py-20 px-6">
@@ -118,11 +156,11 @@ const ProjectsDetail: React.FC = () => {
 
         <h1 className="text-5xl md:text-7xl font-bold mb-8 text-[var(--text-primary)]">All <span className="text-gradient">Projects</span></h1>
         <p className="text-[var(--text-secondary)] text-xl mb-16 max-w-3xl">
-          A deep dive into my technical projects, exploring the problems solved and the impact created through AI and data science.
+          A deep dive into my technical projects, exploring the problems solved and the impact created — from a live production marketplace to explainable AI research.
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-20">
-          {projects.map((project) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
+          {featuredProjects.map((project) => (
             <button
               key={project.id}
               onClick={() => setSelectedProject(project)}
@@ -143,7 +181,7 @@ const ProjectsDetail: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="glass-card p-8 md:p-12"
+              className="glass-card p-8 md:p-12 mb-20"
             >
               <div className="flex flex-col md:flex-row justify-between gap-8 mb-8">
                 <div>
@@ -157,14 +195,18 @@ const ProjectsDetail: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex gap-4 h-fit">
-                  <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="glow-button flex items-center gap-2">
-                    <Github size={18} />
-                    GitHub
-                  </a>
-                  <a href={selectedProject.demo} className="px-6 py-3 rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-secondary)]/80 transition-all flex items-center gap-2 font-medium text-[var(--text-primary)]">
-                    <ExternalLink size={18} />
-                    Live Demo
-                  </a>
+                  {selectedProject.github && selectedProject.github !== '#' && (
+                    <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="glow-button flex items-center gap-2">
+                      <Github size={18} />
+                      GitHub
+                    </a>
+                  )}
+                  {selectedProject.demo && selectedProject.demo !== '#' && (
+                    <a href={selectedProject.demo} target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-secondary)]/80 transition-all flex items-center gap-2 font-medium text-[var(--text-primary)]">
+                      <ExternalLink size={18} />
+                      Live Demo
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -188,17 +230,37 @@ const ProjectsDetail: React.FC = () => {
                 </div>
                 <div className="glass-card p-6 h-fit bg-[var(--bg-secondary)]/50">
                   <h3 className="text-lg font-bold mb-4 border-b border-[var(--border-primary)] pb-2 text-[var(--text-primary)]">Key Metrics</h3>
-                  <div className="text-3xl font-bold text-accent mb-2">{selectedProject.metrics}</div>
-                  <p className="text-xs text-[var(--text-secondary)] uppercase tracking-widest font-mono">Performance Impact</p>
+                  <div className="text-2xl font-bold text-accent mb-2">{selectedProject.metrics}</div>
+                  <p className="text-xs text-[var(--text-secondary)] uppercase tracking-widest font-mono">Scale & Impact</p>
                 </div>
               </div>
             </motion.div>
           ) : (
-            <div className="text-center py-20 glass-card border-dashed border-[var(--border-primary)]">
+            <div className="text-center py-20 glass-card border-dashed border-[var(--border-primary)] mb-20">
               <p className="text-[var(--text-secondary)] text-lg">Select a project icon above to view details</p>
             </div>
           )}
         </AnimatePresence>
+
+        <div className="border-t border-[var(--border-primary)] pt-16">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-[var(--text-primary)]">Earlier Work</h2>
+          <p className="text-[var(--text-secondary)] mb-10 max-w-2xl">Smaller ML/data-science projects from earlier coursework and self-study — kept here for completeness.</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+            {earlierProjects.map((project) => (
+              <button
+                key={project.id}
+                onClick={() => setSelectedProject(project)}
+                className={`glass-card p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:scale-105 ${selectedProject?.id === project.id ? 'border-accent bg-accent/10' : 'hover:border-accent/30'}`}
+              >
+                <div className={`p-3 rounded-xl ${selectedProject?.id === project.id ? 'bg-accent text-slate-950' : 'bg-accent/10 text-accent'}`}>
+                  {project.icon}
+                </div>
+                <span className="text-xs font-bold text-center text-[var(--text-primary)]">{project.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

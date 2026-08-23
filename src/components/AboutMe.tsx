@@ -14,17 +14,17 @@ const AboutMe: React.FC = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-32 -mt-32 blur-3xl" />
             <div className="relative z-10">
               <p className="text-xl md:text-3xl text-white leading-relaxed mb-8 font-light italic text-glow">
-                "I don't just build models; I build systems that think, learn, and empower."
+                "One team of one — the entire stack, the operations, and the decisions, end to end."
               </p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  My name is <span className="text-white font-medium text-glow">Mokshit Sharma</span>, and I specialize in <span className="text-accent font-medium">AI & Data Science Engineering</span>. I am driven by the challenge of translating raw, chaotic data into structured, intelligent narratives that drive measurable impact.
+                  My name is <span className="text-white font-medium text-glow">Mokshit Sharma</span>. I'm the <span className="text-accent font-medium">Founding Engineer — Tech & Operations</span> at <span className="text-white font-medium">Movigo</span>, a live B2B logistics marketplace. When I joined, an outsourced dev team had spent roughly six months and delivered only UI mockups — no working software. I rebuilt the entire product from zero as the sole engineer: a Node.js/Express/MongoDB backend, two Play Store-published Flutter apps for drivers and retailers, an admin console, and a real-time dispatch engine — around 136,000 lines of code running in production today.
                 </p>
                 <p>
-                  I focus on building <span className="text-white font-medium">end-to-end ML systems</span>—from data collection and rigorous experimentation to deployment and monitoring. My approach is rooted in a strong evaluation mindset, ensuring that every model I build is as robust and interpretable as it is accurate.
+                  The work isn't just engineering. I also own the operational and business side — data-driven pricing and zone decisions, coordinating calling and field teams, and the judgment calls that come with running a live product, not just shipping code for one. That combination is deliberate: I approach dispatch logic, pricing rules, and anomaly patterns in real bookings with the same evaluation rigor I bring to applied machine learning, including explainable-AI work like Sensei AI.
                 </p>
                 <p>
-                  I thrive at the intersection of human intuition and machine precision, turning complex business problems into scalable AI solutions that empower decision-makers.
+                  In parallel, I'm finishing an integrated B.Tech + M.Tech in <span className="text-accent font-medium">AI & Data Science</span> at DAVV, Indore, with an 8.2 CGPA — building all of this alongside full-time founding-engineer work, not after it.
                 </p>
               </div>
             </div>
