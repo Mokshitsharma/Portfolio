@@ -3,7 +3,6 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
-import { generateChatReply } from "./api/_lib/gemini.js";
 import { sendContactEmail } from "./api/_lib/mail.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,20 +17,6 @@ async function startServer() {
   // API Routes
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
-  });
-
-  app.post("/api/chat", async (req, res) => {
-    const { message } = req.body;
-    if (!message || typeof message !== "string" || !message.trim()) {
-      return res.status(400).json({ error: "A non-empty 'message' string is required." });
-    }
-    try {
-      const text = await generateChatReply(message);
-      res.json({ text });
-    } catch (error) {
-      console.error("Gemini API error:", error);
-      res.status(500).json({ error: "Failed to generate a response." });
-    }
   });
 
   app.post("/api/contact", async (req, res) => {

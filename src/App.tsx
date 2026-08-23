@@ -14,7 +14,6 @@ import Scrolltelling from './components/Scrolltelling';
 import Achievements from './components/Achievements';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import AIChat from './components/AIChat';
 import ProjectsDetail from './pages/ProjectsDetail';
 import InternshipsDetail from './pages/InternshipsDetail';
 import SkillsDetail from './pages/SkillsDetail';
@@ -84,7 +83,6 @@ const Home = () => {
       />
       <Contact />
       <Footer />
-      <AIChat />
     </>
   );
 };
