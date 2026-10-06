@@ -1,33 +1,18 @@
-import React from 'react';
+import { profile } from '../data/portfolio';
 
-const Footer: React.FC = () => {
+export default function Footer() {
   return (
-    <footer className="py-12 border-t border-[var(--border-primary)]">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <a href="#home" className="text-2xl font-display font-bold tracking-tighter mb-2 block text-[var(--text-primary)]">
-              MS<span className="text-accent">.</span>
-            </a>
-            <p className="text-[var(--text-secondary)] text-sm">
-              AI & Data Science Engineer based in Indore, India.
-            </p>
-          </div>
-
-          <div className="flex gap-8 text-sm font-mono text-[var(--text-secondary)] uppercase tracking-widest">
-            <a href="#home" className="hover:text-accent transition-colors">Home</a>
-            <a href="#projects" className="hover:text-accent transition-colors">Projects</a>
-            <a href="#skills" className="hover:text-accent transition-colors">Skills</a>
-            <a href="#contact" className="hover:text-accent transition-colors">Contact</a>
-          </div>
-
-          <div className="text-[var(--text-secondary)] text-sm font-mono">
-            © {new Date().getFullYear()} Mokshit Sharma. All rights reserved.
-          </div>
-        </div>
+    <footer className="border-t border-line py-10">
+      <div className="wrap flex flex-col gap-4 text-sm text-muted md:flex-row md:items-center md:justify-between">
+        <p>
+          {profile.name}, {profile.role.toLowerCase()} in {profile.location.split(',')[0]}.
+        </p>
+        <p className="flex gap-6">
+          <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-paper">GitHub</a>
+          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-paper">LinkedIn</a>
+          <a href={`mailto:${profile.email}`} className="hover:text-paper">Email</a>
+        </p>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

@@ -1,105 +1,62 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import CTA from './components/CTA';
-import Skills from './components/Skills';
 import Projects from './components/Projects';
+import Principles from './components/Principles';
+import AlsoBuilt from './components/AlsoBuilt';
 import Experience from './components/Experience';
+import Skills from './components/Skills';
 import Certifications from './components/Certifications';
-import WhyWorkWithMe from './components/WhyWorkWithMe';
-import CurrentlyLearning from './components/CurrentlyLearning';
-import AboutMe from './components/AboutMe';
-import Scrolltelling from './components/Scrolltelling';
-import Achievements from './components/Achievements';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ProjectsDetail from './pages/ProjectsDetail';
 import InternshipsDetail from './pages/InternshipsDetail';
-import SkillsDetail from './pages/SkillsDetail';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
+// Scroll to the top on route change, or to the #section when the URL has one.
+const ScrollManager = () => {
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (hash) {
+      document.getElementById(hash.slice(1))?.scrollIntoView();
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
   return null;
 };
 
-const Home = () => {
-  useEffect(() => {
-    // Page load animation
-    const ctx = gsap.context(() => {
-      gsap.from('body', {
-        opacity: 0,
-        duration: 1.5,
-        ease: 'power3.out'
-      });
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        if (!targetId) return;
-        const target = document.querySelector(targetId);
-        if (target) {
-          window.scrollTo({
-            top: target.getBoundingClientRect().top + window.scrollY - 80,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <>
-      <Hero />
-      <CTA
-        title="Building Movigo — Open to Interesting Conversations"
-        subtitle="Founding engineer running a live logistics marketplace end-to-end — engineering, operations, and applied explainable AI, alongside a final-year AI & Data Science degree."
-      />
-      <AboutMe />
-      <WhyWorkWithMe />
-      <Scrolltelling />
-      <Projects />
-      <Experience />
-      <Skills />
-      <Certifications />
-      <CurrentlyLearning />
-      <Achievements />
-      <CTA
-        title="Let's Build Intelligent Systems Together"
-        subtitle="Interested in the intersection of production infrastructure and applied AI — reach out if you want to talk about either."
-        showSocials={true}
-      />
-      <Contact />
-      <Footer />
-    </>
-  );
-};
+const Home = () => (
+  <>
+    <Hero />
+    <Projects />
+    <Principles />
+    <AlsoBuilt />
+    <Experience />
+    <Skills />
+    <Certifications />
+    <Contact />
+  </>
+);
 
 export default function App() {
   return (
     <Router>
-      <ScrollToTop />
+      <ScrollManager />
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] btn-primary">
+        Skip to content
+      </a>
       <Navbar />
-      <main className="relative">
+      <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsDetail />} />
           <Route path="/internships" element={<InternshipsDetail />} />
-          <Route path="/skills" element={<SkillsDetail />} />
+          <Route path="/skills" element={<Navigate to="/#skills" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Footer />
     </Router>
   );
 }

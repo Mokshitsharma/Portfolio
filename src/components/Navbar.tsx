@@ -1,117 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { Menu, X, Github, Linkedin } from 'lucide-react';
-import { cn } from '../lib/utils';
-import { playSound } from '../utils/sounds';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import { profile } from '../data/portfolio';
 
-const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const location = useLocation();
-  const isHomePage = location.pathname === '/';
+const links = [
+  { name: 'Work', href: '/#work' },
+  { name: 'How I build', href: '/#principles' },
+  { name: 'Experience', href: '/#experience' },
+  { name: 'All projects', href: '/projects' },
+];
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home', href: isHomePage ? '#home' : '/' },
-    { name: 'Projects', href: isHomePage ? '#projects' : '/#projects' },
-    { name: 'Experience', href: isHomePage ? '#experience' : '/#experience' },
-    { name: 'Certifications', href: isHomePage ? '#certifications' : '/#certifications' },
-    { name: 'Contact', href: isHomePage ? '#contact' : '/#contact' },
-  ];
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+  }, [open]);
 
   return (
-    <nav className={cn(
-      "fixed top-0 left-0 w-full z-50 transition-all duration-300 px-6 py-4",
-      isScrolled ? "bg-[var(--bg-secondary)]/80 backdrop-blur-lg border-b border-white/5 py-3" : "bg-transparent"
-    )}>
-      {/* Scroll Progress Bar */}
-      <div className="absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-100" style={{ width: `${scrollProgress}%` }} />
-
-      <div className="container mx-auto flex items-center justify-between">
-        <Link 
-          to="/" 
-          onClick={() => playSound('click')}
-          className="text-2xl font-display font-bold tracking-tighter group"
-        >
-          MS<span className="text-accent group-hover:animate-pulse">.</span>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors ${scrolled || open ? 'bg-plum/90 backdrop-blur border-b border-line' : 'bg-transparent'}`}
+    >
+      <nav className="wrap flex h-16 items-center justify-between gap-6" aria-label="Main">
+        <Link to="/" className="font-display text-xl font-extrabold tracking-tight" onClick={() => setOpen(false)}>
+          Mokshit Sharma
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              onClick={() => playSound('click')}
-              className="text-sm font-medium text-slate-400 hover:text-accent transition-colors"
-            >
-              {link.name}
-            </a>
+        <ul className="hidden items-center gap-7 text-sm text-muted md:flex">
+          {links.map((l) => (
+            <li key={l.name}>
+              <Link to={l.href} className="hover:text-paper transition-colors">
+                {l.name}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        <div className="hidden md:flex items-center gap-4">
-          <a href="https://github.com/Mokshitsharma" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-accent transition-colors">
-            <Github size={20} />
-          </a>
-          <a href="https://www.linkedin.com/in/mokshit-sharma-75b5ab305/" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-accent transition-colors">
-            <Linkedin size={20} />
-          </a>
-        </div>
+        <a href={`mailto:${profile.email}`} className="hidden md:inline-flex btn-primary !py-1.5 text-sm">
+          Hire me
+        </a>
 
-        {/* Mobile Toggle */}
-        <button 
-          className="md:hidden text-slate-200"
-          onClick={() => {
-            setIsMobileMenuOpen(!isMobileMenuOpen);
-            playSound('click');
-          }}
+        <button
+          className="md:hidden p-2 -mr-2"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile Menu */}
-      <div className={cn(
-        "fixed inset-0 bg-[var(--bg-secondary)] z-40 flex flex-col items-center justify-center gap-8 transition-transform duration-500 md:hidden",
-        isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-      )}>
-        {navLinks.map((link) => (
-          <a 
-            key={link.name} 
-            href={link.href}
-            className="text-3xl font-display font-bold hover:text-accent transition-colors"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              playSound('click');
-            }}
-          >
-            {link.name}
-          </a>
-        ))}
-        <div className="flex gap-6 mt-8">
-          <a href="https://github.com/Mokshitsharma" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-accent transition-colors">
-            <Github size={32} />
-          </a>
-          <a href="https://www.linkedin.com/in/mokshit-sharma-75b5ab305/" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-accent transition-colors">
-            <Linkedin size={32} />
-          </a>
+      {open && (
+        <div className="md:hidden wrap pb-8 pt-2 h-[calc(100dvh-4rem)]">
+          <ul className="flex flex-col gap-5 font-display text-3xl font-semibold">
+            {links.map((l) => (
+              <li key={l.name}>
+                <Link to={l.href} onClick={() => setOpen(false)}>
+                  {l.name}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link to="/#contact" onClick={() => setOpen(false)}>
+                Contact
+              </Link>
+            </li>
+          </ul>
         </div>
-      </div>
-    </nav>
+      )}
+    </header>
   );
-};
-
-export default Navbar;
+}

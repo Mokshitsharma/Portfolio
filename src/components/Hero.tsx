@@ -1,174 +1,191 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import gsap from 'gsap';
-import { ArrowDown, Download, ExternalLink } from 'lucide-react';
-import { playSound } from '../utils/sounds';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Download, Mail } from 'lucide-react';
+import { profile } from '../data/portfolio';
 
-const Hero: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+type Kind = 'propose' | 'pass' | 'deny' | 'info';
 
-  // Role Typing Effect
-  const [roleText, setRoleText] = useState('');
-  const roles = ['Founding Engineer & Tech Lead', 'Full-Stack + Mobile Engineer', 'Applied ML Engineer'];
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [isRoleDeleting, setIsRoleDeleting] = useState(false);
+interface Step {
+  kind: Kind;
+  label: string;
+  text: string;
+}
 
-  // Role Typing Effect Logic
+interface Run {
+  id: string;
+  project: string;
+  command: string;
+  steps: Step[];
+}
+
+// Replays of real behaviour from the projects below, shortened to fit.
+const runs: Run[] = [
+  {
+    id: 'settleai',
+    project: 'SettleAI',
+    command: 'procurebot hire "deliver 3 boxes to the Vijay Nagar warehouse"',
+    steps: [
+      { kind: 'propose', label: 'scope', text: '2 milestones drafted, $120 total' },
+      { kind: 'pass', label: 'guard G1', text: 'inside the payer’s mandate cap' },
+      { kind: 'pass', label: 'escrow', text: 'PayPal capture confirmed by webhook' },
+      { kind: 'pass', label: 'proof', text: 'photo GPS matches the drop-off point' },
+      { kind: 'deny', label: 'proof', text: 'photo was already used on another job' },
+      { kind: 'deny', label: 'payout', text: 'held for review, no money moved' },
+    ],
+  },
+  {
+    id: 'toolforge',
+    project: 'ToolForge',
+    command: 'toolforge build pokeapi.yaml',
+    steps: [
+      { kind: 'info', label: 'read_spec', text: '102 endpoints parsed' },
+      { kind: 'propose', label: 'design', text: '8 tools proposed' },
+      { kind: 'pass', label: 'check_plan', text: 'every param maps to the spec' },
+      { kind: 'pass', label: 'review', text: 'plan approved by a human' },
+      { kind: 'pass', label: 'test', text: '8 of 8 live API calls passed' },
+      { kind: 'pass', label: 'audit', text: 'security score 100/100' },
+    ],
+  },
+  {
+    id: 'naman',
+    project: 'Naman',
+    command: '“Jarvis, close Chrome, mute and lock the laptop”',
+    steps: [
+      { kind: 'propose', label: 'plan', text: '3 steps' },
+      { kind: 'pass', label: 'close_app', text: 'Chrome closed' },
+      { kind: 'pass', label: 'volume', text: 'muted' },
+      { kind: 'propose', label: 'approve', text: 'Lock the laptop? yes or no' },
+      { kind: 'pass', label: 'user', text: 'yes' },
+      { kind: 'pass', label: 'lock', text: 'laptop locked' },
+    ],
+  },
+];
+
+const kindStyle: Record<Kind, string> = {
+  propose: 'text-propose',
+  pass: 'text-pass',
+  deny: 'text-deny',
+  info: 'text-muted',
+};
+
+const kindMark: Record<Kind, string> = {
+  propose: '?',
+  pass: '✓',
+  deny: '✕',
+  info: '·',
+};
+
+const STEP_MS = 650;
+const HOLD_MS = 3200;
+
+function AgentTrace() {
+  const reduced =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [runIndex, setRunIndex] = useState(0);
+  const [shown, setShown] = useState(reduced ? runs[0].steps.length : 0);
+  const [pinned, setPinned] = useState(reduced);
+  const run = runs[runIndex];
+
   useEffect(() => {
-    const handleTyping = () => {
-      const current = roles[roleIndex];
-      if (isRoleDeleting) {
-        setRoleText(current.substring(0, roleText.length - 1));
-      } else {
-        setRoleText(current.substring(0, roleText.length + 1));
-      }
-
-      if (!isRoleDeleting && roleText === current) {
-        setTimeout(() => setIsRoleDeleting(true), 1500);
-      } else if (isRoleDeleting && roleText === '') {
-        setIsRoleDeleting(false);
-        setRoleIndex((prev) => (prev + 1) % roles.length);
-      }
-    };
-
-    const timer = setTimeout(handleTyping, isRoleDeleting ? 40 : 100);
-    return () => clearTimeout(timer);
-  }, [roleText, isRoleDeleting, roleIndex]);
-
-  // Three.js Background
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const isMobile = window.innerWidth < 768;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Particles
-    const particlesCount = isMobile ? 600 : 2000;
-    const posArray = new Float32Array(particlesCount * 3);
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 10;
+    if (shown < run.steps.length) {
+      const t = setTimeout(() => setShown((n) => n + 1), STEP_MS);
+      return () => clearTimeout(t);
     }
+    if (pinned) return;
+    const t = setTimeout(() => {
+      setRunIndex((i) => (i + 1) % runs.length);
+      setShown(0);
+    }, HOLD_MS);
+    return () => clearTimeout(t);
+  }, [shown, run.steps.length, pinned]);
 
-    const particlesGeometry = new THREE.BufferGeometry();
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
-      color: '#FEFACD',
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending,
-    });
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-
-    camera.position.z = 3;
-
-    // Mouse Interaction
-    let mouseX = 0;
-    let mouseY = 0;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX / window.innerWidth) - 0.5;
-      mouseY = (event.clientY / window.innerHeight) - 0.5;
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Animation
-    let frameId: number;
-    const animate = () => {
-      frameId = requestAnimationFrame(animate);
-
-      particlesMesh.rotation.y += 0.001;
-      particlesMesh.rotation.x += 0.0005;
-
-      // Smooth mouse follow
-      particlesMesh.position.x += (mouseX * 0.5 - particlesMesh.position.x) * 0.05;
-      particlesMesh.position.y += (-mouseY * 0.5 - particlesMesh.position.y) * 0.05;
-
-      renderer.render(scene, camera);
-    };
-
-    if (prefersReducedMotion) {
-      renderer.render(scene, camera);
-    } else {
-      animate();
-    }
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
-      if (frameId) cancelAnimationFrame(frameId);
-      renderer.dispose();
-    };
-  }, []);
+  const choose = (i: number) => {
+    setPinned(true);
+    setRunIndex(i);
+    setShown(reduced ? runs[i].steps.length : 0);
+  };
 
   return (
-    <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
-      
-      <div className="container mx-auto px-6 relative z-10 text-center">
-        <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-accent/20 bg-accent/5 text-accent text-sm font-medium tracking-wider uppercase">
-          Welcome to my digital space
-        </div>
-        
-        <h1 className="text-5xl md:text-8xl font-bold mb-4 leading-tight">
-          Hi, I’m <span className="text-gradient">Mokshit Sharma</span>
-        </h1>
-        
-        <div className="text-2xl md:text-4xl text-accent font-display mb-8 h-10 md:h-12">
-          {roleText}<span className="animate-pulse ml-1">|</span>
-        </div>
-        
-        <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto font-light leading-relaxed">
-          Founding Engineer who single-handedly built and runs <span className="text-white font-medium text-glow">Movigo</span>, a live logistics marketplace — full-stack, mobile, and real-time dispatch, ~136,000 lines, one team of one.
-          <br />
-          Alongside that, I own business operations and data analysis, and apply the same rigor to applied and explainable ML.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a 
-            href="#projects" 
-            onClick={() => playSound('click')}
-            className="glow-button flex items-center gap-2 group"
+    <figure className="rounded-2xl border border-line bg-plum-2 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]">
+      <div className="flex items-center gap-1 border-b border-line px-3 pt-3" role="tablist" aria-label="Agent runs">
+        {runs.map((r, i) => (
+          <button
+            key={r.id}
+            role="tab"
+            aria-selected={i === runIndex}
+            onClick={() => choose(i)}
+            className={`rounded-t-lg px-3 py-2 text-sm transition-colors ${
+              i === runIndex ? 'bg-plum-3 text-paper' : 'text-muted hover:text-paper'
+            }`}
           >
-            View My Work
-            <ExternalLink size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </a>
-          <a 
-            href="https://drive.google.com/file/d/1yqCt5a-2A4DEu9QJvIy_9b_KF6yR4xqt/view?usp=sharing"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => playSound('click')}
-            className="px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all flex items-center gap-2 font-medium"
-          >
-            Download Resume
-            <Download size={18} />
-          </a>
-        </div>
+            {r.project}
+          </button>
+        ))}
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
-        <ArrowDown size={32} className="text-accent" />
+      <div className="font-mono text-[13px] leading-relaxed p-4 sm:p-5 min-h-[23rem] sm:min-h-[17.5rem]" aria-live="polite">
+        <p className="text-paper break-words">
+          <span className="text-muted select-none">$ </span>
+          {run.command}
+        </p>
+        <ol className="mt-3 space-y-1.5">
+          {run.steps.slice(0, shown).map((s, i) => (
+            <li key={`${run.id}-${i}`} className="trace-line grid grid-cols-[1.25rem_6.5rem_1fr] gap-x-2">
+              <span className={kindStyle[s.kind]} aria-hidden>
+                {kindMark[s.kind]}
+              </span>
+              <span className={kindStyle[s.kind]}>{s.label}</span>
+              <span className="text-paper/90">{s.text}</span>
+            </li>
+          ))}
+        </ol>
+        {shown < run.steps.length && <span className="trace-caret mt-1.5 inline-block h-4 w-2 bg-paper/70" aria-hidden />}
+      </div>
+
+      <figcaption className="flex flex-wrap gap-x-5 gap-y-1 border-t border-line px-4 sm:px-5 py-3 text-xs text-muted">
+        <span><span className="text-propose">?</span> agent proposes</span>
+        <span><span className="text-pass">✓</span> check passed</span>
+        <span><span className="text-deny">✕</span> blocked by code</span>
+      </figcaption>
+    </figure>
+  );
+}
+
+export default function Hero() {
+  return (
+    <section id="home" className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden">
+      <div className="wrap grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
+        <div>
+          <p className="inline-flex items-center gap-2.5 rounded-full border border-pass/40 bg-pass/10 px-3.5 py-1.5 text-sm text-pass">
+            <span className="status-dot h-2 w-2 rounded-full bg-pass" aria-hidden />
+            {profile.availability}
+          </p>
+
+          <h1 className="mt-7 text-[clamp(3rem,9vw,6.5rem)] font-extrabold">
+            Mokshit
+            <br />
+            Sharma
+          </h1>
+
+          <p className="mt-5 font-display text-2xl md:text-3xl font-semibold text-propose">{profile.role}</p>
+
+          <p className="mt-5 max-w-xl text-lg text-muted">{profile.pitch}</p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href={`mailto:${profile.email}`} className="btn-primary">
+              <Mail size={18} aria-hidden /> Email me
+            </a>
+            <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+              <Download size={18} aria-hidden /> Résumé
+            </a>
+            <Link to="/#work" className="btn-ghost">
+              See the work
+            </Link>
+          </div>
+        </div>
+
+        <AgentTrace />
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

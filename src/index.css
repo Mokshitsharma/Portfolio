@@ -1,106 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 @import "tailwindcss";
 
+/*
+  Palette: plum base carried over from the earlier site, parchment text,
+  and three signal colours that always mean the same thing:
+  amber = an agent is proposing, teal = a check passed, rose = denied or held.
+*/
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Space Grotesk", sans-serif;
-  
-  --color-accent: #FEFACD;
-  --color-accent-dark: #e6e2b9;
-}
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
 
-:root {
-  --bg-primary: #5f4A8b;
-  --bg-secondary: #4c3b6f;
-  --text-primary: #FEFACD;
-  --text-secondary: rgba(254, 250, 205, 0.7);
-  --border-primary: rgba(254, 250, 205, 0.1);
-  --glass-bg: rgba(254, 250, 205, 0.03);
-  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-[data-theme='light'] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --border-primary: rgba(0, 0, 0, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --color-plum: #1c1430;
+  --color-plum-2: #271d3f;
+  --color-plum-3: #352a52;
+  --color-line: #463a66;
+  --color-paper: #f2ecda;
+  --color-muted: #b9afcc;
+  --color-propose: #ffb547;
+  --color-pass: #5ed3be;
+  --color-deny: #ff7f8e;
 }
 
 @layer base {
-  body {
-    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-x-hidden antialiased transition-colors duration-300;
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-[var(--text-primary)];
+
+  body {
+    @apply bg-plum text-paper font-sans antialiased overflow-x-hidden;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    @apply font-display text-paper;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  ::selection {
+    background: var(--color-propose);
+    color: var(--color-plum);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-propose);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-[var(--glass-bg)] backdrop-blur-2xl border border-[var(--border-primary)] rounded-2xl shadow-[var(--card-shadow)];
-  }
-  
-  .glow-button {
-    @apply relative overflow-hidden px-6 py-3 rounded-full font-medium transition-all duration-300
-           bg-accent text-slate-950 hover:shadow-[0_0_20px_rgba(0,210,255,0.5)] active:scale-95;
-  }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent via-blue-400 to-accent bg-[length:200%_auto] animate-[gradient_4s_linear_infinite];
+  .wrap {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-8;
   }
 
-  .text-glow {
-    text-shadow: 0 0 10px rgba(254, 250, 205, 0.3);
+  .section {
+    @apply py-20 md:py-28 border-t border-line;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-6xl font-extrabold;
+  }
+
+  .lede {
+    @apply mt-4 max-w-2xl text-muted text-lg;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-medium transition-colors bg-propose text-plum hover:bg-paper;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-medium transition-colors border border-line text-paper hover:border-paper;
+  }
+
+  .text-link {
+    @apply underline decoration-line underline-offset-4 transition-colors hover:decoration-propose hover:text-propose;
   }
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Hero trace: lines arrive one at a time. This is the only ambient motion on the page. */
+@keyframes trace-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+.trace-line {
+  animation: trace-in 260ms ease-out both;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+@keyframes caret {
+  50% { opacity: 0; }
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
-  border-radius: 10px;
+.trace-caret {
+  animation: caret 1s steps(1) infinite;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(94, 211, 190, 0.55); }
+  50% { box-shadow: 0 0 0 6px rgba(94, 211, 190, 0); }
 }
 
-/* GSAP Animation Helpers */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
+.status-dot {
+  animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
-.journey-line {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
-}
-
-@media (max-width: 768px) {
-  .journey-line {
-    left: 20px;
-    transform: none;
-  }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .trace-line, .trace-caret, .status-dot { animation: none; }
 }
