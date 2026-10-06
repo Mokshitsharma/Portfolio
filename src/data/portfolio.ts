@@ -43,7 +43,7 @@ export const flagships: FlagshipProject[] = [
     guardrail:
       'No agent has a tool that moves money. A deterministic Mandate Guard approves every hire, funding, payout and dispute, and every step is a signed receipt anyone can verify offline.',
     proof: '132 unit and integration tests, 10 end-to-end tests, failure drills for webhook storms and payout outages',
-    stack: ['Next.js 16', 'TypeScript', 'MCP server', 'xAI Grok', 'PayPal Orders, Payouts, Webhooks', 'Postgres + Drizzle', 'JWS ES256', 'Playwright'],
+    stack: ['Next.js 16', 'TypeScript', 'MCP server', 'xAI Grok, Groq', 'PayPal Orders, Payouts, Webhooks', 'Postgres + Drizzle', 'JWS ES256', 'Playwright'],
     links: {},
   },
   {
@@ -245,6 +245,30 @@ export const catalog: CatalogGroup[] = [
         links: { repo: 'https://github.com/Mokshitsharma/MoodMate' },
       },
       {
+        name: 'Cricket Strategy AI',
+        summary: 'In progress: pulls ESPN ball-by-ball commentary and extracts shot type, bowling intent and ball type with NLP, feeding an ML pipeline for tactical insights. The data and NLP stages work; the API and UI are not built yet.',
+        stack: 'Python, NLP, scikit-learn',
+        links: {},
+      },
+      {
+        name: 'Face and Motion Detection',
+        summary: 'Two computer-vision utilities: real-time webcam face detection with Haar cascades, and moving-object tracking with MOG2 background subtraction and contours.',
+        stack: 'OpenCV, NumPy',
+        links: {},
+      },
+      {
+        name: 'Handwritten Digit Classifier',
+        summary: 'SVM classifier for handwritten digits with visualised predictions.',
+        stack: 'scikit-learn, matplotlib',
+        links: {},
+      },
+      {
+        name: 'Sentiment Web App',
+        summary: 'Paste any text and get its polarity, subjectivity and a sentiment label in a single-file web app.',
+        stack: 'Flask, TextBlob',
+        links: {},
+      },
+      {
         name: 'Kaggle Playground entries',
         summary: 'Student score regression with a stacked HistGBM and XGBoost ensemble; diabetes prediction with blended CatBoost and LightGBM.',
         stack: 'XGBoost, LightGBM, CatBoost',
@@ -358,6 +382,12 @@ export const catalog: CatalogGroup[] = [
         links: { repo: 'https://github.com/Mokshitsharma/Zudio-Data-Analysis-EDA' },
       },
       {
+        name: 'EDA toolkit',
+        summary: 'Reusable exploratory-analysis script for any CSV: summary stats, bar and scatter charts and a correlation heatmap, with demo data when no file is given.',
+        stack: 'pandas, NumPy, matplotlib',
+        links: { repo: 'https://github.com/Mokshitsharma/EDA-on-a-data-frame' },
+      },
+      {
         name: 'Quick-commerce inventory',
         summary: 'Cleans Zepto inventory data and reports low-stock items.',
         stack: 'pandas',
@@ -365,26 +395,139 @@ export const catalog: CatalogGroup[] = [
       },
     ],
   },
+  {
+    id: 'tools',
+    title: 'Automation and CLI tools',
+    blurb: 'Small, useful utilities for markets, money and messaging.',
+    projects: [
+      {
+        name: 'Indian stock fundamentals',
+        summary: 'Look up any NSE stock with ticker autocomplete: live price, fundamentals and shareholding. Ships as a terminal app and as a Flask website.',
+        stack: 'Python, yfinance, prompt_toolkit, Flask',
+        links: { repo: 'https://github.com/Mokshitsharma/Stock-price-details' },
+      },
+      {
+        name: 'Personal finance tracker',
+        summary: 'Command-line income and expense log with a running summary, using only the standard library.',
+        stack: 'Python',
+        links: {},
+      },
+      {
+        name: 'WhatsApp bulk messenger',
+        summary: 'Reads contacts from Excel and sends personalised WhatsApp messages through WhatsApp Web.',
+        stack: 'Python, pandas, pywhatkit, pyautogui',
+        links: {},
+      },
+    ],
+  },
 ];
 
-export const experience = [
+export interface Experience {
+  role: string;
+  company: string;
+  period: string;
+  body?: string;
+  // Featured roles get a full timeline entry on the home page; the rest are listed compactly.
+  featured?: boolean;
+  documents?: { label: string; href: string }[];
+}
+
+// Newest first. Source: "Internship details.xlsx".
+export const experience: Experience[] = [
+  {
+    role: 'Product Manager',
+    company: 'Movigo Innovations Pvt. Ltd.',
+    period: 'Apr 2026 – Present',
+    body: 'Lead product for Movigo’s live B2B logistics marketplace and its FieldOps workforce platform, both of which I also built (see Production platforms below).',
+    featured: true,
+  },
+  {
+    role: 'Data Analyst Intern',
+    company: 'Bold Analytics',
+    period: 'Apr 2026 – May 2026',
+    featured: true,
+    documents: [{ label: 'Letter of recommendation', href: 'https://drive.google.com/file/d/1H1uC9xINU2DqBcbaZYobOjQ9PdANs2Ak/view?usp=sharing' }],
+  },
+  {
+    role: 'Data Scientist Intern',
+    company: 'Kangaroo Software Pvt. Ltd.',
+    period: 'Oct 2025 – Jan 2026',
+    body: 'Worked on data pipelines and analytics.',
+    featured: true,
+    documents: [{ label: 'Certificate', href: 'https://drive.google.com/file/d/1ZPBgGkkDBb1CWGArpvjBl-zUiDwCzPo1/view?usp=sharing' }],
+  },
+  {
+    role: 'C++ Developer Intern',
+    company: 'CodSoft',
+    period: 'Nov 2025 – Dec 2025',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/17C14sTkWIYQkFV2SpCI5Cz2dcgO5Rs66/view?usp=sharing' }],
+  },
+  {
+    role: 'Power BI Intern',
+    company: 'Saiket Systems',
+    period: 'Sep 2025 – Oct 2025',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1L1smoZpG5rqaDuqyiiRZ7F5xrCGrUrFU/view?usp=sharing' }],
+  },
+  {
+    role: 'Python Developer Intern',
+    company: 'CodexIntern',
+    period: 'Aug 2025 – Sep 2025',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1-1TLOWtz_wvWCtJn5_rfIff97rAsynd_/view?usp=sharing' }],
+  },
+  {
+    role: 'Artificial Intelligence Intern',
+    company: 'CodexIntern',
+    period: 'Aug 2025 – Sep 2025',
+    documents: [{ label: 'Certificate', href: 'https://drive.google.com/file/d/13TDYLf6l5M-fISFdyKeCpK9THZ8sjfgl/view?usp=sharing' }],
+  },
   {
     role: 'Software Developer Intern',
     company: 'Bluestock Fintech',
     period: 'Apr 2025 – May 2025',
     body: 'Built Python modules that ingest and analyse structured financial data, and cut analytics run time by about 22%.',
+    featured: true,
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1fRrLmzs8o4JA1FHBOWhm6W_OEsr9Cp1L/view?usp=sharing' }],
+  },
+  {
+    role: 'Data Analyst Intern',
+    company: 'Afame Technologies',
+    period: 'Feb 2025 – Mar 2025',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1S_TLmbYtnc6IfMLME0pW3wFo5Z7WhAJx/view?usp=sharing' }],
+  },
+  {
+    role: 'Data Scientist Intern',
+    company: 'Code Alpha',
+    period: 'Nov 2024 – Dec 2024',
+    body: 'Built ML pipelines and exploratory analyses.',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/15s2gujKW4r4wR0aO3GLJVrzZFl3oQ1Ul/view?usp=sharing' }],
+  },
+  {
+    role: 'C and C++ Programming Intern',
+    company: 'TechnoHacks Solutions Pvt. Ltd.',
+    period: 'Nov 2024 – Dec 2024',
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1rMo4I9OJaZHzQVMW6GyDfd_jXPuqJ3B8/view?usp=sharing' }],
   },
   {
     role: 'Artificial Intelligence Intern',
     company: 'Evoastra Ventures',
     period: 'Oct 2024 – Nov 2024',
     body: 'Built sentiment-analysis pipelines on Reddit data with TF-IDF and tuned classifiers, improving accuracy by about 21%.',
+    featured: true,
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/drive/u/2/folders/19c5J-Afnp8F-ajr1yu1n_eiimrgJ4wk2' }],
   },
   {
     role: 'Data Scientist Intern',
     company: 'Cognifyz Technologies',
     period: 'Sep 2024 – Oct 2024',
     body: 'Built regression models that predict restaurant ratings, reaching 0.84 R² after feature engineering.',
+    featured: true,
+    documents: [{ label: 'Offer letter', href: 'https://drive.google.com/file/d/1qFCF_sY7sBTlVZ4C5Sid1u83UTrHNwz5/view?usp=sharing' }],
+  },
+  {
+    role: 'Data Science and ML Intern',
+    company: 'Edureka',
+    period: 'Jun 2024 – Jul 2024',
+    documents: [{ label: 'Certificate', href: 'https://drive.google.com/file/d/1I7nzd7g--EGjRusjIJ5gIRsNwh2DXT7G/view?usp=sharing' }],
   },
 ];
 
@@ -400,8 +543,10 @@ export const skills = [
 
 export const certifications = [
   { title: '5-Day AI Agents Intensive', issuer: 'Kaggle and Google', link: 'https://drive.google.com/file/d/1NmhjV9PXbdtnp09OdMNtMaizlODUNfke/view?usp=sharing' },
+  { title: 'Generative AI Foundations', issuer: 'Skillsoft', link: 'https://drive.google.com/file/d/12LL5X1XFkZa-KYVSoCFUJZ7zyR9aB1wr/view?usp=sharing' },
+  { title: 'Generative AI', issuer: 'Infosys Springboard', link: 'https://drive.google.com/file/d/1FGNt8vyrA4aseMvbjoMUgsXYuAgrszPy/view?usp=sharing' },
+  { title: 'Microsoft Excel', issuer: 'Infosys Springboard', link: 'https://drive.google.com/file/d/1C0E6VwPqfuZyaZkvkLYWOFl5JvfWJ48R/view?usp=sharing' },
+  { title: 'AI Masterclass', issuer: 'Freedom of AI', link: 'https://drive.google.com/file/d/1-0og7kJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing' },
   { title: 'Google Data Analytics Professional Certificate', issuer: 'Google' },
-  { title: 'Generative AI Foundations', issuer: 'Skillsoft' },
-  { title: 'Gen AI Foundations and Data Analyst Program', issuer: 'Infosys Springboard' },
   { title: '5-star in Python, SQL and C++', issuer: 'HackerRank' },
 ];

@@ -31,6 +31,27 @@ export default function AlsoBuilt() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-12 space-y-6">
+          {catalog.map((g) => {
+            const rest = g.projects.filter((p) => !p.highlight);
+            if (rest.length === 0) return null;
+            return (
+              <div key={g.id}>
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">{g.title}</h3>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {rest.map((p) => (
+                    <li key={p.name}>
+                      <Link to={`/projects#${g.id}`} className="inline-block rounded-md bg-plum-3 px-2.5 py-1 text-sm text-paper/85 hover:text-paper">
+                        {p.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

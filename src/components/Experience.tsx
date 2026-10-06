@@ -8,21 +8,30 @@ export default function Experience() {
         <div>
           <h2 className="section-title">Experience</h2>
           <ol className="mt-12 space-y-10 border-l border-line pl-6">
-            {experience.map((e) => (
-              <li key={e.company} className="relative">
+            {experience.filter((e) => e.featured).map((e) => (
+              <li key={e.company + e.role} className="relative">
                 <span className="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-propose" aria-hidden />
                 <p className="text-sm text-muted">{e.period}</p>
                 <h3 className="mt-1 text-2xl font-semibold">
                   {e.role}, {e.company}
                 </h3>
-                <p className="mt-2 max-w-2xl text-paper/85">{e.body}</p>
+                {e.body && <p className="mt-2 max-w-2xl text-paper/85">{e.body}</p>}
               </li>
             ))}
           </ol>
-          <p className="mt-10 max-w-2xl text-muted">
-            Also interned at Code Alpha and Kangaroo Software on ML pipelines and analytics.{' '}
+          <h3 className="mt-14 text-xl font-semibold">More internships</h3>
+          <ul className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+            {experience.filter((e) => !e.featured).map((e) => (
+              <li key={e.company + e.role}>
+                <p className="font-semibold">{e.role}</p>
+                <p className="text-paper/85">{e.company}</p>
+                <p className="text-sm text-muted">{e.period}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-10">
             <Link to="/internships" className="text-link text-paper">
-              Offer letters and recommendations
+              All {experience.length} roles with offer letters, certificates and recommendations
             </Link>
           </p>
         </div>
