@@ -12,7 +12,7 @@ export const profile = {
   currentOrg: 'Movigo Innovations Pvt. Ltd.',
   currentOrgShort: 'Movigo',
   location: 'Indore, India',
-  availability: 'Open to full-time roles, remote or in Indore',
+  availability: 'Available for internships and full-time roles, remote, hybrid or on-site in India',
   email: 'mokshitsharmalaptop@gmail.com',
   github: 'https://github.com/Mokshitsharma',
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',

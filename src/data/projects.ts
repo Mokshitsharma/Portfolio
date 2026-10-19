@@ -45,18 +45,18 @@ export const projects: Project[] = [
     id: 'P07', slug: 'fieldops-ai', name: 'FieldOps', category: 'production', maturity: 'prototype', period: 'May 2026',
     summary: 'Workforce platform for a field team of about 20: GPS attendance from an Android foreground service, driver and retailer onboarding, call logs, HR records and a points engine whose weights live in the database.',
     stack: ['TypeScript', 'Express', 'Sequelize', 'MariaDB', 'Socket.io', 'Next.js', 'Flutter'],
-    links: [gh('Fieldops-ai')], caseStudy: true,
+    links: [], linkNote: 'Built for Movigo. The code stays private until the company agrees to publish it.', caseStudy: true,
   },
   {
     id: 'P08', slug: 'movigo-broadcast', name: 'Movigo Broadcast', category: 'production', maturity: 'working', period: 'Sep 2026',
     summary: 'Campaign tool for sending one message with an image to a contact list: upload CSV or XLSX, map the phone and name columns, send.',
-    stack: ['Node.js', 'Express', 'JavaScript'], links: [gh('Whatsapp_bulk_sender_automation')],
+    stack: ['Node.js', 'Express', 'JavaScript'], links: [], linkNote: 'Built for Movigo. The code stays private until the company agrees to publish it.',
   },
   {
     id: 'P09', slug: 'hyperlocal-marketplace', name: 'Hyperlocal Marketplace', category: 'production', maturity: 'working', period: 'Sep 2026',
     summary: 'Customers order from local Indore shops and riders deliver in about 30 minutes. The order state machine survives races, payment webhooks and server restarts.',
     stack: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle', 'Socket.io', 'React', 'Next.js', 'TypeScript'],
-    links: [gh('Marketplace_app')], tests: '52 backend tests in the repository (counted, not run for this site).', caseStudy: true,
+    links: [], linkNote: 'Built for Movigo. The code stays private until the company agrees to publish it.', tests: '52 backend tests in the repository (counted, not run for this site).', caseStudy: true,
   },
 
   // Agents
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     id: 'P17', slug: 'cricxai', name: 'CricXAI', category: 'ml', maturity: 'working', period: 'Aug 2026',
     summary: 'Recommends what to bowl next in an ODI, with dismissal probability, likely dismissal type, expected runs and SHAP reasons. Trained on 1.36 million real deliveries with leakage-safe features.',
     stack: ['Python', 'LightGBM', 'SHAP', 'FastAPI', 'Parquet', 'Docker', 'GitHub Actions'],
-    links: [gh('CricXAI')], tests: '71 pytest tests.', relation: 'Replaced the earlier cricket-strategy-ai pipeline.', caseStudy: true, featured: true,
+    links: [gh('CricXAI')], tests: '71 pytest tests.', relation: 'Replaced cricket-strategy-ai, an earlier pipeline that scraped ball-by-ball commentary and extracted shot type and bowling intent with NLP rules; its interface was never built.', caseStudy: true, featured: true,
   },
   {
     id: 'P18', slug: 'sensei-ai', name: 'Sensei AI', category: 'ml', maturity: 'working', period: 'Feb-Sep 2026',
@@ -145,11 +145,6 @@ export const projects: Project[] = [
     summary: 'Measures how market events moved a stock: event-window returns, volatility and news sentiment on a dark Plotly dashboard.',
     stack: ['Python', 'Streamlit', 'Plotly', 'yfinance', 'NLTK'], links: [gh('Finsight_Smart_Stock_Event_Impact_Analyzer')],
     linkNote: 'The Streamlit demo currently asks for a sign-in, so it is not linked.',
-  },
-  {
-    id: 'P65', slug: 'cricket-strategy-ai', name: 'cricket-strategy-ai', category: 'ml', maturity: 'prototype', period: 'Apr 2026',
-    summary: 'Scrapes ball-by-ball commentary and extracts shot type and bowling intent with NLP rules. The data and NLP stages work; the API and interface were never built.',
-    stack: ['Python', 'NLP', 'scikit-learn'], links: [], relation: 'Superseded by CricXAI.',
   },
   {
     id: 'P28', slug: 'credit-card-default', name: 'Credit card default', category: 'ml', maturity: 'notebook', period: 'Oct 2025',
@@ -320,19 +315,6 @@ export const projects: Project[] = [
   {
     id: 'P38', slug: 'digit-classifier', name: 'Handwritten digit classifier', category: 'learning', maturity: 'notebook', period: 'Feb 2025',
     summary: 'An SVM on scikit-learn’s digits dataset with visualised predictions.', stack: ['Python', 'scikit-learn'], links: [],
-  },
-  {
-    id: 'P60', slug: 'matrix-tool', name: 'Matrix tool', category: 'learning', maturity: 'notebook', period: '2025',
-    summary: 'Command-line matrix operations with NumPy.', stack: ['Python', 'NumPy'], links: [gh('python_projects')],
-  },
-  {
-    id: 'P67', slug: 'ml-coursework', name: 'Machine learning coursework', category: 'learning', maturity: 'coursework', period: '2026',
-    summary: 'Sixteen topics from my semester VII machine learning course at DAVV, from regression to PAC learning, each with theory notebooks and worked programs.',
-    stack: ['Python', 'scikit-learn', 'Jupyter'], links: [],
-  },
-  {
-    id: 'P68', slug: 'python-exercises', name: 'Python exercises', category: 'learning', maturity: 'coursework', period: 'Oct 2025',
-    summary: 'Worked exercises on control flow and functions.', stack: ['Python', 'Jupyter'], links: [],
   },
 ];
 
