@@ -40,7 +40,8 @@ export default function About() {
             Alongside that job I build agent systems, and a person approves the risky steps in every one of them. Before
             Movigo I did internships in data science, analytics, AI and software development, mostly short programmes, and a
             long list of machine learning, BI and tooling projects. They are all in the{' '}
-            <Link to="/projects" className="link">project archive</Link>, labelled by how far each one got.
+            <Link to="/projects" className="link">project archive</Link>, labelled by how far each one got. Coursework
+            from the degree, such as the semester VII machine learning notebooks and Python exercises, is not listed there.
           </p>
         </div>
       </div>
