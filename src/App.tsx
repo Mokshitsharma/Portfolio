@@ -1,62 +1,30 @@
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Projects from './components/Projects';
-import Principles from './components/Principles';
-import AlsoBuilt from './components/AlsoBuilt';
-import Experience from './components/Experience';
-import Skills from './components/Skills';
-import Certifications from './components/Certifications';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import ProjectsDetail from './pages/ProjectsDetail';
-import InternshipsDetail from './pages/InternshipsDetail';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Projects from './pages/Projects';
+import CaseStudyPage from './pages/CaseStudyPage';
+import Experience from './pages/Experience';
+import Skills from './pages/Skills';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
-// Scroll to the top on route change, or to the #section when the URL has one.
-const ScrollManager = () => {
-  const { pathname, hash } = useLocation();
-  useEffect(() => {
-    if (hash) {
-      document.getElementById(hash.slice(1))?.scrollIntoView();
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [pathname, hash]);
-  return null;
-};
-
-const Home = () => (
-  <>
-    <Hero />
-    <Projects />
-    <Principles />
-    <AlsoBuilt />
-    <Experience />
-    <Skills />
-    <Certifications />
-    <Contact />
-  </>
-);
-
+// Shared by the browser entry (main.tsx) and the prerender entry (entry-server.tsx).
 export default function App() {
   return (
-    <Router>
-      <ScrollManager />
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] btn-primary">
-        Skip to content
-      </a>
-      <Navbar />
-      <main id="main">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/projects" element={<ProjectsDetail />} />
-          <Route path="/internships" element={<InternshipsDetail />} />
-          <Route path="/skills" element={<Navigate to="/#skills" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="projects" element={<Projects />} />
+        <Route path="projects/:slug" element={<CaseStudyPage />} />
+        <Route path="experience" element={<Experience />} />
+        <Route path="skills" element={<Skills />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        {/* Old address of the experience page. Vercel also redirects it with a 301. */}
+        <Route path="internships" element={<Navigate to="/experience" replace />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }

@@ -9,3 +9,9 @@ coverage/
 
 .vercel
 .env*
+
+# build output of the prerender step
+dist-server/
+
+# private content-review notes; never commit
+private/

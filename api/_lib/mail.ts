@@ -6,6 +6,7 @@ export interface ContactPayload {
   message: string;
 }
 
+// Inputs arrive already validated and stripped of line breaks in header fields (see validate.ts).
 export async function sendContactEmail({ name, email, message }: ContactPayload): Promise<void> {
   if (!process.env.CONTACT_EMAIL_USER || !process.env.CONTACT_EMAIL_PASS) {
     throw new Error("Contact email credentials are not configured on the server.");

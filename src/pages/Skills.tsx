@@ -1,0 +1,73 @@
+import { Link } from 'react-router-dom';
+import { projectBySlug } from '../data/projects';
+import { skillGroups } from '../data/skills';
+import { lineHex, type Line } from '../data/visuals';
+import { PageHeader } from '../components/ui';
+
+const groupLine: Record<string, Line> = {
+  agents: 'signal', ml: 'field', backend: 'route', 'data-stores': 'route', clients: 'route', delivery: 'route', foundations: 'ink',
+};
+
+export default function Skills() {
+  const total = skillGroups.reduce((n, g) => n + g.skills.length, 0);
+  const prod = skillGroups.reduce((n, g) => n + g.skills.filter((s) => s.production).length, 0);
+  return (
+    <>
+      <PageHeader
+        title="Skills"
+        line="signal"
+        aside={
+          <dl className="grid grid-cols-2 gap-8">
+            <div><dt className="label text-mist">Skills with code behind them</dt><dd className="display mt-2 text-6xl">{total}</dd></div>
+            <div><dt className="label text-mist">Used in production</dt><dd className="display mt-2 text-6xl text-field-light">{prod}</dd></div>
+          </dl>
+        }
+      >
+        <p>Grouped by engineering domain. Each skill links to the projects where it is used. No ratings: the projects are the evidence.</p>
+      </PageHeader>
+
+      <nav aria-label="Skill groups" className="sticky top-16 z-20 border-b border-ink bg-paper/95 backdrop-blur-sm">
+        <ul className="shell label flex gap-x-6 gap-y-2 overflow-x-auto py-4 whitespace-nowrap">
+          {skillGroups.map((g) => <li key={g.id}><a href={`#${g.id}`} className="link text-ink">{g.title}</a></li>)}
+        </ul>
+      </nav>
+
+      <div className="shell pb-24">
+        {skillGroups.map((g) => {
+          const color = lineHex[groupLine[g.id]] === '#9fb2c4' ? '#4a5968' : lineHex[groupLine[g.id]];
+          return (
+            <section key={g.id} id={g.id} aria-labelledby={`${g.id}-title`} className="reveal grid gap-8 border-b border-rule py-14 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14">
+              <div className="lg:sticky lg:top-36 lg:self-start">
+                <span className="block h-1.5 w-12" style={{ background: color }} aria-hidden />
+                <h2 id={`${g.id}-title`} className="headline mt-5 text-[clamp(2rem,3.5vw,2.75rem)]">{g.title}</h2>
+                {g.intro && <p className="ui mt-3 text-graphite">{g.intro}</p>}
+              </div>
+              <ul className="divide-y divide-rule border-y border-rule">
+                {g.skills.map((s) => (
+                  <li key={s.name} className="grid gap-3 py-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:gap-8">
+                    <p className="flex items-start gap-3 font-sans text-[1.0625rem] font-semibold">
+                      <span className={`mt-[0.45rem] inline-block h-2.5 w-2.5 shrink-0 ${s.production ? 'bg-field' : 'border border-graphite/60'}`} aria-hidden />
+                      <span>{s.name}{s.production && <span className="label ml-2 font-normal text-clear">production</span>}</span>
+                    </p>
+                    <ul className="flex flex-wrap gap-2">
+                      {s.projects.map((slug) => {
+                        const p = projectBySlug(slug);
+                        if (!p) return null;
+                        const to = p.caseStudy ? `/projects/${slug}` : `/projects?q=${encodeURIComponent(p.name)}`;
+                        return (
+                          <li key={slug}>
+                            <Link to={to} className="chip text-ink no-underline transition-colors hover:bg-night hover:text-paper">{p.name}</Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
+    </>
+  );
+}
