@@ -13,7 +13,7 @@ export const profile = {
   currentOrgShort: 'Movigo',
   location: 'Indore, India',
   availability: 'Open to full-time roles, remote or in Indore',
-  email: 'sharman48520@gmail.com',
+  email: 'mokshitsharmalaptop@gmail.com',
   github: 'https://github.com/Mokshitsharma',
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',
   resume: 'https://drive.google.com/file/d/1yqCt5a-2A4DEu9QJvIy_9b_KF6yR4xqt/view?usp=sharing',

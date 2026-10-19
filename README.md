@@ -49,6 +49,6 @@ Pushing to `main` deploys to Vercel. `vercel.json` sets clean URLs, the `/intern
 
 ## Contact
 
-- Email: sharman48520@gmail.com
+- Email: mokshitsharmalaptop@gmail.com
 - LinkedIn: [mokshit-sharma](https://www.linkedin.com/in/mokshit-sharma-75b5ab305/)
 - GitHub: [Mokshitsharma](https://github.com/Mokshitsharma)
