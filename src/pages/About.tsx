@@ -52,7 +52,7 @@ export default function About() {
             <p className="label text-graphite">Education</p>
             <h2 id="edu" className="headline mt-3 text-[clamp(2rem,3.5vw,2.75rem)]">{education.degree}</h2>
             <p className="mt-3">{education.school}</p>
-            <p className="ui mt-1 text-graphite">{education.years}</p>
+            <p className="ui mt-1 text-graphite">{education.years}. {education.grade}.</p>
             <div className="mt-10 border-l-[6px] border-route pl-5">
               <p className="label text-graphite">In progress</p>
               {inProgress.map((i) => (
@@ -66,9 +66,13 @@ export default function About() {
               {credentials.map((c) => (
                 <li key={c.title} className="grid grid-cols-[1fr_auto] gap-x-4 border-b border-rule py-4">
                   <span>
-                    <a href={c.href} target="_blank" rel="noopener noreferrer" className="link font-sans text-lg font-semibold">
-                      {c.title}<span className="sr-only"> (certificate, opens in a new tab)</span>
-                    </a>
+                    {c.href ? (
+                      <a href={c.href} target="_blank" rel="noopener noreferrer" className="link font-sans text-lg font-semibold">
+                        {c.title}<span className="sr-only"> (certificate, opens in a new tab)</span>
+                      </a>
+                    ) : (
+                      <span className="font-sans text-lg font-semibold">{c.title}</span>
+                    )}
                     <span className="ui block text-graphite">{c.issuer}</span>
                   </span>
                   <span className="label whitespace-nowrap text-graphite">{c.date}</span>

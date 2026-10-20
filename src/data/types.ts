@@ -121,6 +121,6 @@ export interface SkillGroup {
 export interface Credential {
   title: string;
   issuer: string;
-  date: string;
-  href?: string;
+  date?: string;
+  href?: string; // shown only where the issuer's copy is on record
 }

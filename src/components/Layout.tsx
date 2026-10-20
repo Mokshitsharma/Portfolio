@@ -52,7 +52,8 @@ export default function Layout() {
       <main id="main" ref={main} tabIndex={-1} className="outline-none">
         <Outlet />
       </main>
-      <SiteFooter />
+      {/* The home page ends on its own closing chapter. */}
+      {pathname !== '/' && <SiteFooter />}
     </>
   );
 }

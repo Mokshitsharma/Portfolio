@@ -17,7 +17,7 @@ function Station({ x, y, label, above, color, terminal }: { x: number; y: number
       ) : (
         <circle cx={x} cy={y} r="9" fill="#e9ecef" stroke={color} strokeWidth="5" />
       )}
-      <text x={x} y={above ? y - 24 : y + 36} textAnchor="middle" fill="#e9ecef" fontSize="15" fontFamily="Archivo" style={{ fontStretch: '80%' }} fontWeight="600">
+      <text x={x} y={above ? y - 24 : y + 36} textAnchor="middle" fill="#e9ecef" fontSize="15" fontFamily="Archivo Variable, Archivo, sans-serif" style={{ fontStretch: '80%' }} fontWeight="600">
         {label}
       </text>
     </g>
@@ -72,7 +72,7 @@ export function TransitMap() {
           <Station x={840} y={yP} label={prod.after[0]} above color={lineHex.route} />
           <Station x={1030} y={yP} label={prod.after[1]} above color={lineHex.route} />
           <Station x={1150} y={yP} label="" above color={lineHex.route} terminal />
-          <text x={1160} y={yP + 38} textAnchor="end" fill="#e9ecef" fontSize="15" fontFamily="Archivo" fontWeight="600" className="fade-stop" style={{ fontStretch: '80%', animationDelay: '1.2s' }}>
+          <text x={1160} y={yP + 38} textAnchor="end" fill="#e9ecef" fontSize="15" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600" className="fade-stop" style={{ fontStretch: '80%', animationDelay: '1.2s' }}>
             {prod.after[2]}
           </text>
         </g>
@@ -91,14 +91,14 @@ export function TransitMap() {
           <Station x={840} y={yA} label={ag.after[0]} color={lineHex.signal} />
           <Station x={1030} y={yA} label={ag.after[1]} color={lineHex.signal} />
           <Station x={1150} y={yA} label="" color={lineHex.signal} terminal />
-          <text x={1160} y={yA - 24} textAnchor="end" fill="#e9ecef" fontSize="15" fontFamily="Archivo" fontWeight="600" className="fade-stop" style={{ fontStretch: '80%', animationDelay: '1.4s' }}>
+          <text x={1160} y={yA - 24} textAnchor="end" fill="#e9ecef" fontSize="15" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600" className="fade-stop" style={{ fontStretch: '80%', animationDelay: '1.4s' }}>
             {ag.after[2]}
           </text>
         </g>
         {/* Interchange */}
         <g className="fade-stop" style={{ animationDelay: '0.9s' }}>
           <rect x="520" y="150" width="160" height="50" rx="25" fill="#e9ecef" stroke="#0e1c2b" strokeWidth="4" />
-          <text x="600" y="182" textAnchor="middle" fill="#0e1c2b" fontSize="19" fontWeight="800" fontFamily="Archivo" style={{ fontStretch: '72%' }}>
+          <text x="600" y="182" textAnchor="middle" fill="#0e1c2b" fontSize="19" fontWeight="800" fontFamily="Archivo Variable, Archivo, sans-serif" style={{ fontStretch: '72%' }}>
             {transit.interchange.name}
           </text>
         </g>
@@ -209,7 +209,7 @@ export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }
         {[0, 0.1, 0.2, 0.3].map((t) => (
           <g key={t}>
             <line x1="44" x2="470" y1={20 + h - (t / max) * h} y2={20 + h - (t / max) * h} stroke={muted} strokeOpacity="0.3" />
-            <text x="36" y={24 + h - (t / max) * h} textAnchor="end" fontSize="12" fill={muted} fontFamily="Archivo">{t * 100}%</text>
+            <text x="36" y={24 + h - (t / max) * h} textAnchor="end" fontSize="12" fill={muted} fontFamily="Archivo Variable, Archivo, sans-serif">{t * 100}%</text>
           </g>
         ))}
         {calibration.map((c, i) => {
@@ -219,8 +219,8 @@ export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }
             <g key={c.bin}>
               <rect x={x0} y={20 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke={green} strokeWidth="3" />
               <rect x={x0 + 52} y={20 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill={green} />
-              <text x={x0 + 49} y={20 + h + 20} textAnchor="middle" fontSize="13" fill={ink} fontFamily="Archivo" fontWeight="600">{c.bin}</text>
-              <text x={x0 + 49} y={20 + h + 37} textAnchor="middle" fontSize="11" fill={muted} fontFamily="Archivo">{c.n.toLocaleString('en-US')} balls</text>
+              <text x={x0 + 49} y={20 + h + 20} textAnchor="middle" fontSize="13" fill={ink} fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600">{c.bin}</text>
+              <text x={x0 + 49} y={20 + h + 37} textAnchor="middle" fontSize="11" fill={muted} fontFamily="Archivo Variable, Archivo, sans-serif">{c.n.toLocaleString('en-US')} balls</text>
             </g>
           );
         })}

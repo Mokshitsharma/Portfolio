@@ -16,7 +16,7 @@ export const profile = {
   email: 'mokshitsharmalaptop@gmail.com',
   github: 'https://github.com/Mokshitsharma',
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',
-  resume: 'https://drive.google.com/file/d/1yqCt5a-2A4DEu9QJvIy_9b_KF6yR4xqt/view?usp=sharing',
+  resume: '/resume/Mokshit_Sharma_Resume.pdf',
   intro:
     'I run the whole technology stack of a live delivery marketplace as its only engineer, and I build AI agents that call real tools while plain code decides anything risky.',
 };
@@ -25,15 +25,20 @@ export const education = {
   degree: 'Integrated B.Tech + M.Tech, Artificial Intelligence and Data Science',
   school: 'School of Data Science and Forecasting, Devi Ahilya Vishwavidyalaya, Indore',
   years: '2023 - 2028 (expected)',
+  grade: 'CGPA 8.2',
 };
 
-// Only credentials with a certificate file on record. Drive links are the copies the issuers sent.
+// Drive links are the copies the issuers sent. The last three were confirmed by Mokshit on 2026-10-20 and have no
+// public link yet.
 export const credentials: Credential[] = [
   { title: '5-Day AI Agents Intensive', issuer: 'Kaggle and Google', date: 'Dec 2025', href: 'https://drive.google.com/file/d/1NmhjV9PXbdtnp09OdMNtMaizlODUNfke/view?usp=sharing' },
   { title: 'Generative AI Foundations', issuer: 'Skillsoft', date: 'Nov 2025', href: 'https://drive.google.com/file/d/12LL5X1XFkZa-KYVSoCFUJZ7zyR9aB1wr/view?usp=sharing' },
   { title: 'Generative AI Foundations: IT Integration with Generative AI', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1FGNt8vyrA4aseMvbjoMUgsXYuAgrszPy/view?usp=sharing' },
   { title: 'Excel', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1C0E6VwPqfuZyaZkvkLYWOFl5JvfWJ48R/view?usp=sharing' },
   { title: 'AI Masterclass', issuer: 'Freedom of AI', date: 'Jan 2024', href: 'https://drive.google.com/file/d/1-0og7kJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing' },
+  { title: 'Google Data Analytics Professional Certificate', issuer: 'Google' },
+  { title: 'Data Analyst Program', issuer: 'Infosys Springboard' },
+  { title: '5-star in Python, SQL and C++', issuer: 'HackerRank' },
 ];
 
 export const inProgress = [

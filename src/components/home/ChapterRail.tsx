@@ -1,4 +1,4 @@
-import { chapters } from '../../scene/layout';
+import { chapters } from '../../scene/chapters';
 
 // Chapter list on the right edge of wide screens. Every entry is a link, so the story can be skipped
 // from the keyboard; the current chapter is marked for screen readers as well as visually.
@@ -13,10 +13,10 @@ export default function ChapterRail({ active }: { active: number }) {
               <a
                 href={`#${c.id}`}
                 aria-current={on ? 'location' : undefined}
-                className={`fine group inline-flex items-center justify-end gap-3 py-1 no-underline transition-colors ${on ? 'text-paper' : 'text-haze hover:text-paper'}`}
+                className={`fine group inline-flex items-center justify-end gap-3 py-1 no-underline transition-colors ${on ? 'text-snow' : 'text-ash hover:text-snow'}`}
               >
                 {c.name}
-                <span className={`inline-block h-[2px] transition-all duration-300 ${on ? 'w-8 bg-sodium' : 'w-3 bg-haze/50 group-hover:w-5'}`} aria-hidden />
+                <span className={`inline-block h-[2px] transition-all duration-300 ${on ? 'w-8 bg-ion' : 'w-3 bg-ash/50 group-hover:w-5'}`} aria-hidden />
               </a>
             </li>
           );

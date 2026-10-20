@@ -28,7 +28,8 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  const clear = pathname === '/' && atTop && !open;
+  const home = pathname === '/';
+  const clear = home && atTop && !open;
 
   // Escape closes the menu and returns focus to the toggle; opening moves focus to the first link.
   useEffect(() => {
@@ -45,13 +46,13 @@ export default function Header() {
   }, [open]);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `label relative py-2 no-underline transition-colors hover:text-paper ${isActive ? 'text-paper after:absolute after:inset-x-0 after:-bottom-[1px] after:h-[3px] after:bg-sodium' : 'text-mist'}`;
+    `label relative py-2 no-underline transition-colors hover:text-paper ${isActive ? `text-paper after:absolute after:inset-x-0 after:-bottom-[1px] after:h-[3px] ${home ? 'after:bg-ion' : 'after:bg-sodium'}` : 'text-mist'}`;
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 border-b text-paper transition-colors duration-300 ${clear ? 'border-transparent bg-transparent' : 'border-night-rule bg-night/95 backdrop-blur-sm'}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 border-b text-paper transition-colors duration-300 ${clear ? 'border-transparent bg-transparent' : home ? 'border-seam bg-void/90 backdrop-blur-sm' : 'border-night-rule bg-night/95 backdrop-blur-sm'}`}>
       <div className="shell flex h-16 items-center justify-between gap-6">
         <Link to="/" className="group flex items-center gap-3 no-underline">
-          <span className="inline-block h-3 w-3 bg-sodium transition-transform group-hover:rotate-45" aria-hidden />
+          <span className={`inline-block h-3 w-3 transition-transform group-hover:rotate-45 ${home ? 'bg-ion' : 'bg-sodium'}`} aria-hidden />
           <span className="font-sans text-lg font-bold tracking-tight" style={{ fontStretch: '78%' }}>{profile.name}</span>
         </Link>
 
@@ -65,7 +66,7 @@ export default function Header() {
               </li>
             ))}
             <li>
-              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-sodium btn !min-h-9 !px-4">
+              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className={`btn !min-h-9 !px-4 ${home ? 'btn-volt' : 'btn-sodium'}`}>
                 Résumé<span className="sr-only"> (opens in a new tab)</span>
               </a>
             </li>
