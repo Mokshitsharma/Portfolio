@@ -6,12 +6,12 @@ import type { Line } from '../data/visuals';
 
 // Small shared pieces.
 
-// Quiet text tag. Colour only where it carries meaning: green for live systems, yellow for active work.
+// Quiet text tag. Colour only where it carries meaning: sage for live systems, brass for active work.
 const tagTone: Record<Maturity, string> = {
   production: 'text-clear border-clear/50',
   deployed: 'text-clear border-clear/50',
   working: 'border-current/30',
-  'in-progress': 'border-route',
+  'in-progress': 'border-brass text-brass',
   prototype: 'border-current/30',
   notebook: 'border-current/20 opacity-80',
   coursework: 'border-current/20 opacity-80',
@@ -50,36 +50,23 @@ export function Links({ links, className = '' }: { links: ExternalLink[]; classN
   );
 }
 
-export const lineBg: Record<Line, string> = { route: 'bg-route', signal: 'bg-signal', field: 'bg-field', ink: 'bg-mist' };
-export const lineText: Record<Line, string> = { route: 'text-route', signal: 'text-signal-light', field: 'text-field-light', ink: 'text-mist' };
+export const lineBg: Record<Line, string> = { route: 'bg-route', signal: 'bg-signal', field: 'bg-field', ink: 'bg-stone' };
+export const lineText: Record<Line, string> = { route: 'text-route', signal: 'text-signal', field: 'text-field', ink: 'text-stone' };
 
-// Dark opening plate shared by inner pages.
-export function PageHeader({ title, children, crumb, line = 'route', aside }: { title: string; children?: ReactNode; crumb?: ReactNode; line?: Line; aside?: ReactNode }) {
+// The opening of every inner page: the room's sign and name on a concrete wall, with a band in the room's colour.
+export function PageHeader({ title, sign, children, crumb, line = 'route', aside }: { title: string; sign?: string; children?: ReactNode; crumb?: ReactNode; line?: Line; aside?: ReactNode }) {
   return (
-    <header className="plate grid-texture relative overflow-hidden pt-28 md:pt-36">
+    <header className="grid-texture relative overflow-hidden pt-28 text-bone md:pt-36">
       <div className="shell grid gap-10 pb-14 md:pb-20 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          {crumb && <div className="label mb-6 text-mist">{crumb}</div>}
-          <h1 className="display text-[clamp(3.25rem,9vw,8.5rem)]">{title}</h1>
-          {children && <div className="lede mt-6 max-w-2xl font-sans text-mist">{children}</div>}
+          {crumb && <div className="label mb-6 text-stone">{crumb}</div>}
+          {sign && <p className={`sign ${lineText[line]}`}>{sign}</p>}
+          <h1 className="display mt-4 text-[clamp(3.25rem,8vw,7rem)]">{title}</h1>
+          {children && <div className="lede mt-6 max-w-2xl font-sans text-stone">{children}</div>}
         </div>
         {aside}
       </div>
       <div className={`rail ${lineBg[line]}`} aria-hidden />
     </header>
-  );
-}
-
-// Section heading used on light pages: an expanded label, then a condensed headline.
-export function SectionHead({ id, kicker, title, children, aside, tone = 'light' }: { id: string; kicker: string; title: string; children?: ReactNode; aside?: ReactNode; tone?: 'light' | 'dark' }) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
-      <div className="max-w-3xl">
-        <p className={`label ${tone === 'dark' ? 'text-mist' : 'text-graphite'}`}>{kicker}</p>
-        <h2 id={id} className="headline mt-3 text-[clamp(2.25rem,5vw,4rem)]">{title}</h2>
-        {children && <div className={`lede mt-5 max-w-2xl ${tone === 'dark' ? 'font-sans text-mist' : 'text-graphite'}`}>{children}</div>}
-      </div>
-      {aside}
-    </div>
   );
 }

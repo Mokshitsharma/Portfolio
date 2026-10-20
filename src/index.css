@@ -1,46 +1,19 @@
 @import "tailwindcss";
 
 /*
-  Art direction: a transit map for an engineer who ships dispatch systems and builds agents.
-  Night-map navy plates for openings and flagship work; cool paper for reading.
-  Three line colours carry meaning everywhere they appear:
-    route  (yellow) = production systems
-    signal (blue)   = agents and LLM applications
-    field  (green)  = machine learning and data
-  Archivo runs across its width axis: ultra-condensed for display, expanded for small labels.
-  Source Serif 4 is reserved for long-form reading.
+  Art direction: the Architect's Residence (see docs/redesign/DESIGN.md). Every page is a room in one dark
+  house: soot and charcoal surfaces, bone and stone text, brass for warm light, walnut for frames, and glass as
+  the one cool accent. Source Serif 4 at its display size sets headings; Archivo carries the interface.
+  Each area of work keeps the colour of its room on the home page:
+    route  = software and production (walnut amber)
+    signal = agents and LLM applications (brass)
+    field  = machine learning and data (glass)
 */
 @theme {
   --font-sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4 Variable", "Source Serif 4", "Iowan Old Style", Georgia, serif;
 
-  /* Night palette (see docs/redesign/DESIGN.md). Contrast on night: paper 16.0, haze 8.1, sodium 10.0. */
-  --color-night: #08111d;
-  --color-dusk: #0f1c2c;
-  --color-kerb: #1f3249;
-  --color-haze: #9aacbf;
-  --color-sodium: #f2b13c;
-  --color-night-2: #0f1c2c;
-  --color-night-3: #1a2b40;
-  --color-night-rule: #1f3249;
-  --color-mist: #9aacbf;
-  --color-paper: #e9ecef;
-  --color-surface: #f7f8fa;
-  --color-ink: #0e1c2b;
-  --color-graphite: #4a5968;
-  --color-rule: #c5cdd5;
-
-  --color-route: #f4c430;
-  --color-signal: #4d7cfe;
-  --color-signal-light: #8ea8ff;
-  --color-field: #2f9e6e;
-  --color-field-light: #57c99a;
-  --color-clear: #1d6b4c;
-  --color-held: #b8382a;
-  --color-held-light: #ff8a7a;
-
-  /* Residence palette (home page first; the other pages move to it next). Contrast on soot: bone 16.4,
-     stone 7.4, brass 8.4, glass 10.2. Brass is warm architectural light; glass is the one cool, technical accent. */
+  /* Residence palette. Contrast on soot: bone 16.4, stone 7.4, brass 8.4, glass 10.2. */
   --color-soot: #0d0c0b;
   --color-char: #171614;
   --color-plinth: #211f1c;
@@ -50,19 +23,45 @@
   --color-brass: #c9a46a;
   --color-walnut: #8a5c3b;
   --color-glass: #7cc6d2;
+
+  /* Earlier names, kept so every component reads from the same palette. Surfaces map to soot and charcoal,
+     text to bone and stone, rules to joint. */
+  --color-night: #0d0c0b;
+  --color-dusk: #171614;
+  --color-night-2: #171614;
+  --color-night-3: #211f1c;
+  --color-kerb: #34302b;
+  --color-night-rule: #34302b;
+  --color-rule: #34302b;
+  --color-haze: #a49e95;
+  --color-mist: #a49e95;
+  --color-graphite: #a49e95;
+  --color-paper: #efe9df;
+  --color-ink: #efe9df;
+  --color-surface: #171614;
+  --color-sodium: #c9a46a;
+
+  --color-route: #cf915d;
+  --color-signal: #e2b877;
+  --color-signal-light: #e2b877;
+  --color-field: #8fd0db;
+  --color-field-light: #8fd0db;
+  --color-clear: #a9cfa2;
+  --color-held: #e8907e;
+  --color-held-light: #e8907e;
 }
 
 @layer base {
   html {
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
-    background: var(--color-night);
+    background: var(--color-soot);
   }
 
   body {
-    @apply bg-paper text-ink font-serif antialiased;
+    @apply bg-soot text-bone font-serif antialiased;
     font-size: 1.125rem;
-    line-height: 1.65;
+    line-height: 1.7;
   }
 
   h1, h2, h3, h4 {
@@ -79,10 +78,10 @@
     text-decoration-thickness: 1px;
   }
 
-  ::selection { background: var(--color-sodium); color: var(--color-night); }
+  ::selection { background: var(--color-brass); color: var(--color-soot); }
 
   :focus-visible {
-    outline: 3px solid var(--color-sodium);
+    outline: 2px solid var(--color-brass);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -96,22 +95,22 @@
   .shell { @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-12; }
   .measure { max-width: 40rem; }
 
-  /* Type */
+  /* Type: headings are Source Serif at its display optical size, page titles a little larger and tighter. */
   .display {
-    font-family: var(--font-sans);
-    font-stretch: 64%;
-    font-weight: 850;
+    font-family: var(--font-serif);
+    font-variation-settings: "opsz" 60;
+    font-weight: 400;
     letter-spacing: -0.025em;
-    line-height: 0.9;
+    line-height: 0.96;
   }
   .headline {
-    font-family: var(--font-sans);
-    font-stretch: 72%;
-    font-weight: 800;
-    letter-spacing: -0.015em;
-    line-height: 0.98;
+    font-family: var(--font-serif);
+    font-variation-settings: "opsz" 48;
+    font-weight: 440;
+    letter-spacing: -0.012em;
+    line-height: 1.05;
   }
-  /* Expanded small label: the site's signature instead of all-caps eyebrows. */
+  /* Expanded small label in sentence case. */
   .label {
     font-family: var(--font-sans);
     font-stretch: 118%;
@@ -143,40 +142,39 @@
     transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease;
   }
   .btn:active { transform: translateY(1px); }
-  .btn-route { @apply bg-route text-night hover:bg-[#ffd457]; }
-  .btn-ghost-dark { @apply border-night-rule text-paper hover:border-paper; }
-  .btn-ink { @apply bg-night text-paper hover:bg-night-3; }
-  .btn-ghost { @apply border-ink/40 text-ink hover:border-ink; }
+  .btn-route, .btn-ink { @apply bg-brass text-soot hover:bg-[#dbb87d]; }
+  .btn-ghost-dark, .btn-ghost { @apply border-joint text-bone hover:border-bone; }
 
-  /* Square tag, used sparingly for stack items inside project features. */
+  /* Square tag for stack items and project links. */
   .chip {
-    @apply inline-flex items-center px-2 py-0.5 font-sans;
+    @apply inline-flex items-center border border-joint px-2 py-0.5 font-sans text-stone;
     font-size: 0.8125rem;
-    border: 1px solid currentColor;
-    border-color: color-mix(in oklab, currentColor 35%, transparent);
   }
 
   .field-input {
-    @apply w-full border border-graphite/50 bg-surface px-3.5 py-3 font-sans text-ink;
+    @apply w-full border border-joint bg-char px-3.5 py-3 font-sans text-bone placeholder:text-stone/70;
     font-size: 1rem;
   }
-  .field-input:focus-visible { border-color: var(--color-ink); outline-color: var(--color-signal); }
+  .field-input:focus-visible { border-color: var(--color-brass); outline-color: var(--color-brass); }
   .field-input[aria-invalid="true"] { border-color: var(--color-held); }
 
-  /* Dark plates */
-  .plate { @apply bg-night text-paper; }
-  .plate .text-muted { color: var(--color-mist); }
+  /* Surfaces */
+  .plate { @apply bg-soot text-bone; }
+  .plate .text-muted { color: var(--color-stone); }
 
-  /* Street-grid texture for production plates. Purely decorative. */
+  /* Board-formed concrete, drawn in CSS: soft mottling and the horizontal joints of the formwork. For the
+     opening of each inner page, like the wall a room's name is fixed to. */
   .grid-texture {
     background-image:
-      linear-gradient(to right, rgb(159 178 196 / 0.07) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(159 178 196 / 0.07) 1px, transparent 1px);
-    background-size: 48px 48px;
+      linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgb(0 0 0 / 0.35) calc(25% - 1px) 25%, transparent 25%),
+      radial-gradient(120% 90% at 85% 0%, rgb(201 164 106 / 0.12) 0%, transparent 55%),
+      radial-gradient(60% 50% at 10% 100%, rgb(255 240 215 / 0.04) 0%, transparent 70%),
+      linear-gradient(180deg, #1c1a18 0%, #121110 100%);
+    background-size: 100% 12rem, auto, auto, auto;
   }
 
-  /* Rail: the thin line-coloured band used at section transitions. */
-  .rail { height: 6px; }
+  /* Rail: the thin band where a page's opening meets its content, in the colour of its room. */
+  .rail { height: 3px; }
 }
 
 /* Home page: the residence */
@@ -293,7 +291,7 @@
   .stat dd { @apply order-1 text-bone; font-family: var(--font-serif); font-variation-settings: "opsz" 60; font-weight: 420; font-size: clamp(2.1rem, 3.4vw, 2.85rem); line-height: 1; }
 
   .field-input-dark {
-    @apply w-full border border-kerb bg-night px-3.5 py-3 font-sans text-paper;
+    @apply w-full border border-joint bg-char px-3.5 py-3 font-sans text-bone;
     font-size: 1rem;
   }
   .field-input-dark:focus-visible { border-color: var(--color-paper); }

@@ -4,7 +4,7 @@ import { PageHeader } from '../components/ui';
 export default function NotFound() {
   return (
     <>
-      <PageHeader title="Wrong turn" line="route">
+      <PageHeader title="Wrong door" sign="No room here" line="route">
         <p>This page does not exist. The internships page is now part of Experience.</p>
       </PageHeader>
       <div className="shell py-16">
