@@ -39,22 +39,23 @@ export const rooms: RoomDef[] = [
   { id: 'room-software', title: 'Software and full-stack', categories: ['production', 'fullstack', 'tools'], tint: '#a35a24', line: 'Products with money, races and restarts handled in code, and engines built from first principles.', archive: '/projects#production', scene: 'The studio at the end of the corridor: a window wall, and a standing desk with Movigo and RouteCore on its screens.', shelf: { title: 'On the studio screens', line: 'The rest of this room’s software, one screen each. Select a screen to open its record.', variant: 'screens' } },
 ];
 
-export const roomProjects = (r: RoomDef) => projects.filter((x) => r.categories.includes(x.category));
+export const roomProjects = (r: RoomDef) => projects.filter((x) => r.categories.includes(x.category) && !x.archiveOnly);
 
 // The projects each room shows in full, in order; the rest of the room goes on its shelf. The 3D room displays
 // print the first four.
 export const roomFeatured: Record<string, string[]> = {
   'room-ml': ['cricxai', 'sensei-ai', 'ai-business-analytics', 'customer-churn-xai'],
   'room-agents': ['settleai', 'naman', 'toolforge', 'dociq', 'voicedesk'],
-  'room-data': ['zomato-sql', 'paytm-dashboard', 'nifty50-dashboard', 'nifty50-live', 'bmw-sales', 'youtube-analysis'],
+  'room-data': ['paytm-dashboard', 'nifty50-dashboard', 'nifty50-live', 'bmw-sales'],
   'room-software': ['movigo', 'routecore', 'refera', 'hyperlocal-marketplace', 'dairy-collection-manager'],
 };
 
 function Room({ room, children, featured }: { room: RoomDef; children: ReactNode; featured: string[] }) {
   const rest = roomProjects(room).filter((x) => !featured.includes(x.slug));
   const next = rooms[rooms.indexOf(room) + 1];
+  // On phones a room opens with half a screen of the room itself, then its placard.
   return (
-    <section id={room.id} aria-labelledby={`${room.id}-title`} className="relative z-10 py-28 md:py-36" style={{ ['--tint' as string]: room.tint }}>
+    <section id={room.id} aria-labelledby={`${room.id}-title`} className="relative z-10 pb-28 pt-[52svh] lg:py-36" style={{ ['--tint' as string]: room.tint }}>
       <div className="shell lg:pr-52">
         {/* The room's sign and introduction on a narrow placard, so the room itself shows beside it on arrival. */}
         <div className="read-panel lg:max-w-[40rem]">
@@ -214,12 +215,10 @@ export function AgentsRoom() {
 
 // Counted facts from each project's record in projects.ts.
 export const dataLedger: { slug: string; value: string; label: string }[] = [
-  { slug: 'zomato-sql', value: '9,551', label: 'restaurants from 15 countries, queried with joins, CTEs and window functions' },
   { slug: 'paytm-dashboard', value: '4', label: 'ETL stages lining up Paytm’s share price with competitors and market events, feeding 2 Power BI dashboards' },
   { slug: 'nifty50-dashboard', value: '50', label: 'NIFTY 50 constituents with fundamentals and price history, modelled in Power BI' },
   { slug: 'nifty50-live', value: '1 min', label: 'polling interval for prices and fundamentals of all 50 stocks' },
   { slug: 'bmw-sales', value: '2010-24', label: 'worldwide BMW sales explored, with a Power BI dashboard' },
-  { slug: 'youtube-analysis', value: 'Every', label: 'video on a channel pulled through the YouTube Data API, with engagement metrics for Power BI' },
 ];
 
 export function DataRoom() {

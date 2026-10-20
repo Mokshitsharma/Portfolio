@@ -57,7 +57,7 @@ export const credentials: Credential[] = [
   {
     title: 'Google Data Analytics Professional Certificate', issuer: 'Google',
     about: 'Google’s professional certificate programme in data analytics.',
-    related: ['paytm-dashboard', 'nifty50-dashboard', 'zomato-sql'],
+    related: ['paytm-dashboard', 'nifty50-dashboard'],
   },
   {
     title: 'Data Analyst Program', issuer: 'Infosys Springboard',

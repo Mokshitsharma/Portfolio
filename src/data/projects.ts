@@ -269,12 +269,11 @@ export const projects: Project[] = [
     id: 'P43', slug: 'zomato-sql', name: 'Zomato SQL analysis', category: 'data', maturity: 'notebook', period: 'Oct 2025',
     summary: 'Loads 9,551 restaurants from 15 countries into SQLite and answers questions with joins, CTEs and window functions.', stack: ['SQL', 'SQLite', 'pandas', 'Seaborn'],
     links: [gh('Zomato-SQL-EDA-Visualization')],
+    // On the fix-first list (private/CONTENT_DECISIONS.md): stays in the archive, not featured anywhere.
+    archiveOnly: true,
   },
-  {
-    id: 'P44', slug: 'youtube-analysis', name: 'YouTube channel analysis', category: 'data', maturity: 'notebook', period: 'Aug 2025',
-    summary: 'Pulls every video from a channel through the YouTube Data API and computes engagement metrics for Power BI.', stack: ['Python', 'YouTube Data API', 'Power BI'],
-    links: [gh('Youtube_channel_analysis')],
-  },
+  // P44 YouTube channel analysis is withheld until its API key is rotated and the repository and its history are
+  // checked for exposed credentials.
   {
     id: 'P45', slug: 'bmw-sales', name: 'BMW sales analysis', category: 'data', maturity: 'notebook', period: 'Oct 2025',
     summary: 'Exploratory analysis of worldwide BMW sales from 2010 to 2024 with a Power BI dashboard.', stack: ['pandas', 'Power BI'], links: [gh('BMW-sales-analysis')],

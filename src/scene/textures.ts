@@ -321,17 +321,17 @@ export function certPrint(content: CertContent, diploma = false) {
   g.textAlign = 'center';
   let y = 92;
   g.fillStyle = '#85632d';
-  g.font = '650 24px "Archivo Variable", Archivo, sans-serif';
+  g.font = '680 30px "Archivo Variable", Archivo, sans-serif';
   ctx.letterSpacing = '4px';
   g.fillText(content.issuer.toUpperCase(), w / 2, y);
   ctx.letterSpacing = '0px';
   y += 70;
   g.fillStyle = '#221e19';
-  const titleFont = `440 ${diploma ? 40 : 46}px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif`;
+  const titleFont = `460 ${diploma ? 46 : 54}px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif`;
   for (const l of wrapText(g, content.title, titleFont, w - pad * 2).slice(0, 4)) {
     g.font = titleFont;
     g.fillText(l, w / 2, y);
-    y += diploma ? 48 : 54;
+    y += diploma ? 54 : 62;
   }
   if (content.date) {
     g.fillStyle = '#5c5449';
@@ -430,12 +430,12 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
     g.fillText('Featured in this room', 900, 270);
     room.projects.forEach((name, k) => {
       g.fillStyle = tint;
-      g.fillRect(900, 322 + k * 86, 14, 14);
+      g.fillRect(900, 322 + k * 92, 16, 16);
       g.fillStyle = '#221e19';
-      const font = '420 36px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif';
-      wrapText(g, name, font, 420).slice(0, 2).forEach((l, n) => {
+      const font = '460 42px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif';
+      wrapText(g, name, font, 440).slice(0, 2).forEach((l, n) => {
         g.font = font;
-        g.fillText(l, 930, 338 + k * 86 + n * 36);
+        g.fillText(l, 930, 340 + k * 92 + n * 42);
       });
     });
     return finish(c);
@@ -475,10 +475,10 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
       }
       g.fillStyle = '#221e19';
       g.textAlign = 'center';
-      const font = '520 24px "Archivo Variable", Archivo, sans-serif';
-      wrapText(g, s.label, font, 150).slice(0, 2).forEach((l, m) => {
+      const font = '560 30px "Archivo Variable", Archivo, sans-serif';
+      wrapText(g, s.label, font, 170).slice(0, 2).forEach((l, m) => {
         g.font = font;
-        g.fillText(l, x, y + 62 + m * 28 + (k % 2) * 64);
+        g.fillText(l, x, y + 66 + m * 34 + (k % 2) * 76);
       });
       g.textAlign = 'left';
     });
@@ -492,17 +492,17 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
     const { c, g } = sheet(1000, 1200, tint);
     heading(g, kicker, room.title, tint, 70, 90, 60);
     figure.rows.slice(0, 6).forEach((r, k) => {
-      const y = 290 + k * 140;
+      const y = 310 + k * 170;
       g.fillStyle = '#d2c6b1';
       g.fillRect(70, y - 50, 860, 2);
       g.fillStyle = tint;
-      g.font = '420 64px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif';
-      g.fillText(r.value, 70, y + 40);
+      g.font = '440 84px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif';
+      g.fillText(r.value, 70, y + 44);
       g.fillStyle = '#221e19';
-      const font = '520 30px "Archivo Variable", Archivo, sans-serif';
-      wrapText(g, r.name, font, 470).slice(0, 2).forEach((l, m) => {
+      const font = '560 40px "Archivo Variable", Archivo, sans-serif';
+      wrapText(g, r.name, font, 480).slice(0, 2).forEach((l, m) => {
         g.font = font;
-        g.fillText(l, 430, y + 20 + m * 36);
+        g.fillText(l, 440, y + 22 + m * 46);
       });
     });
     g.fillStyle = '#5c5449';

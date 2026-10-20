@@ -34,6 +34,7 @@ export interface Project {
   relation?: string; // versions, predecessors, shared code
   caseStudy?: boolean; // has a page at /projects/:slug
   featured?: boolean; // shown on the home page
+  archiveOnly?: boolean; // listed in the archive only: never featured, shelved in a room or offered as related work
 }
 
 export interface Stage {

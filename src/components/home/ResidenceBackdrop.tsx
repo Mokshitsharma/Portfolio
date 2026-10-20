@@ -81,8 +81,10 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
       scene?.setStation(s);
       // Phones have no side column: text runs over the middle of the house, so the veil stays up while a chapter's
       // text is on screen. The arrival and the courtyard keep their text over the ground, under the scrim.
+      // In a room the veil waits until the room's text comes in, so each room is seen clearly first.
       const id = chapters[index].id;
-      const veil = narrow.matches && id !== 'arrival' && id !== 'courtyard' ? Math.max(d, 0.5) : d;
+      const floor = id.startsWith('room-') ? 0.5 * smooth(0.05, 0.35, opened) : 0.5;
+      const veil = narrow.matches && id !== 'arrival' && id !== 'courtyard' ? Math.max(d, floor) : d;
       if (dim.current) dim.current.style.opacity = String(veil);
       if (bar.current) bar.current.style.transform = `scaleX(${(index + progress) / sections.length})`;
       // The arrival is already half past the middle line at the top of the page, so its type moves from 0.55.
@@ -98,8 +100,12 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
     window.addEventListener('resize', onScroll);
     update();
 
-    // Load the residence once the browser is idle, so it never competes with the first paint.
+    // Load the residence once the browser is idle, so it never competes with the first paint. Phones and touch
+    // screens wait for the visitor to start moving (a scroll, touch or key) before building the house at all: the
+    // still elevation is already on screen, and a phone that is only glanced at never pays for the 3D.
     let idle = 0;
+    const intent = ['scroll', 'touchstart', 'pointerdown', 'keydown'] as const;
+    let onIntent: (() => void) | null = null;
     if (canvas.current && webgl2()) {
       const load = () =>
         Promise.all([import('../../scene/Residence'), document.fonts?.ready])
@@ -118,18 +124,33 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
               },
             });
             scene = r;
-            update();
-            if (!reduced) r.play();
-            setLive(true);
+            return r.ready.then(() => {
+              if (cancelled) return;
+              update();
+              // Phones draw a frame only when the scroll position changes; there is nothing else to animate there.
+              if (!reduced && !light) r.play();
+              setLive(true);
+            });
           })
           .catch(() => setLive(false));
       const w = window as Window;
-      idle = typeof w.requestIdleCallback === 'function' ? w.requestIdleCallback(load, { timeout: 1500 }) : w.setTimeout(load, 300);
+      const schedule = () => {
+        idle = typeof w.requestIdleCallback === 'function' ? w.requestIdleCallback(load, { timeout: 1500 }) : w.setTimeout(load, 300);
+      };
+      if (light) {
+        onIntent = () => {
+          intent.forEach((e) => window.removeEventListener(e, onIntent!));
+          onIntent = null;
+          schedule();
+        };
+        intent.forEach((e) => window.addEventListener(e, onIntent!, { passive: true, once: true }));
+      } else schedule();
     }
 
     return () => {
       cancelled = true;
       window.cancelIdleCallback?.(idle);
+      if (onIntent) intent.forEach((e) => window.removeEventListener(e, onIntent!));
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       scene?.dispose();

@@ -70,7 +70,7 @@ const CAMERA: { pos: V3; look: V3 }[] = [
   }),
   { pos: [0, 2.0, -25.8], look: [0, 2.1, -38] }, // 7 atrium
   // 8-11: framed by each doorway, turned a few degrees left so the room sits right of the text column
-  ...ROOM_X.map((x) => ({ pos: [x, 1.65, -35.7] as V3, look: [x - 1.4, 1.62, -44] as V3 })),
+  ...ROOM_X.map((x) => ({ pos: [x, 1.65, -35.9] as V3, look: [x - 1.6, 1.65, -44] as V3 })),
   { pos: [12.9, 1.6, -29.9], look: [13.5, 1.55, -35] }, // 12 study, facing the credentials wall
   { pos: [17.4, 2.6, -31.0], look: [30.6, 1.7, -31.2] }, // 13 courtyard, down the rill to the focal wall
 ];
@@ -182,15 +182,32 @@ export class Residence {
     this.scene.background = new Color(0xe4e8e8);
 
     this.path = new CatmullRomCurve3(CAMERA.map((c) => new Vector3(...c.pos)), false, 'centripetal', 0.5);
-    this.build();
+    // The house is built in steps that hand the main thread back between them, so building it never blocks
+    // scrolling or input for long. `ready` resolves once it can be drawn.
+    this.ready = this.build()
+      // Compile every material's shader before the first frame, in parallel where the driver allows, instead of
+      // stalling the main thread inside the first render.
+      .then(() => this.renderer.compileAsync(this.scene, this.camera))
+      .then(() => {
+        this.built = true;
+        this.resize();
+        window.addEventListener('resize', this.resize);
+        document.addEventListener('visibilitychange', this.onVisibility);
+        canvas.addEventListener('webglcontextlost', this.onLost);
+        if (!opts.reducedMotion && window.matchMedia('(pointer: fine)').matches) {
+          window.addEventListener('pointermove', this.onPointer, { passive: true });
+        }
+      });
+  }
 
-    this.resize();
-    window.addEventListener('resize', this.resize);
-    document.addEventListener('visibilitychange', this.onVisibility);
-    canvas.addEventListener('webglcontextlost', this.onLost);
-    if (!opts.reducedMotion && window.matchMedia('(pointer: fine)').matches) {
-      window.addEventListener('pointermove', this.onPointer, { passive: true });
-    }
+  /** Resolves when the house is built; rejects if it was disposed first. */
+  readonly ready: Promise<void>;
+  private built = false;
+  private disposed = false;
+
+  /** Let the browser handle input and paint before the next step of the build. */
+  private step() {
+    return new Promise<void>((resolve, reject) => setTimeout(() => (this.disposed ? reject(new Error('disposed')) : resolve()), 0));
   }
 
   /* ------------------------------------------------------------------ building */
@@ -338,7 +355,7 @@ export class Residence {
     }
   }
 
-  private build() {
+  private async build() {
     const light = this.opts.light;
     this.glowTex = this.tex(glow());
     const concreteTex = this.tex(concrete());
@@ -370,6 +387,7 @@ export class Residence {
     const leafMat = this.mat(new MeshStandardMaterial({ color: '#8e9a6c', roughness: 0.85 }));
     this.washTex = this.tex(wash());
 
+    await this.step();
     /* sky and ground */
     this.skyMat = this.mat(
       new ShaderMaterial({
@@ -413,8 +431,10 @@ export class Residence {
     porch.position.set(0, 3.0, 1.8);
     this.scene.add(this.doorLight, this.guide, porch);
 
+    await this.step();
     this.buildEntrance({ concreteMat, limeMat, steelMat, walnutMat, brassMat, soffitMat, stripMat, glowMat, sconceMat, leafMat });
 
+    await this.step();
     /* gallery: hallway with five framed boards, each under its own picture light */
     const H = 3.4; // door and hallway height
     const GZ = -24;
@@ -455,6 +475,7 @@ export class Residence {
       this.scene.add(g);
     }
 
+    await this.step();
     /* atrium with four doorways */
     const AZ0 = -24;
     const AZ1 = -38;
@@ -492,7 +513,8 @@ export class Residence {
 
     /* project rooms: four different spaces behind the four doorways, each built around its own evidence */
     const R: RoomKit = { H, AH, AZ1, innerMat, floorMat, ceilMat, oakMat, walnutMat, steelMat, brassMat, sconceMat, stripMat, limeMat, leafMat, oakTex, walnutTex };
-    ROOM_X.forEach((x, k) => {
+    for (const [k, x] of ROOM_X.entries()) {
+      await this.step();
       const tint = ROOM_TINT[k];
       const room = this.opts.rooms[k];
       // The doorway: steel head, and a lettered sign in the room's colour above it, readable from the atrium.
@@ -500,12 +522,13 @@ export class Residence {
       this.box([x - 1.12, H - 0.04, AZ1 + 0.01], [x + 1.12, H, AZ1 + 0.05], steelMat);
       if (room) this.print(doorSign(room.title, tint), 1.9, 0.3, [x, H + 0.42, AZ1 + 0.012], 'z+', 0.97);
       [this.labRoom, this.controlRoom, this.archiveRoom, this.studioRoom][k].call(this, x, tint, R, room);
-    });
+    }
     // One light follows the visitor from room to room (see render), so the room being read is always lit.
     this.roomLight = new PointLight('#fff0dc', 0, 9, 1.4);
     this.roomLight.position.set(0, 3.1, -40.2);
     this.scene.add(this.roomLight);
 
+    await this.step();
     /* study: credentials wall, bookcase, desk, lamp */
     const SX0 = 8.3;
     const SX1 = 16;
@@ -516,14 +539,14 @@ export class Residence {
     this.box([SX0, 0, SZ1 - 0.3], [SX1, SH, SZ1], innerMat); // back wall (credentials)
     this.box([SX0, 0, SZ0], [SX1, SH, SZ0 + 0.3], innerMat); // front wall
     // The credentials wall: the degree and every certificate, three by three, each typeset in an oak frame.
-    const [cw, ch, gap] = [0.86, 0.6, 0.16];
+    const [cw, ch, gap] = [1.0, 0.7, 0.14];
     this.opts.credentials.slice(0, 9).forEach((c, k) => {
-      const cx = 12.6 + (k % 3) * (cw + gap);
-      const cy = 2.42 - Math.floor(k / 3) * (ch + gap);
+      const cx = 12.4 + (k % 3) * (cw + gap);
+      const cy = 2.5 - Math.floor(k / 3) * (ch + gap);
       this.frameAround(cx, cy, SZ1, cw, ch, 'z+', oakMat, 0.04, 0.035);
       this.print(certPrint(c, k === 0), cw - 0.08, ch - 0.08, [cx, cy, SZ1 + 0.036], 'z+', 0.97);
     });
-    for (const x of [13.1, 14.6]) this.pictureLight(x, 2.98, SZ1, 1.0, 'z+', brassMat, sconceMat, 2.6, 2.6);
+    for (const x of [12.97, 14.68]) this.pictureLight(x, 3.0, SZ1, 1.0, 'z+', brassMat, sconceMat, 2.6, 2.6);
     // A low oak credenza on the left of the back wall, kept below eye level so it never sits behind the text.
     this.box([8.5, 0, SZ1 + 0.01], [11.7, 0.62, SZ1 + 0.45], this.mat(new MeshStandardMaterial({ map: oakTex, roughness: 0.6, color: '#d9c1a0' })), 1);
     const bookMats = ['#7d5a3a', '#2d6c88', '#c9a464', '#5c5449', '#a35a24', '#d8cdb8', '#4a6488'].map((c) => this.mat(new MeshStandardMaterial({ color: c, roughness: 0.75 })));
@@ -558,7 +581,9 @@ export class Residence {
     this.sinking.push(this.keep(this.box([SX1, 0, SZ1 - 0.3], [SX1 + 0.3, SH, SZ0 + 0.3], innerMat)));
     this.lifting.push(this.keep(this.box([SX0, SH, SZ1 - 0.3], [SX1 + 0.3, SH + 0.3, SZ0 + 0.3], ceilMat, 2, false)));
 
+    await this.step();
     this.courtyard(R, concreteMat);
+    await this.step();
     this.mergeStatic();
   }
 
@@ -598,8 +623,8 @@ export class Residence {
     for (const dx of [-0.8, 0, 0.8]) this.box([x + dx - 0.03, R.H + 0.25, back], [x + dx + 0.03, R.H + 0.75, back + 0.04], R.steelMat, 1, false);
     // The wide screen: a slim steel bezel, the chart and the featured projects.
     if (room?.figure) {
-      this.box([x - 1.36, 1.06, back], [x + 1.36, 2.6, back + 0.06], R.steelMat, 1);
-      this.print(figurePrint(room, room.figure), 2.62, 1.43, [x, 1.83, back + 0.065], 'z+', 0.97);
+      this.box([x - 1.52, 0.98, back], [x + 1.52, 2.68, back + 0.06], R.steelMat, 1);
+      this.print(figurePrint(room, room.figure), 2.98, 1.62, [x, 1.83, back + 0.065], 'z+', 0.97);
       this.pool([x, 1.9, back + 0.005], 3.4, 2.6, 'z+', '#eef4ff', 0.22);
     }
     // Lab bench down the left wall: oak top on steel legs, two monitors facing into the room.
@@ -656,8 +681,8 @@ export class Residence {
     this.pool([x + 0.6, 0.013, -40.9], 2.4, 1.8, 'y+', '#f4f8ff', 0.18);
     // The run of the agent, in a brass frame, under a picture light.
     if (room?.figure) {
-      this.frameAround(x, 1.72, back, 3.02, 1.08, 'z+', R.brassMat, 0.04, 0.04);
-      this.print(figurePrint(room, room.figure), 2.94, 1.0, [x, 1.72, back + 0.042], 'z+', 0.97);
+      this.frameAround(x, 1.75, back, 3.18, 1.14, 'z+', R.brassMat, 0.04, 0.04);
+      this.print(figurePrint(room, room.figure), 3.1, 1.06, [x, 1.75, back + 0.042], 'z+', 0.97);
       this.pictureLight(x, 2.42, back, 1.6, 'z+', R.brassMat, R.sconceMat, 3.4, 1.8);
     }
     // Round walnut table on a single pedestal, three oak chairs.
@@ -741,9 +766,9 @@ export class Residence {
     }
     // The ledger board, tall, in oak, under a picture light.
     if (room?.figure) {
-      this.frameAround(x, 2.15, back, 1.62, 1.92, 'z+', R.oakMat, 0.06, 0.05);
-      this.print(figurePrint(room, room.figure), 1.5, 1.8, [x, 2.15, back + 0.052], 'z+', 0.97);
-      this.pictureLight(x, 3.25, back, 1.0, 'z+', R.brassMat, R.sconceMat, 2.6, 2.6);
+      this.frameAround(x, 2.3, back, 2.02, 2.4, 'z+', R.oakMat, 0.06, 0.05);
+      this.print(figurePrint(room, room.figure), 1.9, 2.28, [x, 2.3, back + 0.052], 'z+', 0.97);
+      this.pictureLight(x, 3.65, back, 1.2, 'z+', R.brassMat, R.sconceMat, 3.0, 3.0);
     }
     // A long oak reading table down the middle, with a brass lamp and two open ledgers.
     this.box([x - 0.45, 0.74, -42.6], [x + 0.45, 0.8, -40.0], R.oakMat, 1);
@@ -1102,6 +1127,7 @@ export class Residence {
   }
 
   dispose() {
+    this.disposed = true;
     this.stop();
     window.removeEventListener('resize', this.resize);
     window.removeEventListener('pointermove', this.onPointer);
@@ -1178,6 +1204,7 @@ export class Residence {
   };
 
   private render(now: number) {
+    if (!this.built) return;
     const time = (now - this.start) / 1000;
     const s = this.s;
     const reduced = this.opts.reducedMotion;
@@ -1196,6 +1223,11 @@ export class Residence {
     // At the gallery boards and the credentials wall the camera holds still and square, so the lean fades out.
     const steady = Math.max(smooth(1.5, 2, s) * (1 - smooth(6.3, 6.8, s)), smooth(11.4, 12, s) * (1 - smooth(12.2, 12.6, s)));
     const lean = 1 - steady * 0.9;
+    // The rooms are turned a little to clear the text column on wide screens; tall screens have no side column.
+    if (!this.wide) this.look.x += 1.6 * smooth(7.4, 8, s) * (1 - smooth(11, 11.6, s));
+    // In the courtyard on a tall screen the text fills the lower half, so the camera looks down and the focal wall
+    // rises above it.
+    if (!this.wide) this.look.y -= 2.8 * smooth(12.4, 13, s);
     this.look.x += this.pointer.x * 0.35 * lean;
     this.look.y -= this.pointer.y * 0.2 * lean;
     this.camera.lookAt(this.look);
