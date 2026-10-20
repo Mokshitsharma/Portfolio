@@ -123,7 +123,7 @@ const buildingFrag = /* glsl */ `
 
     // Towers: dense windows in the project's colour when its district is lit, faint when it is not.
     float on = step(0.3, h);
-    vec3 tower = vColor * win * on * (0.75 + 0.6 * h) * mix(0.07, 1.0, vLit);
+    vec3 tower = vColor * win * on * (0.75 + 0.6 * h) * mix(0.045, 1.0, vLit);
     tower += vColor * top * 0.22 * vLit;
     // Filler: a few warm windows, so the city reads as inhabited without competing with the towers.
     vec3 filler = vec3(1.0, 0.78, 0.5) * win * step(0.94, h) * 0.35;
@@ -204,7 +204,7 @@ const routeFrag = /* glsl */ `
   void main() {
     float core = 1.0 - smoothstep(0.15, 1.0, abs(vSide));
     float drawn = step(vAlong, uDraw);
-    float a = 0.42 * core * drawn;
+    float a = 0.75 * core * drawn;
     a += blip(uDraw, 0.35) * core * step(uDraw, 0.999) * 1.4;
     float trail = smoothstep(uRunner - 2.2 / uLength, uRunner, vAlong) * step(vAlong, uRunner);
     a += (blip(uRunner, 0.22) * 1.6 + trail * 0.5) * core * uRunnerOn * drawn;
@@ -267,8 +267,8 @@ const gateFrag = /* glsl */ `
   varying vec2 vUv;
   varying float vDepth;
   void main() {
-    float sheet = pow(1.0 - vUv.y, 1.6) * 0.35;
-    float edge = (1.0 - smoothstep(0.0, 0.035, vUv.x)) + smoothstep(0.965, 1.0, vUv.x);
+    float sheet = pow(1.0 - vUv.y, 1.2) * 0.6;
+    float edge = (1.0 - smoothstep(0.0, 0.04, vUv.x)) + smoothstep(0.96, 1.0, vUv.x) + smoothstep(0.97, 1.0, vUv.y);
     float a = (sheet + edge * (1.0 - vUv.y * 0.6) * 0.9) * uOpacity;
     gl_FragColor = vec4(fadeFog(uColor * a, vDepth), a);
   }
@@ -374,23 +374,23 @@ export class CityScene {
       uHeadOn: { value: 0 },
       uLength: { value: len },
     });
-    const route = ribbon(dispatchRoute, 0.14, 0.02);
+    const route = ribbon(dispatchRoute, 0.24, 0.03);
     this.routeMat = new ShaderMaterial({
       vertexShader: routeVert, fragmentShader: routeFrag, uniforms: routeUniforms(SODIUM, route.length),
-      transparent: true, depthWrite: false, blending: AdditiveBlending,
+      transparent: true, depthWrite: false, blending: AdditiveBlending, side: DoubleSide,
     });
     this.scene.add(new Mesh(route.geometry, this.routeMat));
-    const av = ribbon(avenue, 0.1, 0.015);
+    const av = ribbon(avenue, 0.16, 0.025);
     this.avenueMat = new ShaderMaterial({
       vertexShader: routeVert, fragmentShader: routeFrag, uniforms: routeUniforms(SODIUM, av.length),
-      transparent: true, depthWrite: false, blending: AdditiveBlending,
+      transparent: true, depthWrite: false, blending: AdditiveBlending, side: DoubleSide,
     });
     this.scene.add(new Mesh(av.geometry, this.avenueMat));
     this.disposables.push(route.geometry, this.routeMat, av.geometry, this.avenueMat);
 
     // Gates across the route: blue where a model acts, amber where code decides, white where a person does.
-    const gateGeo = new PlaneGeometry(1.05, 1.5);
-    gateGeo.translate(0, 0.75, 0);
+    const gateGeo = new PlaneGeometry(1.3, 2.6);
+    gateGeo.translate(0, 1.3, 0);
     const gateColor = { model: SIGNAL, rule: SODIUM, human: PAPER };
     for (const g of gates) {
       const [x, z] = pointAt(dispatchRoute, g.at);
@@ -416,7 +416,7 @@ export class CityScene {
     const [rx, rz] = dispatchRoute[0];
     const ringGeo = new RingGeometry(2.45, 2.5, 128);
     ringGeo.rotateX(-Math.PI / 2);
-    this.ringMat = new MeshBasicMaterial({ color: SODIUM, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending });
+    this.ringMat = new MeshBasicMaterial({ color: SODIUM, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, fog: false });
     const ring = new Mesh(ringGeo, this.ringMat);
     ring.position.set(rx, 0.03, rz);
     this.scene.add(ring);
@@ -544,8 +544,8 @@ export class CityScene {
     const i = this.chapter;
     const from = states[chapters[i].id];
     const to = states[chapters[Math.min(i + 1, chapters.length - 1)].id];
-    // Hold while the chapter is read, then travel to the next one in its last stretch.
-    const t = this.opts.reducedMotion ? 0 : smooth(0.4, 1, this.progress);
+    // Hold while the chapter is read, then travel to the next one in its last 30%.
+    const t = this.opts.reducedMotion ? 0 : smooth(0.7, 1, this.progress);
     const mix = (a: number, b: number) => lerp(a, b, t);
     const v3 = (a: number[], b: number[]) => a.map((x, k) => mix(x, b[k])) as [number, number, number];
     const s: SceneState = {
@@ -564,10 +564,10 @@ export class CityScene {
     let head = 0;
     let headOn = 0;
     if (chapters[i].id === 'agents') {
-      const p = this.opts.reducedMotion ? 0.6 : this.progress;
+      const p = this.opts.reducedMotion ? 0.5 : this.progress;
       const wait = gates[2].at - 0.02;
-      head = p < 0.5 ? lerp(0.02, wait, p / 0.5) : p < 0.75 ? wait : lerp(wait, 1, (p - 0.75) / 0.25);
-      headOn = 1 - smooth(0.85, 1, p);
+      head = p < 0.4 ? lerp(0.02, wait, p / 0.4) : p < 0.6 ? wait : lerp(wait, 1, Math.min(1, (p - 0.6) / 0.25));
+      headOn = 1 - smooth(0.9, 1, p);
     } else if (chapters[i].id === 'movigo') {
       headOn = smooth(0.7, 1, this.progress) * (this.opts.reducedMotion ? 0 : 1);
       head = 0.02;

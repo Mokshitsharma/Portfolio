@@ -368,8 +368,10 @@ export function RoleTimeline({ roles, now = '2026-10', tone = 'light' }: { roles
             );
             return (
               <li key={r.id}>
-                <div className="relative h-10">
-                  <span className="absolute top-0 max-w-full" style={left > 55 ? { right: `${Math.max(0, 100 - left - width)}%`, textAlign: 'right' } : { left: `${left}%` }}>
+                {/* Phones: the label sits on its own line, so it can never run off the edge. */}
+                <div className="sm:hidden">{label}</div>
+                <div className="relative h-5 sm:h-10">
+                  <span className="absolute top-0 hidden max-w-full sm:block" style={left > 55 ? { right: `${Math.max(0, 100 - left - width)}%`, textAlign: 'right' } : { left: `${left}%` }}>
                     {label}
                   </span>
                   <span

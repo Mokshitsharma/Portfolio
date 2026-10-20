@@ -49,6 +49,11 @@ export default function CityBackdrop({ onChapter }: { onChapter: (index: number)
           progress = Math.min(1, Math.max(0, (mid - r.top) / r.height));
         }
       });
+      // The last chapter is shorter than the viewport, so at the bottom of the page it is the current one.
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        index = sections.length - 1;
+        progress = 0;
+      }
       if (index !== current) {
         current = index;
         report.current(index);
@@ -57,7 +62,7 @@ export default function CityBackdrop({ onChapter }: { onChapter: (index: number)
 
       const from = states[chapters[index].id];
       const to = states[chapters[Math.min(index + 1, chapters.length - 1)].id];
-      const t = reduced ? 0 : smooth(0.4, 1, progress);
+      const t = reduced ? 0 : smooth(0.7, 1, progress);
       if (dim.current) dim.current.style.opacity = String((from.dim + (to.dim - from.dim) * t) * 0.85);
       if (bar.current) bar.current.style.transform = `scaleX(${(index + progress) / sections.length})`;
       if (hero && !reduced) hero.style.setProperty('--hero-p', index === 0 ? smooth(0.5, 1, progress).toFixed(3) : '1');

@@ -36,14 +36,15 @@ export const maturityHeight: Record<Maturity, number> = {
 const maturityRank: Maturity[] = ['production', 'deployed', 'working', 'in-progress', 'prototype', 'notebook', 'coursework'];
 
 // District centres in cell coordinates. Production sits downtown next to the dispatch route.
+// The camera looks from the +x, +z corner, so nothing tall sits between it and the dispatch route.
 const districtCentre: Record<Category, [number, number]> = {
   production: [7, 6],
-  agents: [10, 4],
-  fullstack: [4, 8],
-  tools: [4, 4],
-  learning: [2, 12],
-  data: [8, 11],
-  ml: [11, 9],
+  agents: [10, 6],
+  ml: [3, 5],
+  data: [5, 11],
+  fullstack: [9, 12],
+  tools: [12, 3],
+  learning: [13, 14],
 };
 
 export interface Building {
@@ -109,7 +110,8 @@ function buildCity(): Building[] {
       const d2 = (i - HALF) ** 2 + (j - HALF) ** 2;
       out.push({
         x, z,
-        height: 0.25 + rand(i, j) * 1.25 + 0.9 * Math.exp(-d2 / 30),
+        // Low-rise, so the lit project towers stand clear and the streets stay visible from above.
+        height: 0.18 + rand(i, j) * 0.75 + 0.35 * Math.exp(-d2 / 30),
         width: 0.62 + rand(i, j, 1) * 0.32,
         depth: 0.62 + rand(i, j, 2) * 0.32,
         category: -1,
@@ -123,7 +125,8 @@ function buildCity(): Building[] {
 export const buildings = buildCity();
 
 // One delivery, along the streets: the retailer books, dispatch finds a driver, the driver delivers.
-export const dispatchRoute: [number, number][] = [crossing(5, 3), crossing(5, 7), crossing(9, 7), crossing(9, 10), crossing(12, 10)];
+// It starts at the front corner of the production district and runs towards the camera, so towers never hide it.
+export const dispatchRoute: [number, number][] = [crossing(8, 7), crossing(8, 9), crossing(11, 9), crossing(11, 11), crossing(13, 11)];
 // The long avenue the career chapter lights.
 export const avenue: [number, number][] = [crossing(0, 12), crossing(15, 12)];
 
@@ -193,12 +196,12 @@ const L = (on: Category[]) => categoryOrder.map((c) => (on.includes(c) ? 1 : 0))
 const ALL = categoryOrder.map(() => 1);
 
 export const states: Record<ChapterId, SceneState> = {
-  opening: { cam: [17, 12, 19], look: [-2.5, 0, 1.5], lit: L(['production']), route: 1, routeAgent: 0, gates: 0, ring: 1, avenue: 0, dim: 0 },
-  movigo: { cam: [mid[0] + 6.5, 3.4, mid[1] + 7], look: [mid[0] - 1, 0.4, mid[1]], lit: L(['production']), route: 1, routeAgent: 0, gates: 0, ring: 0.6, avenue: 0, dim: 0.1 },
-  agents: { cam: [human[0] + 6, 4.2, human[1] + 6.5], look: [human[0] - 1.5, 0.8, human[1] - 1], lit: L(['production', 'agents']), route: 1, routeAgent: 1, gates: 1, ring: 0, avenue: 0, dim: 0.15 },
-  models: { cam: [mlx + 7, 7, mlz + 8], look: [mlx - 1.5, 0.5, mlz - 1], lit: L(['production', 'agents', 'ml', 'data']), route: 1, routeAgent: 1, gates: 0, ring: 0, avenue: 0, dim: 0.3 },
+  opening: { cam: [15, 16, 17], look: [2, 0, 1], lit: L(['production']), route: 1, routeAgent: 0, gates: 0, ring: 1, avenue: 0, dim: 0 },
+  movigo: { cam: [mid[0] + 7.5, 10, mid[1] + 10], look: [mid[0] - 1, 0, mid[1] - 0.6], lit: L(['production']), route: 1, routeAgent: 0, gates: 0, ring: 0.7, avenue: 0, dim: 0.15 },
+  agents: { cam: [human[0] + 6, 9, human[1] + 8], look: [human[0] - 1.4, 0.6, human[1] - 1.4], lit: L(['production', 'agents']), route: 1, routeAgent: 1, gates: 1, ring: 0, avenue: 0, dim: 0.45 },
+  models: { cam: [mlx + 9, 11, mlz + 10], look: [mlx - 1, 0.5, mlz - 1], lit: L(['production', 'agents', 'ml', 'data']), route: 1, routeAgent: 1, gates: 0, ring: 0, avenue: 0, dim: 0.5 },
   archive: { cam: [4, 30, 9], look: [-3.5, 0, 0.5], lit: ALL, route: 1, routeAgent: 0, gates: 0, ring: 0, avenue: 0, dim: 0 },
-  career: { cam: [avx - 3, 2.6, avz + 3.5], look: [avx + 9, 0.6, avz - 1.5], lit: ALL, route: 0.4, routeAgent: 0, gates: 0, ring: 0, avenue: 1, dim: 0.2 },
-  credentials: { cam: [-16, 11, 15], look: [0, 0, 0], lit: ALL, route: 1, routeAgent: 0, gates: 0, ring: 0, avenue: 1, dim: 0.62 },
+  career: { cam: [avx - 4, 10, avz + 8], look: [avx + 10, 0, avz - 3], lit: ALL, route: 1, routeAgent: 0, gates: 0, ring: 0, avenue: 1, dim: 0.55 },
+  credentials: { cam: [-16, 11, 15], look: [0, 0, 0], lit: ALL, route: 1, routeAgent: 0, gates: 0, ring: 0, avenue: 1, dim: 0.7 },
   contact: { cam: [6, 34, 30], look: [-4, 0, 0], lit: ALL, route: 1, routeAgent: 0, gates: 0, ring: 0.8, avenue: 1, dim: 0.25 },
 };
