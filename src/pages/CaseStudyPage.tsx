@@ -22,12 +22,12 @@ function Hero({ c, p, line }: { c: CaseStudy; p: Project; line: Line }) {
   const cat = categories.find((x) => x.id === p.category)!;
   const shot = c.figures?.[0];
   return (
-    <header className="grid-texture relative overflow-hidden pt-28 text-bone md:pt-32">
+    <header className="grid-texture relative overflow-hidden pt-28 text-charcoal md:pt-32">
       <div className="shell pb-14 md:pb-20">
-        <nav aria-label="Breadcrumb" className="label text-stone">
+        <nav aria-label="Breadcrumb" className="label text-slate">
           <ol className="flex flex-wrap gap-2">
             <li><Link to="/projects" className="link">Projects</Link><span aria-hidden> /</span></li>
-            <li aria-current="page" className="text-bone">{p.name}</li>
+            <li aria-current="page" className="text-charcoal">{p.name}</li>
           </ol>
         </nav>
         <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
@@ -36,20 +36,20 @@ function Hero({ c, p, line }: { c: CaseStudy; p: Project; line: Line }) {
               <span className={`inline-block h-[2px] w-10 ${lineBg[line]}`} aria-hidden />{cat.title}
             </p>
             <h1 className="headline mt-5 text-[clamp(2.4rem,5.6vw,4.75rem)]">{c.title}</h1>
-            <p className="lede mt-6 max-w-2xl font-sans text-stone">{c.lede}</p>
+            <p className="lede mt-6 max-w-2xl font-sans text-slate">{c.lede}</p>
           </div>
           <div>
             {shot ? (
-              <figure className="border-[6px] border-[#4a3222] bg-char" style={{ boxShadow: `0 40px 80px -40px rgb(0 0 0 / 0.95), 0 0 0 1px ${lineHex[line]}55` }}>
+              <figure className="border-[6px] border-[#4a3222] bg-limestone" style={{ boxShadow: `0 30px 60px -34px rgb(80 60 30 / 0.55), 0 0 0 1px ${lineHex[line]}55` }}>
                 <img src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} className="block h-auto w-full" />
-                <figcaption className="fine bg-night-2 px-3 py-2 text-stone">{shot.caption}</figcaption>
+                <figcaption className="fine bg-night-2 px-3 py-2 text-slate">{shot.caption}</figcaption>
               </figure>
             ) : (
               <div className="border-[6px] border-[#4a3222]"><ProjectVisual slug={p.slug} variant="hero" /></div>
             )}
             <dl className="ui mt-6 grid grid-cols-2 gap-x-6 gap-y-4">
-              <div><dt className="label text-stone">Status</dt><dd className="mt-1"><StatusMark maturity={p.maturity} tone="dark" className="text-bone" /></dd></div>
-              <div><dt className="label text-stone">When</dt><dd className="mt-1 text-bone">{p.period}</dd></div>
+              <div><dt className="label text-slate">Status</dt><dd className="mt-1"><StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" /></dd></div>
+              <div><dt className="label text-slate">When</dt><dd className="mt-1 text-charcoal">{p.period}</dd></div>
             </dl>
           </div>
         </div>
@@ -73,15 +73,15 @@ function Overview({ c, p }: { c: CaseStudy; p: Project }) {
         <h3 className="headline !mt-10 text-2xl">Where it stands</h3>
         <p>{c.status}</p>
       </Prose>
-      <aside className="space-y-8 xl:border-l xl:border-joint xl:pl-8">
+      <aside className="space-y-8 xl:border-l xl:border-seam xl:pl-8">
         <div>
-          <h3 className="label text-stone">Stack</h3>
+          <h3 className="label text-slate">Stack</h3>
           <ul className="ui mt-3 flex flex-wrap gap-2">{p.stack.map((s) => <li key={s} className="chip">{s}</li>)}</ul>
         </div>
         <div>
-          <h3 className="label text-stone">Code and links</h3>
+          <h3 className="label text-slate">Code and links</h3>
           {p.links.length > 0 && <Links links={p.links} className="mt-3 flex-col !gap-2" />}
-          {p.linkNote && <p className="ui mt-2 text-stone">{p.linkNote}</p>}
+          {p.linkNote && <p className="ui mt-2 text-slate">{p.linkNote}</p>}
         </div>
       </aside>
     </div>
@@ -90,7 +90,7 @@ function Overview({ c, p }: { c: CaseStudy; p: Project }) {
 
 function Decisions({ c, line }: { c: CaseStudy; line: Line }) {
   return (
-    <ul className="divide-y divide-joint border-y border-joint">
+    <ul className="divide-y divide-seam border-y border-seam">
       {c.decisions.map((d) => (
         <li key={d.title} className="grid gap-4 py-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-10">
           <h3 className="headline flex gap-3 text-2xl">
@@ -108,12 +108,12 @@ function Facts({ c, slug }: { c: CaseStudy; slug: string }) {
   return (
     <div className="space-y-12">
       {c.facts && c.facts.length > 0 && (
-        <dl className="grid gap-px bg-joint sm:grid-cols-2">
+        <dl className="grid gap-px bg-seam sm:grid-cols-2">
           {c.facts.map((f) => (
-            <div key={f.label} className="bg-char p-6">
-              <dt className="label text-stone">{f.label}</dt>
+            <div key={f.label} className="bg-limestone p-6">
+              <dt className="label text-slate">{f.label}</dt>
               <dd className="headline mt-3 text-[1.75rem] leading-tight">{f.value}</dd>
-              <dd className="fine mt-3 text-stone">{f.source}</dd>
+              <dd className="fine mt-3 text-slate">{f.source}</dd>
             </div>
           ))}
         </dl>
@@ -133,7 +133,7 @@ function Sections({ c, line }: { c: CaseStudy; line: Line }) {
             {s.points && (
               <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
                 {s.points.map((pt) => (
-                  <li key={pt} className="ui flex gap-3 border-t border-joint pt-2 text-[1rem]"><span className={`mt-2 inline-block h-2 w-2 shrink-0 ${lineBg[line]}`} aria-hidden />{pt}</li>
+                  <li key={pt} className="ui flex gap-3 border-t border-seam pt-2 text-[1rem]"><span className={`mt-2 inline-block h-2 w-2 shrink-0 ${lineBg[line]}`} aria-hidden />{pt}</li>
                 ))}
               </ul>
             )}
@@ -150,10 +150,10 @@ function Figures({ c }: { c: CaseStudy }) {
     <div className="grid gap-12 lg:grid-cols-2">
       {rest.map((f, i) => (
         <figure key={f.src} className={i === 0 && rest.length % 2 === 1 ? 'lg:col-span-2' : ''}>
-          <div className="border-[6px] border-[#4a3222] bg-char">
+          <div className="border-[6px] border-[#4a3222] bg-limestone">
             <img src={f.src} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" className="block h-auto w-full" />
           </div>
-          <figcaption className="fine mt-4 text-stone">{f.caption}</figcaption>
+          <figcaption className="fine mt-4 text-slate">{f.caption}</figcaption>
         </figure>
       ))}
     </div>
@@ -179,27 +179,27 @@ function Related({ c }: { c: CaseStudy }) {
   const nextProject = projectBySlug(next.slug)!;
   const related = (c.related ?? []).map((s) => projectBySlug(s)).filter(Boolean) as Project[];
   return (
-    <section aria-labelledby="more" className="border-t border-joint bg-char">
+    <section aria-labelledby="more" className="border-t border-seam bg-limestone">
       <div className="shell grid gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div className="group relative">
-          <p className="label text-stone">Next case study</p>
+          <p className="label text-slate">Next case study</p>
           <h2 id="more" className="display mt-3 text-[clamp(2.75rem,6vw,5rem)]">
             <Link to={`/projects/${next.slug}`} className="no-underline after:absolute after:inset-0 group-hover:text-brass">{nextProject.name}</Link>
           </h2>
-          <p className="ui mt-3 max-w-md text-stone">{cardFor(next.slug).pitch}</p>
+          <p className="ui mt-3 max-w-md text-slate">{cardFor(next.slug).pitch}</p>
           <ArrowUpRight size={28} className="mt-4 text-brass transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden />
         </div>
         <div>
-          <p className="label text-stone">Related</p>
-          <ul className="mt-3 divide-y divide-joint border-y border-joint">
+          <p className="label text-slate">Related</p>
+          <ul className="mt-3 divide-y divide-seam border-y border-seam">
             {related.map((r) => (
               <li key={r.slug}>
                 <Link to={r.caseStudy ? `/projects/${r.slug}` : `/projects?q=${encodeURIComponent(r.name)}`} className="group flex items-center justify-between gap-4 py-4 no-underline">
                   <span>
-                    <span className="headline block text-2xl text-bone group-hover:text-brass">{r.name}</span>
-                    <span className="ui text-stone">{r.caseStudy ? cardFor(r.slug).pitch : r.summary}</span>
+                    <span className="headline block text-2xl text-charcoal group-hover:text-brass">{r.name}</span>
+                    <span className="ui text-slate">{r.caseStudy ? cardFor(r.slug).pitch : r.summary}</span>
                   </span>
-                  <ArrowUpRight size={20} className="shrink-0 text-bone" aria-hidden />
+                  <ArrowUpRight size={20} className="shrink-0 text-charcoal" aria-hidden />
                 </Link>
               </li>
             ))}
@@ -246,10 +246,10 @@ export default function CaseStudyPage() {
       <Hero c={c} p={p} line={line} />
       <div className="shell grid gap-10 py-16 md:py-20 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
         <nav aria-label="On this page" className="hidden lg:block">
-          <ol className="sticky top-28 space-y-2 border-l-2 border-joint">
+          <ol className="sticky top-28 space-y-2 border-l-2 border-seam">
             {parts.map((part) => (
               <li key={part.id}>
-                <a href={`#${part.id}`} className="ui -ml-[2px] block border-l-2 border-transparent py-1 pl-4 text-stone no-underline hover:border-brass hover:text-bone">
+                <a href={`#${part.id}`} className="ui -ml-[2px] block border-l-2 border-transparent py-1 pl-4 text-slate no-underline hover:border-brass hover:text-charcoal">
                   {part.title}
                 </a>
               </li>

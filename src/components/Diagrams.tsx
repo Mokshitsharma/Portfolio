@@ -13,18 +13,18 @@ const kindName: Record<NonNullable<Stage['kind']>, string> = {
 };
 
 const marker: Record<NonNullable<Stage['kind']>, string> = {
-  model: 'rounded-full border-glass bg-soot',
+  model: 'rounded-full border-sky bg-ivory',
   rule: 'border-brass bg-brass',
-  human: 'rounded-full border-bone bg-bone',
-  io: 'border-stone bg-transparent',
+  human: 'rounded-full border-charcoal bg-white',
+  io: 'border-slate bg-transparent',
 };
 
 // A pipeline: horizontal on wide screens (stations along a line), vertical on narrow ones.
 export function Flow({ title, caption, stages, line = 'signal' }: { title: string; caption: string; stages: Stage[]; line?: Line }) {
   return (
-    <figure className="grid-texture border-y border-joint -mx-5 lg:border-x px-5 py-10 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-10">
+    <figure className="grid-texture border-y border-seam -mx-5 lg:border-x px-5 py-10 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h3 className="headline text-2xl text-bone md:text-3xl">{title}</h3>
+        <h3 className="headline text-2xl text-charcoal md:text-3xl">{title}</h3>
         <KindLegend />
       </div>
       <ol className="relative mt-10 grid gap-0 lg:grid-flow-col lg:auto-cols-fr">
@@ -39,36 +39,36 @@ export function Flow({ title, caption, stages, line = 'signal' }: { title: strin
             )}
             <span className={`relative z-10 mt-0.5 inline-block h-[1.4rem] w-[1.4rem] border-[3px] ${marker[s.kind ?? 'io']}`} aria-hidden />
             <div className="lg:mt-4">
-              <p className="font-sans text-[1.0625rem] font-semibold leading-snug text-bone">
+              <p className="font-sans text-[1.0625rem] font-semibold leading-snug text-charcoal">
                 {s.label}
                 {s.kind && <span className="sr-only"> ({kindName[s.kind]})</span>}
               </p>
-              {s.note && <p className="fine mt-1 text-stone">{s.note}</p>}
+              {s.note && <p className="fine mt-1 text-slate">{s.note}</p>}
             </div>
           </li>
         ))}
       </ol>
-      <figcaption className="fine mt-8 text-stone">{caption}</figcaption>
+      <figcaption className="fine mt-8 text-slate">{caption}</figcaption>
     </figure>
   );
 }
 
 export function SystemMap({ title, caption, groups, line = 'route' }: { title: string; caption: string; groups: MapGroup[]; line?: Line }) {
   return (
-    <figure className="grid-texture border-y border-joint -mx-5 lg:border-x px-5 py-10 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-10">
-      <h3 className="headline text-2xl text-bone md:text-3xl">{title}</h3>
+    <figure className="grid-texture border-y border-seam -mx-5 lg:border-x px-5 py-10 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-10">
+      <h3 className="headline text-2xl text-charcoal md:text-3xl">{title}</h3>
       <div className="mt-8 grid gap-6 md:grid-cols-3 md:gap-0">
         {groups.map((g, i) => (
           <section key={g.title} className="relative md:pr-10">
-            <h4 className="label flex items-center gap-3 text-bone">
+            <h4 className="label flex items-center gap-3 text-charcoal">
               <span className="inline-block h-3 w-3" style={{ background: lineHex[line] }} aria-hidden />
               {g.title}
             </h4>
             <ul className="mt-4 space-y-3 border-l-[3px] pl-4" style={{ borderColor: lineHex[line] }}>
               {g.items.map((item) => (
                 <li key={item.name} className="ui">
-                  <span className="font-semibold text-bone">{item.name}</span>
-                  {item.note && <span className="block text-stone">{item.note}</span>}
+                  <span className="font-semibold text-charcoal">{item.name}</span>
+                  {item.note && <span className="block text-slate">{item.note}</span>}
                 </li>
               ))}
             </ul>
@@ -80,7 +80,7 @@ export function SystemMap({ title, caption, groups, line = 'route' }: { title: s
           </section>
         ))}
       </div>
-      <figcaption className="fine mt-8 text-stone">{caption}</figcaption>
+      <figcaption className="fine mt-8 text-slate">{caption}</figcaption>
     </figure>
   );
 }

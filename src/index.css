@@ -1,65 +1,67 @@
 @import "tailwindcss";
 
 /*
-  Art direction: the Architect's Residence (see docs/redesign/DESIGN.md). Every page is a room in one dark
-  house: soot and charcoal surfaces, bone and stone text, brass for warm light, walnut for frames, and glass as
-  the one cool accent. Source Serif 4 at its display size sets headings; Archivo carries the interface.
-  Each area of work keeps the colour of its room on the home page:
-    route  = software and production (walnut amber)
+  Art direction: the Architect's Residence in morning daylight (see docs/redesign/DESIGN.md). Every page is a
+  room in one sunlit house: ivory and limestone surfaces, sandstone for raised planes, charcoal text, champagne
+  brass for warm detail, oak and walnut for frames, and a cool sky blue for AI, ML and data. Source Serif 4 at
+  its display size sets headings; Archivo carries the interface. Each area of work keeps its room's colour:
+    route  = software and production (amber walnut)
     signal = agents and LLM applications (brass)
-    field  = machine learning and data (glass)
+    field  = machine learning and data (sky blue)
 */
 @theme {
   --font-sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4 Variable", "Source Serif 4", "Iowan Old Style", Georgia, serif;
 
-  /* Residence palette. Contrast on soot: bone 16.4, stone 7.4, brass 8.4, glass 10.2. */
-  --color-soot: #0d0c0b;
-  --color-char: #171614;
-  --color-plinth: #211f1c;
-  --color-joint: #34302b;
-  --color-stone: #a49e95;
-  --color-bone: #efe9df;
-  --color-brass: #c9a46a;
-  --color-walnut: #8a5c3b;
-  --color-glass: #7cc6d2;
+  /* Daylight palette. Contrast on ivory: charcoal 15.6, slate 6.6, brass 5.0, sky 5.4, amber 4.9. */
+  --color-ivory: #f6f1e7;
+  --color-limestone: #ede6d8;
+  --color-sand: #e3d9c6;
+  --color-seam: #d2c6b1;
+  --color-slate: #5c5449;
+  --color-charcoal: #221e19;
+  --color-brass: #85632d;
+  --color-brass-fill: #dcc08c;
+  --color-oak: #c39a6b;
+  --color-walnut: #6b4428;
+  --color-sky: #2d6c88;
 
-  /* Earlier names, kept so every component reads from the same palette. Surfaces map to soot and charcoal,
-     text to bone and stone, rules to joint. */
-  --color-night: #0d0c0b;
-  --color-dusk: #171614;
-  --color-night-2: #171614;
-  --color-night-3: #211f1c;
-  --color-kerb: #34302b;
-  --color-night-rule: #34302b;
-  --color-rule: #34302b;
-  --color-haze: #a49e95;
-  --color-mist: #a49e95;
-  --color-graphite: #a49e95;
-  --color-paper: #efe9df;
-  --color-ink: #efe9df;
-  --color-surface: #171614;
-  --color-sodium: #c9a46a;
+  /* Earlier names, kept so every component reads from the same palette: surfaces map to ivory and
+     limestone, text to charcoal and slate, rules to seam. */
+  --color-night: #f6f1e7;
+  --color-dusk: #ede6d8;
+  --color-night-2: #ede6d8;
+  --color-night-3: #e3d9c6;
+  --color-kerb: #d2c6b1;
+  --color-night-rule: #d2c6b1;
+  --color-rule: #d2c6b1;
+  --color-haze: #5c5449;
+  --color-mist: #5c5449;
+  --color-graphite: #5c5449;
+  --color-paper: #221e19;
+  --color-ink: #221e19;
+  --color-surface: #ede6d8;
+  --color-sodium: #85632d;
 
-  --color-route: #cf915d;
-  --color-signal: #e2b877;
-  --color-signal-light: #e2b877;
-  --color-field: #8fd0db;
-  --color-field-light: #8fd0db;
-  --color-clear: #a9cfa2;
-  --color-held: #e8907e;
-  --color-held-light: #e8907e;
+  --color-route: #a35a24;
+  --color-signal: #85632d;
+  --color-signal-light: #85632d;
+  --color-field: #2d6c88;
+  --color-field-light: #2d6c88;
+  --color-clear: #3f6f3a;
+  --color-held: #a8402c;
+  --color-held-light: #a8402c;
 }
 
 @layer base {
   html {
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
-    background: var(--color-soot);
+    background: var(--color-ivory);
   }
 
   body {
-    @apply bg-soot text-bone font-serif antialiased;
+    @apply bg-ivory text-charcoal font-serif antialiased;
     font-size: 1.125rem;
     line-height: 1.7;
   }
@@ -78,7 +80,7 @@
     text-decoration-thickness: 1px;
   }
 
-  ::selection { background: var(--color-brass); color: var(--color-soot); }
+  ::selection { background: var(--color-brass-fill); color: var(--color-charcoal); }
 
   :focus-visible {
     outline: 2px solid var(--color-brass);
@@ -142,34 +144,36 @@
     transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease;
   }
   .btn:active { transform: translateY(1px); }
-  .btn-route, .btn-ink { @apply bg-brass text-soot hover:bg-[#dbb87d]; }
-  .btn-ghost-dark, .btn-ghost { @apply border-joint text-bone hover:border-bone; }
+  .btn-route, .btn-ink { @apply bg-brass-fill text-charcoal hover:bg-[#d0b073]; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 1px 0 rgb(107 68 40 / 0.18); }
+  .btn-ghost-dark, .btn-ghost { @apply border-seam bg-ivory/60 text-charcoal hover:border-charcoal; }
 
   /* Square tag for stack items and project links. */
   .chip {
-    @apply inline-flex items-center border border-joint px-2 py-0.5 font-sans text-stone;
+    @apply inline-flex items-center gap-2 pr-3 font-sans text-charcoal/80;
     font-size: 0.8125rem;
   }
+  .chip::before { content: ""; @apply inline-block h-1.5 w-1.5 shrink-0 bg-brass; }
 
   .field-input {
-    @apply w-full border border-joint bg-char px-3.5 py-3 font-sans text-bone placeholder:text-stone/70;
+    @apply w-full border border-seam bg-white/70 px-3.5 py-3 font-sans text-charcoal placeholder:text-slate/80;
     font-size: 1rem;
   }
   .field-input:focus-visible { border-color: var(--color-brass); outline-color: var(--color-brass); }
   .field-input[aria-invalid="true"] { border-color: var(--color-held); }
 
   /* Surfaces */
-  .plate { @apply bg-soot text-bone; }
-  .plate .text-muted { color: var(--color-stone); }
+  .plate { @apply bg-ivory text-charcoal; }
+  .plate .text-muted { color: var(--color-slate); }
 
-  /* Board-formed concrete, drawn in CSS: soft mottling and the horizontal joints of the formwork. For the
-     opening of each inner page, like the wall a room's name is fixed to. */
+  /* Pale board-formed concrete in morning sun, drawn in CSS: the formwork joints, a wash of sunlight from the
+     upper right and a cool shadow at the foot. For the opening of each inner page, like the wall a room's name is
+     fixed to. */
   .grid-texture {
     background-image:
-      linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgb(0 0 0 / 0.35) calc(25% - 1px) 25%, transparent 25%),
-      radial-gradient(120% 90% at 85% 0%, rgb(201 164 106 / 0.12) 0%, transparent 55%),
-      radial-gradient(60% 50% at 10% 100%, rgb(255 240 215 / 0.04) 0%, transparent 70%),
-      linear-gradient(180deg, #1c1a18 0%, #121110 100%);
+      linear-gradient(to bottom, transparent 0 calc(25% - 1px), rgb(120 100 70 / 0.12) calc(25% - 1px) 25%, transparent 25%),
+      radial-gradient(110% 90% at 88% -10%, rgb(255 246 222 / 0.95) 0%, rgb(255 246 222 / 0) 58%),
+      radial-gradient(80% 60% at 0% 110%, rgb(160 180 195 / 0.16) 0%, transparent 70%),
+      linear-gradient(180deg, #ece4d4 0%, #e6dccb 100%);
     background-size: 100% 12rem, auto, auto, auto;
   }
 
@@ -179,12 +183,15 @@
 
 /* Home page: the residence */
 @layer components {
-  /* The nameplate: blackened steel with brass lettering. --hero-p (0-1) is set from the scroll handler and fades
-     the plate as the door opens. */
+  /* The nameplate: brushed champagne brass with engraved lettering, catching the morning sun. --hero-p (0-1) is
+     set from the scroll handler and fades the plate as the door opens. */
   .nameplate {
-    @apply inline-block border border-joint px-6 py-5 sm:px-9 sm:py-7;
-    background: linear-gradient(160deg, #23211e 0%, #141311 55%, #1b1917 100%);
-    box-shadow: inset 0 1px 0 rgb(255 240 215 / 0.06), 0 30px 60px -30px rgb(0 0 0 / 0.9);
+    @apply inline-block border px-6 py-5 sm:px-9 sm:py-7;
+    border-color: #b8975e;
+    background:
+      repeating-linear-gradient(0deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 3px),
+      linear-gradient(115deg, #e8d3a6 0%, #d6b67c 42%, #f0dfb8 58%, #cdaa6c 100%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), inset 0 -1px 0 rgb(107 68 40 / 0.25), 0 24px 48px -28px rgb(80 60 30 / 0.55);
     opacity: calc(1 - var(--hero-p, 0));
   }
   .nameplate-name {
@@ -193,8 +200,8 @@
     font-weight: 620;
     letter-spacing: 0.16em;
     line-height: 1;
-    color: var(--color-brass);
-    text-shadow: 0 1px 0 rgb(0 0 0 / 0.7), 0 -1px 0 rgb(255 225 170 / 0.12);
+    color: #2e2210;
+    text-shadow: 0 1px 0 rgb(255 245 220 / 0.7);
   }
   .nameplate-line {
     font-family: var(--font-sans);
@@ -202,7 +209,7 @@
     font-weight: 500;
     letter-spacing: 0.14em;
     font-size: 0.75rem;
-    color: var(--color-stone);
+    color: #4a3a20;
   }
 
   /* Section headings: Source Serif at its display optical size. */
@@ -223,30 +230,35 @@
     text-transform: uppercase;
   }
 
-  /* Reading scrim over the house: left-weighted on wide screens, bottom-weighted on phones. */
+  /* A soft fall of light where the text column sits: it brightens the house behind the type without blanking it
+     out. Left-weighted on wide screens, bottom-weighted on phones. */
   .residence-scrim {
-    background: linear-gradient(to top, rgb(13 12 11 / 0.95) 0%, rgb(13 12 11 / 0.72) 38%, rgb(13 12 11 / 0.05) 70%, transparent 100%);
+    background: linear-gradient(to top, rgb(246 241 231 / 0.78) 0%, rgb(246 241 231 / 0.45) 36%, transparent 64%);
   }
   @media (min-width: 1024px) {
     .residence-scrim {
-      background: linear-gradient(to right, rgb(13 12 11 / 0.9) 0%, rgb(13 12 11 / 0.7) 30%, rgb(13 12 11 / 0.08) 56%, transparent 74%);
+      background: radial-gradient(70% 90% at 12% 55%, rgb(246 241 231 / 0.62) 0%, rgb(246 241 231 / 0.32) 48%, transparent 78%);
     }
   }
 
-  /* A chapter's text gets its own backing on phones so it reads over any part of the house. */
-  .read-panel { background: rgb(13 12 11 / 0.86); }
-  @media (min-width: 1024px) { .read-panel { background: none; } }
+  /* Type set straight onto the house, like lettering on a lit wall: no card behind it. A close halo in the wall
+     colour keeps each letter crisp over any part of the scene. text-shadow inherits, so one class covers a block. */
+  .read-panel {
+    text-shadow: 0 0 1px rgb(246 241 231 / 0.95), 0 0 10px rgb(246 241 231 / 0.95), 0 0 24px rgb(246 241 231 / 0.8);
+  }
+  .read-panel .btn, .read-panel .frame, .read-panel .project-file, .read-panel .doorway, .read-panel figure, .read-panel img { text-shadow: none; }
 
-  .btn-brass { @apply bg-brass text-soot hover:bg-[#dbb87d]; }
-  .btn-line { @apply border-joint text-bone hover:border-bone; }
-  .btn-plate { @apply border-joint bg-char/95 text-bone backdrop-blur-sm hover:border-stone; }
+  .btn-brass { @apply bg-brass-fill text-charcoal hover:bg-[#d0b073]; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 1px 0 rgb(107 68 40 / 0.18); }
+  .btn-line { @apply border-charcoal/35 bg-transparent text-charcoal hover:border-charcoal hover:bg-white/40; }
+  .btn-plate { @apply border-seam bg-limestone/95 text-charcoal backdrop-blur-sm hover:border-slate; }
 
-  /* Who acts at a stage: ring = model, filled square = code, filled ring = person, open square = input or output. */
+  /* Who acts at a stage: sky ring = model, brass square = code, white disc with a charcoal outline = person,
+     open square = input or output. Shape tells them apart as well as colour. */
   .kind-dot { @apply inline-block h-3 w-3 shrink-0 border-2; }
-  .kind-model { @apply rounded-full border-glass; }
+  .kind-model { @apply rounded-full border-sky; }
   .kind-rule { @apply border-brass bg-brass; }
-  .kind-human { @apply rounded-full border-bone bg-bone; }
-  .kind-io { @apply border-stone; }
+  .kind-human { @apply rounded-full border-[1.5px] border-charcoal bg-white; }
+  .kind-io { @apply border-slate; }
 
   .pipeline { @apply grid gap-y-2.5; }
   .pipeline > li { @apply relative flex items-center gap-3; }
@@ -254,7 +266,7 @@
     .pipeline { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
     .pipeline > li { @apply flex-col items-start gap-2 pr-3; }
     .pipeline > li:not(:last-child)::after {
-      content: ""; position: absolute; left: 1rem; right: 0.25rem; top: 0.34rem; height: 1px; background: var(--color-joint);
+      content: ""; position: absolute; left: 1rem; right: 0.25rem; top: 0.34rem; height: 1px; background: var(--color-seam);
     }
   }
 
@@ -262,20 +274,23 @@
   .pipeline-v { @apply grid gap-x-6 gap-y-2.5 sm:grid-cols-2; }
   .pipeline-v > li { @apply flex items-center gap-3; }
 
-  .tag { @apply border border-joint px-2 py-0.5 font-sans text-stone; font-size: 0.8125rem; }
+  /* A skill on a board: set as a short line with a brass square, the way a placard lists its contents. */
+  .tag { @apply inline-flex items-center gap-2 pr-3 font-sans text-charcoal/85; font-size: 0.875rem; }
+  .tag::before { content: ""; @apply inline-block h-1.5 w-1.5 shrink-0 bg-brass; }
 
   /* A framed panel in the gallery: walnut frame, recessed field, lit from above when it is the current one. */
   .frame {
     @apply relative border-[6px] p-6 sm:p-8;
-    border-color: #4a3222;
-    background: linear-gradient(180deg, rgb(255 226 180 / 0.07) 0%, rgb(23 22 20 / 0.92) 38%), var(--color-char);
-    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.6), 0 40px 80px -40px rgb(0 0 0 / 0.95);
+    border-color: #b38a5c;
+    background: linear-gradient(180deg, rgb(255 250 238 / 0.98) 0%, rgb(246 240 228 / 0.97) 60%, rgb(238 230 216 / 0.97) 100%);
+    box-shadow: inset 0 0 0 1px rgb(107 68 40 / 0.25), 0 30px 60px -36px rgb(80 60 30 / 0.5);
   }
 
   /* A doorway in the corridor: an opening in a wall, with the room's light behind it. */
   .doorway {
-    @apply relative flex min-h-[19rem] flex-col justify-end overflow-hidden border border-joint p-5 no-underline;
-    background: radial-gradient(120% 70% at 50% 0%, color-mix(in oklab, var(--tint) 34%, transparent) 0%, transparent 70%), var(--color-char);
+    @apply relative flex min-h-[19rem] flex-col justify-end overflow-hidden border border-seam p-5 no-underline;
+    background: radial-gradient(120% 70% at 50% 0%, color-mix(in oklab, var(--tint) 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, #fbf7ef 0%, var(--color-limestone) 100%);
+    box-shadow: 0 20px 40px -32px rgb(80 60 30 / 0.45);
     transition: border-color 200ms ease, transform 260ms cubic-bezier(.2,.7,.2,1);
   }
   .doorway::before {
@@ -287,22 +302,22 @@
   }
 
   .stat { @apply flex flex-col; }
-  .stat dt { @apply order-2 font-sans text-stone; font-size: 0.875rem; }
-  .stat dd { @apply order-1 text-bone; font-family: var(--font-serif); font-variation-settings: "opsz" 60; font-weight: 420; font-size: clamp(2.1rem, 3.4vw, 2.85rem); line-height: 1; }
+  .stat dt { @apply order-2 font-sans text-slate; font-size: 0.875rem; }
+  .stat dd { @apply order-1 text-charcoal; font-family: var(--font-serif); font-variation-settings: "opsz" 60; font-weight: 420; font-size: clamp(2.1rem, 3.4vw, 2.85rem); line-height: 1; }
 
   .field-input-dark {
-    @apply w-full border border-joint bg-char px-3.5 py-3 font-sans text-bone;
+    @apply w-full border border-seam bg-limestone px-3.5 py-3 font-sans text-charcoal;
     font-size: 1rem;
   }
-  .field-input-dark:focus-visible { border-color: var(--color-paper); }
+  .field-input-dark:focus-visible { border-color: var(--color-brass); }
   .field-input-dark[aria-invalid="true"] { border-color: var(--color-held-light); }
 
-  .btn-sodium { @apply bg-sodium text-night hover:bg-[#ffc457]; }
+  .btn-sodium { @apply bg-brass-fill text-charcoal hover:bg-[#d0b073]; }
   .btn-ghost-night { @apply border-kerb text-paper hover:border-paper; }
 }
 
 .home :focus-visible { outline-color: var(--color-brass); }
-.home ::selection { background: var(--color-brass); color: var(--color-soot); }
+.home ::selection { background: var(--color-brass-fill); color: var(--color-charcoal); }
 
 @media (prefers-reduced-motion: no-preference) {
   /* The nameplate lettering settles once, as if a light had just come on over it. */
@@ -330,9 +345,131 @@
       animation-timeline: view();
       animation-range: entry 0% entry 35%;
     }
-    @keyframes rise { from { opacity: .001; transform: translateY(24px); } }
+    @keyframes rise { from { opacity: .35; transform: translateY(18px); } }
   }
 
   .lift { transition: transform 260ms cubic-bezier(.2,.7,.2,1); }
   .group:hover .lift, .group:focus-within .lift { transform: translateY(-6px); }
+}
+
+/* Furniture: the objects in the house that open a record. */
+@layer components {
+  /* Detail view: a sunlit panel over a softly dimmed room. */
+  .detail {
+    margin: auto;
+    width: min(46rem, calc(100vw - 2rem));
+    max-height: min(88vh, 60rem);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-charcoal);
+    overflow: visible;
+  }
+  .detail::backdrop { background: rgb(60 48 32 / 0.32); backdrop-filter: blur(2px); }
+  .detail-panel {
+    @apply relative overflow-y-auto border border-seam p-6 sm:p-9;
+    max-height: min(88vh, 60rem);
+    background: linear-gradient(180deg, #fffaf1 0%, var(--color-ivory) 100%);
+    border-top: 4px solid var(--tint, var(--color-brass));
+    box-shadow: 0 40px 90px -40px rgb(60 44 24 / 0.6);
+  }
+  .detail-close {
+    @apply inline-flex h-11 w-11 shrink-0 items-center justify-center border border-seam bg-white/70 text-charcoal transition-colors hover:border-charcoal;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .detail[open] .detail-panel { animation: detail-in 220ms cubic-bezier(.2,.7,.2,1); }
+    @keyframes detail-in { from { opacity: 0; transform: translateY(10px); } }
+  }
+
+  /* A framed credential: an oak frame, an ivory mat, the record set inside like a printed certificate. */
+  .cert-frame {
+    @apply block h-full w-full p-[9px] text-left transition-transform;
+    background: linear-gradient(135deg, #d2ab7a 0%, #b88b58 45%, #caa173 100%);
+    box-shadow: inset 0 0 0 1px rgb(107 68 40 / 0.35), 0 18px 34px -22px rgb(80 60 30 / 0.55);
+  }
+  .cert-mat {
+    @apply flex h-full flex-col border border-[#e4d6bd] px-5 py-5;
+    background: linear-gradient(180deg, #fffcf6 0%, #f7f0e3 100%);
+    box-shadow: inset 0 1px 6px rgb(107 68 40 / 0.12);
+  }
+  .cert-frame-diploma { padding: 12px; }
+  .cert-frame-diploma .cert-mat { @apply py-8; }
+  .cert-frame:hover { box-shadow: inset 0 0 0 1px rgb(107 68 40 / 0.35), 0 24px 40px -22px rgb(80 60 30 / 0.65); }
+  @media (prefers-reduced-motion: no-preference) {
+    .cert-frame:hover, .plaque:hover, .project-file:hover { transform: translateY(-3px); }
+    .cert-frame:active, .plaque:active, .project-file:active { transform: translateY(0); }
+  }
+
+  /* A plaque: brushed champagne brass on a limestone mount. */
+  .plaque {
+    @apply flex h-full w-full flex-col border p-6 text-left transition-transform;
+    border-color: #b8975e;
+    background:
+      repeating-linear-gradient(0deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 3px),
+      linear-gradient(120deg, #efe0bd 0%, #dcc08c 48%, #f1e4c6 62%, #d4b47c 100%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 18px 34px -22px rgb(80 60 30 / 0.55);
+  }
+
+  /* Project files on an oak shelf: the cover faces the visitor, the spine carries the area's colour. */
+  .shelf {
+    @apply grid gap-3 pb-4 sm:grid-cols-3 xl:grid-cols-4;
+    border-bottom: 10px solid #c39a6b;
+    box-shadow: 0 14px 18px -14px rgb(80 60 30 / 0.45);
+  }
+  .project-file {
+    @apply flex h-full min-h-[9.5rem] w-full flex-col border border-seam py-4 pl-6 pr-4 text-left transition-transform;
+    background:
+      linear-gradient(90deg, var(--tint) 0 8px, rgb(255 255 255 / 0.5) 8px 10px, transparent 10px),
+      linear-gradient(180deg, #fffaf2 0%, #f1e9da 100%);
+    box-shadow: 0 10px 18px -14px rgb(80 60 30 / 0.5);
+  }
+
+  /* The control desk (agents): brass-edged cards standing in a row, each with its one-line pitch. */
+  .shelf-cards { @apply sm:grid-cols-2 xl:grid-cols-2; border-bottom: 14px solid #6b4428; }
+  .file-cards {
+    @apply min-h-[8rem] pl-5;
+    background: linear-gradient(180deg, #fffaf2 0%, #f3ead9 100%);
+    border: 1px solid #c9a464;
+    border-top: 4px solid var(--color-brass);
+  }
+
+  /* Archive drawers (data): a cabinet of labelled drawer fronts, each with a brass pull. */
+  .shelf-drawers {
+    @apply gap-2 p-3 sm:grid-cols-2 xl:grid-cols-2;
+    background: #c39a6b;
+    border-bottom: 0;
+    box-shadow: inset 0 0 0 1px rgb(107 68 40 / 0.4), 0 18px 30px -22px rgb(80 60 30 / 0.55);
+  }
+  .file-drawers {
+    @apply relative min-h-0 flex-row items-baseline justify-between gap-4 py-4 pl-5 pr-14;
+    background: linear-gradient(180deg, #f8efe0 0%, #eadbc2 100%);
+    border: 1px solid rgb(107 68 40 / 0.35);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
+  }
+  .file-pull {
+    @apply absolute right-4 top-1/2 h-2 w-7 -translate-y-1/2;
+    background: linear-gradient(180deg, #e8d3a6, #b8975e);
+    box-shadow: 0 1px 0 rgb(80 60 30 / 0.35);
+  }
+
+  /* Studio screens (software): each record on a slim charcoal-bezelled screen on a stand. */
+  .shelf-screens { border-bottom: 0; box-shadow: none; @apply gap-x-4 gap-y-8 pb-0; }
+  .file-screens {
+    @apply relative min-h-[8.5rem] pl-4;
+    background: linear-gradient(180deg, #fbf8f2 0%, #efe8dc 100%);
+    border: 7px solid #2f2b27;
+    border-bottom-width: 9px;
+    box-shadow: 0 14px 0 -10px #8c8274, 0 20px 18px -16px rgb(40 30 20 / 0.5);
+  }
+  .file-screen-bar { @apply mb-3 block h-1 w-10; background: var(--tint); }
+
+  /* A display board on a wall: front-facing, its room's colour along the top edge. */
+  .role-board {
+    @apply flex flex-col border border-seam p-6;
+    background: linear-gradient(180deg, #fffaf2 0%, var(--color-ivory) 100%);
+    border-top: 4px solid var(--tint);
+    box-shadow: 0 18px 34px -26px rgb(80 60 30 / 0.5);
+  }
+
+  .cert-frame:focus-visible, .plaque:focus-visible, .project-file:focus-visible, .role-board a:focus-visible { outline: 2px solid var(--color-brass); outline-offset: 4px; }
 }

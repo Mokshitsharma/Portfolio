@@ -7,6 +7,9 @@ import Experience from './pages/Experience';
 import Skills from './pages/Skills';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Achievements from './pages/Achievements';
+import Roles from './pages/Roles';
+import RolePage from './pages/RolePage';
 import NotFound from './pages/NotFound';
 
 // Shared by the browser entry (main.tsx) and the prerender entry (entry-server.tsx).
@@ -21,6 +24,9 @@ export default function App() {
         <Route path="skills" element={<Skills />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="achievements" element={<Achievements />} />
+        <Route path="roles" element={<Roles />} />
+        <Route path="roles/:slug" element={<RolePage />} />
         {/* Old address of the experience page. Vercel also redirects it with a 301. */}
         <Route path="internships" element={<Navigate to="/experience" replace />} />
         <Route path="*" element={<NotFound />} />

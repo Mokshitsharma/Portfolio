@@ -18,16 +18,18 @@ export type ChapterId =
   | 'courtyard';
 
 // `from` and `to` are the stations a chapter walks between while it is read. The gallery walks past five frames.
-export const chapters: { id: ChapterId; name: string; from: number; to: number; dim: number }[] = [
+// `dim` is the veil of light over the house while a chapter opens; `read`, where given, is the veil once the
+// chapter's own content has scrolled in over the scene, so long text never sits on top of a lit display.
+export const chapters: { id: ChapterId; name: string; from: number; to: number; dim: number; read?: number }[] = [
   { id: 'arrival', name: 'Arrival', from: 0, to: 0, dim: 0 },
   { id: 'entrance', name: 'Entrance', from: 0, to: 1, dim: 0 },
-  { id: 'gallery', name: 'Skills gallery', from: 2, to: 6, dim: 0.15 },
-  { id: 'corridor', name: 'Corridor', from: 7, to: 7, dim: 0.1 },
-  { id: 'room-ml', name: 'Machine learning', from: 8, to: 8, dim: 0.4 },
-  { id: 'room-agents', name: 'Agentic AI', from: 9, to: 9, dim: 0.4 },
-  { id: 'room-data', name: 'Data and analytics', from: 10, to: 10, dim: 0.4 },
-  { id: 'room-software', name: 'Software', from: 11, to: 11, dim: 0.4 },
-  { id: 'study', name: 'Study', from: 12, to: 12, dim: 0.45 },
+  { id: 'gallery', name: 'Skills gallery', from: 2, to: 6, dim: 0 },
+  { id: 'corridor', name: 'Corridor', from: 7, to: 7, dim: 0 },
+  { id: 'room-ml', name: 'Machine learning', from: 8, to: 8, dim: 0.08, read: 0.62 },
+  { id: 'room-agents', name: 'Agentic AI', from: 9, to: 9, dim: 0.08, read: 0.62 },
+  { id: 'room-data', name: 'Data and analytics', from: 10, to: 10, dim: 0.12, read: 0.62 },
+  { id: 'room-software', name: 'Software', from: 11, to: 11, dim: 0.08, read: 0.62 },
+  { id: 'study', name: 'Study', from: 12, to: 12, dim: 0.12, read: 0.62 },
   { id: 'courtyard', name: 'Courtyard', from: 13, to: 13, dim: 0 },
 ];
 
@@ -40,19 +42,23 @@ export const smooth = (e0: number, e1: number, x: number) => {
 
 const TRAVEL = 0.72; // a chapter is read until 72% of the way through, then the camera travels on
 
-/** Station and reading dim for a chapter index and the reader's progress through it (0-1). */
-export function stationAt(index: number, progress: number, reduced: boolean) {
+/**
+ * Station and reading dim for a chapter index, the reader's progress through it (0-1) and how far its content has
+ * come in over the scene (`opened`, 0-1).
+ */
+export function stationAt(index: number, progress: number, reduced: boolean, opened = 0) {
   const c = chapters[index];
   const next = chapters[Math.min(index + 1, chapters.length - 1)];
+  const dim = c.dim + ((c.read ?? c.dim) - c.dim) * opened;
   if (reduced) {
     // No travel: cut to the nearest station inside the chapter.
-    return { s: Math.round(c.from + (c.to - c.from) * Math.min(1, progress / TRAVEL)), dim: c.dim };
+    return { s: Math.round(c.from + (c.to - c.from) * Math.min(1, progress / TRAVEL)), dim };
   }
   if (progress < TRAVEL) {
-    return { s: c.from + (c.to - c.from) * (progress / TRAVEL), dim: c.dim };
+    return { s: c.from + (c.to - c.from) * (progress / TRAVEL), dim };
   }
   const t = smooth(TRAVEL, 1, progress);
-  return { s: c.to + (next.from - c.to) * t, dim: c.dim + (next.dim - c.dim) * t };
+  return { s: c.to + (next.from - c.to) * t, dim: dim + (next.dim - dim) * t };
 }
 
 /**

@@ -4,12 +4,12 @@ import { calibration, kdBenchmark } from '../data/visuals';
 
 /* ---------------------------------------------------------------- Mini pipeline */
 
-// Same marks as the home page: glass ring = model, brass square = code, bone disc = person.
+// Same marks as the home page: sky ring = model, brass square = code, white disc with an outline = person.
 const kindDot: Record<string, string> = {
-  model: 'border-glass bg-transparent rounded-full',
+  model: 'border-sky bg-transparent rounded-full',
   rule: 'border-brass bg-brass',
-  human: 'border-bone bg-bone rounded-full',
-  io: 'border-stone bg-transparent',
+  human: 'border-charcoal bg-white rounded-full',
+  io: 'border-slate bg-transparent',
 };
 
 export function MiniFlow({ stages, tone = 'dark', vertical = false }: { stages: { label: string; kind: string }[]; tone?: 'dark' | 'light'; vertical?: boolean }) {
@@ -68,9 +68,9 @@ export function KindLegend({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
 export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   const max = 0.32;
   const h = 220;
-  const ink = tone === 'dark' ? '#efe9df' : '#efe9df';
-  const muted = tone === 'dark' ? '#a49e95' : '#a49e95';
-  const green = tone === 'dark' ? '#8fd0db' : '#8fd0db';
+  const ink = tone === 'dark' ? '#221e19' : '#221e19';
+  const muted = tone === 'dark' ? '#5c5449' : '#5c5449';
+  const green = tone === 'dark' ? '#2d6c88' : '#2d6c88';
   return (
     <figure>
       <svg viewBox="0 0 480 300" className="h-auto w-full" role="img" aria-labelledby="cal-title cal-desc">

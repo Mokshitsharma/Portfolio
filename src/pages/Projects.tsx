@@ -19,19 +19,19 @@ function StatusBar() {
   const counts = maturities.map((m) => ({ m, n: projects.filter((p) => p.maturity === m).length })).filter((c) => c.n > 0);
   // From lit to unlit: the further a project got, the warmer its light.
   const shade: Record<Maturity, string> = {
-    production: '#c9a46a', deployed: '#dbc49a', working: '#efe9df', 'in-progress': '#8fd0db', prototype: '#a49e95', notebook: '#5a544c', coursework: '#3a3530',
+    production: '#85632d', deployed: '#c39a6b', working: '#3d3830', 'in-progress': '#2d6c88', prototype: '#8c8274', notebook: '#c9bda7', coursework: '#ddd3c1',
   };
   return (
     <figure className="w-full max-w-md">
-      <div className="flex h-4 w-full overflow-hidden" aria-hidden>
+      <div className="flex h-4 w-full overflow-hidden border border-seam" aria-hidden>
         {counts.map((c) => <span key={c.m} style={{ flex: c.n, background: shade[c.m] }} />)}
       </div>
       <figcaption>
         <ul className="fine mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-mist">
           {counts.map((c) => (
             <li key={c.m} className="flex items-center gap-2">
-              <span className="inline-block h-2.5 w-2.5" style={{ background: shade[c.m] }} aria-hidden />
-              <span className="text-bone">{c.n}</span> {maturityLabel[c.m].toLowerCase()}
+              <span className="inline-block h-2.5 w-2.5 border border-seam" style={{ background: shade[c.m] }} aria-hidden />
+              <span className="text-charcoal">{c.n}</span> {maturityLabel[c.m].toLowerCase()}
             </li>
           ))}
         </ul>
@@ -44,7 +44,7 @@ function ProjectRow({ p }: { p: Project }) {
   const notes = [p.tests, p.relation, p.linkNote].filter(Boolean) as string[];
   const color = lineHex[lineFor[p.category]];
   return (
-    <li className="group relative grid gap-x-10 gap-y-3 border-b border-joint py-6 pl-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,14rem)]">
+    <li className="group relative grid gap-x-10 gap-y-3 border-b border-seam py-6 pl-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,14rem)]">
       <span className="absolute left-0 top-6 bottom-6 w-[3px] transition-all group-hover:w-[5px]" style={{ background: color }} aria-hidden />
       <div>
         <h3 className="headline text-[1.6rem]">
@@ -53,16 +53,16 @@ function ProjectRow({ p }: { p: Project }) {
           ) : p.name}
         </h3>
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-          <StatusMark maturity={p.maturity} tone="dark" className="text-bone" />
-          <span className="label text-stone">{p.period}</span>
+          <StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" />
+          <span className="label text-slate">{p.period}</span>
         </div>
       </div>
       <div>
-        <p className="text-[1.0625rem] leading-relaxed text-bone/90">{p.summary}</p>
+        <p className="text-[1.0625rem] leading-relaxed text-charcoal/90">{p.summary}</p>
         <details className="mt-2">
-          <summary className="label cursor-pointer text-stone hover:text-bone">Stack{notes.length ? ' and notes' : ''}</summary>
-          <p className="ui mt-2 text-stone">{p.stack.join(', ')}</p>
-          {notes.length > 0 && <ul className="ui mt-1 space-y-0.5 text-stone">{notes.map((n) => <li key={n}>{n}</li>)}</ul>}
+          <summary className="label cursor-pointer text-slate hover:text-charcoal">Stack{notes.length ? ' and notes' : ''}</summary>
+          <p className="ui mt-2 text-slate">{p.stack.join(', ')}</p>
+          {notes.length > 0 && <ul className="ui mt-1 space-y-0.5 text-slate">{notes.map((n) => <li key={n}>{n}</li>)}</ul>}
         </details>
       </div>
       <div className="flex flex-col gap-2">
@@ -72,7 +72,7 @@ function ProjectRow({ p }: { p: Project }) {
           </Link>
         )}
         <Links links={p.links} className="flex-col !gap-2" />
-        {!p.caseStudy && p.links.length === 0 && <span className="ui text-stone">No public link</span>}
+        {!p.caseStudy && p.links.length === 0 && <span className="ui text-slate">No public link</span>}
       </div>
     </li>
   );
@@ -116,28 +116,28 @@ export default function Projects() {
           aria-label="Filter projects"
           method="get"
           onSubmit={(e) => e.preventDefault()}
-          className="sticky top-16 z-30 -mx-5 border-b border-joint bg-soot/95 px-5 py-5 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
+          className="sticky top-16 z-30 -mx-5 border-b border-seam bg-ivory/95 px-5 py-5 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,14rem)_auto] lg:items-end">
             <div>
-              <label htmlFor="q" className="label block text-stone">Search</label>
+              <label htmlFor="q" className="label block text-slate">Search</label>
               <input id="q" name="q" type="search" value={q} onChange={(e) => update('q', e.target.value)} placeholder="Name, technology or idea" className="field-input mt-1.5 h-12" />
             </div>
             <div>
-              <label htmlFor="status" className="label block text-stone">Status</label>
+              <label htmlFor="status" className="label block text-slate">Status</label>
               <select id="status" name="status" value={status} onChange={(e) => update('status', e.target.value)} className="field-input mt-1.5 h-12">
                 <option value="">Any status</option>
                 {maturities.map((m) => <option key={m} value={m}>{maturityLabel[m]}</option>)}
               </select>
             </div>
             <label className="ui flex h-12 cursor-pointer items-center gap-3 font-semibold">
-              <input type="checkbox" name="cases" value="1" checked={onlyCases} onChange={(e) => update('cases', e.target.checked ? '1' : '')} className="h-5 w-5 accent-[#c9a46a]" />
+              <input type="checkbox" name="cases" value="1" checked={onlyCases} onChange={(e) => update('cases', e.target.checked ? '1' : '')} className="h-5 w-5 accent-[#85632d]" />
               Case studies only
             </label>
           </div>
           <fieldset className="mt-4">
-            <legend className="label text-stone">Area</legend>
-            <div className="mt-1.5 flex flex-wrap gap-px bg-joint p-px">
+            <legend className="label text-slate">Area</legend>
+            <div className="mt-1.5 flex flex-wrap gap-px bg-seam p-px">
               {[{ id: '', title: 'All areas' }, ...categories].map((c) => {
                 const active = cat === c.id;
                 return (
@@ -146,7 +146,7 @@ export default function Projects() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => update('category', c.id)}
-                    className={`ui min-h-10 flex-auto px-3 py-2 text-left transition-colors ${active ? 'bg-brass font-semibold text-soot' : 'bg-char text-bone hover:bg-plinth'}`}
+                    className={`ui min-h-10 flex-auto px-3 py-2 text-left transition-colors ${active ? 'bg-brass-fill font-semibold text-charcoal shadow-[inset_0_-2px_0_var(--color-brass)]' : 'bg-white/60 text-charcoal hover:bg-sand'}`}
                   >
                     {c.title}
                   </button>
@@ -158,7 +158,7 @@ export default function Projects() {
         </form>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="ui text-stone" aria-live="polite">
+          <p className="ui text-slate" aria-live="polite">
             {filtering ? `${results.length} of ${projects.length} projects match.` : `Showing all ${projects.length} projects.`}
           </p>
           {filtering && <button type="button" onClick={clear} className="ui link font-semibold">Clear filters</button>}
@@ -172,15 +172,15 @@ export default function Projects() {
 
         {groups.map((g) => (
           <section key={g.id} id={g.id} aria-labelledby={`${g.id}-title`} className="mt-16">
-            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-stone/60 pb-4">
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate/60 pb-4">
               <div>
                 <h2 id={`${g.id}-title`} className="headline flex items-center gap-4 text-[clamp(2rem,4vw,3rem)]">
                   <span className="inline-block h-3 w-3" style={{ background: lineHex[lineFor[g.id]] }} aria-hidden />
                   {g.title}
                 </h2>
-                <p className="ui mt-2 text-stone">{g.blurb}</p>
+                <p className="ui mt-2 text-slate">{g.blurb}</p>
               </div>
-              <p className="label text-stone">{g.items.length} {g.items.length === 1 ? 'project' : 'projects'}</p>
+              <p className="label text-slate">{g.items.length} {g.items.length === 1 ? 'project' : 'projects'}</p>
             </div>
             <ul>{g.items.map((p) => <ProjectRow key={p.slug} p={p} />)}</ul>
           </section>

@@ -18,10 +18,10 @@ export const lineFor: Record<Category, Line> = {
 
 // The colour of each area's room in the residence.
 export const lineHex: Record<Line, string> = {
-  route: '#cf915d',
-  signal: '#e2b877',
-  field: '#8fd0db',
-  ink: '#a49e95',
+  route: '#a35a24',
+  signal: '#85632d',
+  field: '#2d6c88',
+  ink: '#5c5449',
 };
 
 // Hero transit map. Two real pipelines that meet where deterministic code takes over.

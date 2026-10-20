@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { chapters, galleryStation, smooth, stationAt } from '../../scene/chapters';
 import type { Residence } from '../../scene/Residence';
+import type { CertContent, FrameContent, Invitation, RoomContent } from '../../scene/textures';
+
+export interface SceneContent {
+  frames: FrameContent[];
+  rooms: RoomContent[];
+  credentials: CertContent[];
+  invitation: Invitation;
+}
 import ResidencePoster from './ResidencePoster';
 
 // Fixed backdrop for the home page. Prerendered as a still elevation; the WebGL residence loads as its own chunk
@@ -15,7 +23,7 @@ function webgl2() {
   }
 }
 
-export default function ResidenceBackdrop({ onChapter, name, line, frames }: { onChapter: (index: number) => void; name: string; line: string; frames: string[] }) {
+export default function ResidenceBackdrop({ onChapter, name, line, content }: { onChapter: (index: number) => void; name: string; line: string; content: SceneContent }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const dim = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
@@ -25,6 +33,7 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const narrow = window.matchMedia('(max-width: 1023px)');
     const light = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
     const sections = chapters.map((c) => document.getElementById(c.id)).filter(Boolean) as HTMLElement[];
     const hero = document.getElementById('arrival');
@@ -40,11 +49,15 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
       const mid = window.innerHeight * 0.5;
       let index = 0;
       let progress = 0;
+      let opened = 0;
       sections.forEach((el, k) => {
         const r = el.getBoundingClientRect();
         if (r.top <= mid) {
           index = k;
           progress = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+          // A chapter's opening (its title and first lines) fills about one screen; after that its content runs
+          // across the scene.
+          opened = smooth(0.45, 1.05, (mid - r.top) / window.innerHeight);
         }
       });
       // The courtyard is the last chapter, so at the bottom of the page it is the current one.
@@ -56,7 +69,7 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
         current = index;
         report.current(index);
       }
-      const { s: base, dim: d } = stationAt(index, progress, reduced);
+      const { s: base, dim: d } = stationAt(index, progress, reduced, opened);
       let s = base;
       if (chapters[index].id === 'gallery' && panels.length && gallery) {
         const centres = panels.map((f) => {
@@ -66,7 +79,11 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
         s = galleryStation(centres, gallery.getBoundingClientRect().bottom - mid, reduced);
       }
       scene?.setStation(s);
-      if (dim.current) dim.current.style.opacity = String(d);
+      // Phones have no side column: text runs over the middle of the house, so the veil stays up while a chapter's
+      // text is on screen. The arrival and the courtyard keep their text over the ground, under the scrim.
+      const id = chapters[index].id;
+      const veil = narrow.matches && id !== 'arrival' && id !== 'courtyard' ? Math.max(d, 0.5) : d;
+      if (dim.current) dim.current.style.opacity = String(veil);
       if (bar.current) bar.current.style.transform = `scaleX(${(index + progress) / sections.length})`;
       // The arrival is already half past the middle line at the top of the page, so its type moves from 0.55.
       if (hero && !reduced) hero.style.setProperty('--hero-p', index === 0 ? smooth(0.55, 1, progress).toFixed(3) : '1');
@@ -93,7 +110,7 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
               light,
               name,
               line,
-              frames,
+              ...content,
               onFail: () => {
                 setLive(false);
                 r.dispose();
@@ -117,17 +134,17 @@ export default function ResidenceBackdrop({ onChapter, name, line, frames }: { o
       window.removeEventListener('resize', onScroll);
       scene?.dispose();
     };
-  }, [name, line, frames]);
+  }, [name, line, content]);
 
   return (
     <>
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-soot">
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ivory">
         <ResidencePoster className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${live ? 'opacity-0' : 'opacity-100'}`} />
         <canvas ref={canvas} className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${live ? 'opacity-100' : 'opacity-0'}`} />
-        <div ref={dim} className="absolute inset-0 bg-soot" style={{ opacity: 0 }} />
+        <div ref={dim} className="absolute inset-0 bg-ivory" style={{ opacity: 0 }} />
         <div className="residence-scrim absolute inset-0" />
       </div>
-      <div aria-hidden className="fixed inset-x-0 top-16 z-40 h-[2px] bg-joint lg:hidden">
+      <div aria-hidden className="fixed inset-x-0 top-16 z-40 h-[2px] bg-seam lg:hidden">
         <div ref={bar} className="h-full origin-left bg-brass" style={{ transform: 'scaleX(0)' }} />
       </div>
     </>

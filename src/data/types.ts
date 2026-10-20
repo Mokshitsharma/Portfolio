@@ -123,4 +123,6 @@ export interface Credential {
   issuer: string;
   date?: string;
   href?: string; // shown only where the issuer's copy is on record
+  about: string; // what the credential covers, as its title and issuer state it; nothing beyond that
+  related?: string[]; // project slugs where the same subject shows up in my own work
 }

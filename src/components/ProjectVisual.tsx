@@ -11,7 +11,7 @@ function Frame({ kind, children, tone = 'dark', className = '' }: { kind: Kind; 
   return (
     <figure className={`relative flex h-full flex-col ${tone === 'dark' ? 'bg-night-2 text-paper' : 'bg-surface text-ink'} ${className}`}>
       <div className="flex-1 p-5 md:p-6">{children}</div>
-      <figcaption className={`label px-5 pb-4 md:px-6 ${tone === 'dark' ? 'text-stone' : 'text-stone'}`}>{kind}</figcaption>
+      <figcaption className={`label px-5 pb-4 md:px-6 ${tone === 'dark' ? 'text-slate' : 'text-slate'}`}>{kind}</figcaption>
     </figure>
   );
 }
@@ -30,7 +30,7 @@ function Shot({ src, alt, width, height, phone }: { src: string; alt: string; wi
           className={`lift block h-auto ${phone ? 'max-h-80 w-auto rounded-t-[1.25rem] border-[6px] border-b-0 border-night' : 'w-full border border-night'}`}
         />
       </div>
-      <figcaption className="label px-5 py-4 text-stone md:px-6">Screenshot</figcaption>
+      <figcaption className="label px-5 py-4 text-slate md:px-6">Screenshot</figcaption>
     </figure>
   );
 }
@@ -62,19 +62,19 @@ function VoteRule() {
     <div className="font-sans">
       <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5">
         {voters.map((v) => (
-          <li key={v} className="fine flex items-center justify-between gap-2 border-b border-joint pb-1 text-ink">
-            {v}<span className="font-semibold text-stone">+1 / -1</span>
+          <li key={v} className="fine flex items-center justify-between gap-2 border-b border-seam pb-1 text-ink">
+            {v}<span className="font-semibold text-slate">+1 / -1</span>
           </li>
         ))}
       </ul>
       <div className="mt-5" aria-hidden>
         <div className="grid grid-cols-[1fr_1.4fr_1fr] text-center">
           <span className="fine bg-held/15 py-1 font-semibold text-held">Sell, -2 or less</span>
-          <span className="fine bg-joint py-1 text-stone">Hold</span>
+          <span className="fine bg-seam py-1 text-slate">Hold</span>
           <span className="fine bg-field/15 py-1 font-semibold text-clear">Buy, +2 or more</span>
         </div>
       </div>
-      <p className="fine mt-2 text-stone">Confidence is the size of the score out of 5.</p>
+      <p className="fine mt-2 text-slate">Confidence is the size of the score out of 5.</p>
     </div>
   );
 }
@@ -100,15 +100,15 @@ function DairyFormula() {
   return (
     <div className="font-sans text-ink">
       <p className="headline text-[clamp(1.2rem,1.9vw,1.5rem)] leading-tight">
-        amount = (litres + ml / 1000) <span className="text-stone">×</span> rate(fat %)
+        amount = (litres + ml / 1000) <span className="text-slate">×</span> rate(fat %)
       </p>
-      <p className="ui mt-3 text-stone">Rate interpolated between chart rows, rounded to paise.</p>
+      <p className="ui mt-3 text-slate">Rate interpolated between chart rows, rounded to paise.</p>
       <ol className="ui mt-5 space-y-1.5 border-l-[3px] border-ink pl-4">
         <li>Deduct instalments, oldest advance first</li>
         <li>Record the net payout</li>
         <li>Lock the settled entries</li>
       </ol>
-      <p className="fine mt-3 text-stone">All in one transaction.</p>
+      <p className="fine mt-3 text-slate">All in one transaction.</p>
     </div>
   );
 }

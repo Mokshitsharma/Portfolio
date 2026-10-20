@@ -8,6 +8,7 @@ export const nav = [
   { to: '/experience', label: 'Experience' },
   { to: '/skills', label: 'Skills' },
   { to: '/about', label: 'About' },
+  { to: '/achievements', label: 'Achievements' },
   { to: '/contact', label: 'Contact' },
 ];
 
@@ -49,14 +50,14 @@ export default function Header() {
     `label relative py-2 no-underline transition-colors hover:text-paper ${isActive ? `text-paper after:absolute after:inset-x-0 after:-bottom-[1px] after:h-[3px] ${home ? 'after:bg-brass' : 'after:bg-sodium'}` : 'text-mist'}`;
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 border-b text-paper transition-colors duration-300 ${clear ? 'border-transparent bg-transparent' : home ? 'border-joint bg-soot/90 backdrop-blur-sm' : 'border-night-rule bg-night/95 backdrop-blur-sm'}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 border-b text-paper transition-colors duration-300 ${clear ? 'border-transparent bg-transparent' : home ? 'border-seam bg-ivory/90 backdrop-blur-sm' : 'border-night-rule bg-night/95 backdrop-blur-sm'}`}>
       <div className="shell flex h-16 items-center justify-between gap-6">
         <Link to="/" className="group flex items-center gap-3 no-underline">
           <span className={`inline-block h-3 w-3 transition-transform group-hover:rotate-45 ${home ? 'bg-brass' : 'bg-sodium'}`} aria-hidden />
           <span className="font-sans text-lg font-bold tracking-tight" style={{ fontStretch: '78%' }}>{profile.name}</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden md:block">
+        <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-7">
             {nav.map((n) => (
               <li key={n.to}>
@@ -76,7 +77,7 @@ export default function Header() {
         <button
           ref={button}
           type="button"
-          className="-mr-2 inline-flex h-11 w-11 items-center justify-center md:hidden"
+          className="-mr-2 inline-flex h-11 w-11 items-center justify-center lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((o) => !o)}
@@ -86,7 +87,7 @@ export default function Header() {
         </button>
       </div>
 
-      <div id="mobile-menu" ref={panel} hidden={!open} className="border-t border-night-rule bg-night md:hidden">
+      <div id="mobile-menu" ref={panel} hidden={!open} className="border-t border-night-rule bg-night lg:hidden">
         <nav aria-label="Main" className="shell py-4">
           <ul>
             {nav.map((n) => (

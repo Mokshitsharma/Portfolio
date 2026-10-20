@@ -29,16 +29,45 @@ export const education = {
 };
 
 // Drive links are the copies the issuers sent. The last three were confirmed by Mokshit on 2026-10-20 and have no
-// public link yet.
+// public link yet. `about` says only what the title and issuer establish; no grades, ranks or syllabus claims.
 export const credentials: Credential[] = [
-  { title: '5-Day AI Agents Intensive', issuer: 'Kaggle and Google', date: 'Dec 2025', href: 'https://drive.google.com/file/d/1NmhjV9PXbdtnp09OdMNtMaizlODUNfke/view?usp=sharing' },
-  { title: 'Generative AI Foundations', issuer: 'Skillsoft', date: 'Nov 2025', href: 'https://drive.google.com/file/d/12LL5X1XFkZa-KYVSoCFUJZ7zyR9aB1wr/view?usp=sharing' },
-  { title: 'Generative AI Foundations: IT Integration with Generative AI', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1FGNt8vyrA4aseMvbjoMUgsXYuAgrszPy/view?usp=sharing' },
-  { title: 'Excel', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1C0E6VwPqfuZyaZkvkLYWOFl5JvfWJ48R/view?usp=sharing' },
-  { title: 'AI Masterclass', issuer: 'Freedom of AI', date: 'Jan 2024', href: 'https://drive.google.com/file/d/1-0og7kJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing' },
-  { title: 'Google Data Analytics Professional Certificate', issuer: 'Google' },
-  { title: 'Data Analyst Program', issuer: 'Infosys Springboard' },
-  { title: '5-star in Python, SQL and C++', issuer: 'HackerRank' },
+  {
+    title: '5-Day AI Agents Intensive', issuer: 'Kaggle and Google', date: 'Dec 2025', href: 'https://drive.google.com/file/d/1NmhjV9PXbdtnp09OdMNtMaizlODUNfke/view?usp=sharing',
+    about: 'A five-day intensive course from Kaggle and Google on building AI agents.',
+    related: ['settleai', 'toolforge', 'naman'],
+  },
+  {
+    title: 'Generative AI Foundations', issuer: 'Skillsoft', date: 'Nov 2025', href: 'https://drive.google.com/file/d/12LL5X1XFkZa-KYVSoCFUJZ7zyR9aB1wr/view?usp=sharing',
+    about: 'A Skillsoft course on the foundations of generative AI.',
+    related: ['dociq', 'ai-business-analytics'],
+  },
+  {
+    title: 'Generative AI Foundations: IT Integration with Generative AI', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1FGNt8vyrA4aseMvbjoMUgsXYuAgrszPy/view?usp=sharing',
+    about: 'An Infosys Springboard course on generative AI and integrating it into IT systems.',
+    related: ['dociq'],
+  },
+  {
+    title: 'Excel', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1C0E6VwPqfuZyaZkvkLYWOFl5JvfWJ48R/view?usp=sharing',
+    about: 'An Infosys Springboard course in Microsoft Excel.',
+  },
+  {
+    title: 'AI Masterclass', issuer: 'Freedom of AI', date: 'Jan 2024', href: 'https://drive.google.com/file/d/1-0og7kJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing',
+    about: 'A masterclass from Freedom of AI on working with AI tools.',
+  },
+  {
+    title: 'Google Data Analytics Professional Certificate', issuer: 'Google',
+    about: 'Google’s professional certificate programme in data analytics.',
+    related: ['paytm-dashboard', 'nifty50-dashboard', 'zomato-sql'],
+  },
+  {
+    title: 'Data Analyst Program', issuer: 'Infosys Springboard',
+    about: 'An Infosys Springboard programme for data analysts.',
+    related: ['paytm-dashboard', 'lamborghini-sales'],
+  },
+  {
+    title: '5-star in Python, SQL and C++', issuer: 'HackerRank',
+    about: 'A five-star rating in HackerRank’s Python, SQL and C++ skill tracks.',
+  },
 ];
 
 export const inProgress = [

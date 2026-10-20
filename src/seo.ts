@@ -1,4 +1,5 @@
 import { caseStudies } from './data/caseStudies';
+import { rolePages } from './data/rolePages';
 import { profile, site } from './data/profile';
 
 // Per-route metadata. The prerender script writes it into each HTML file; the client updates it on navigation.
@@ -40,6 +41,16 @@ const fixed: PageMeta[] = [
     description: 'How I work across production software and AI systems, with education and credentials.',
   },
   {
+    path: '/achievements',
+    title: `Achievements, ${suffix}`,
+    description: 'Certificates, the degree in progress, Movigo apps on Google Play and the App Store, the PayPal AI Hackathon 2026 entry and Kaggle Playground entries.',
+  },
+  {
+    path: '/roles',
+    title: `Roles, ${suffix}`,
+    description: 'One page per role: data analyst, data scientist, data engineer, AI/ML, machine learning, agentic and generative AI, Python, full-stack and software engineering.',
+  },
+  {
     path: '/contact',
     title: `Contact, ${suffix}`,
     description: 'Email or send a message about a role or a project.',
@@ -59,7 +70,13 @@ export const notFoundMeta: PageMeta = {
   description: 'This page does not exist.',
 };
 
-export const publicPages: PageMeta[] = [...fixed, ...caseStudyMeta];
+export const roleMeta: PageMeta[] = rolePages.map((r) => ({
+  path: `/roles/${r.slug}`,
+  title: `${r.title}, ${suffix}`,
+  description: r.fit.length > 200 ? `${r.fit.slice(0, r.fit.lastIndexOf(' ', 197))}...` : r.fit,
+}));
+
+export const publicPages: PageMeta[] = [...fixed, ...caseStudyMeta, ...roleMeta];
 
 export function metaFor(pathname: string): PageMeta {
   const clean = pathname.replace(/\/+$/, '') || '/';
