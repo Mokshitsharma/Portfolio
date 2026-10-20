@@ -1,34 +1,33 @@
 import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download } from 'lucide-react';
-import { caseStudyBySlug } from '../data/caseStudies';
 import { currentRole, formatMonth, roles } from '../data/experience';
 import { credentials, education, inProgress, profile } from '../data/profile';
-import { projectBySlug, projects } from '../data/projects';
+import { projects } from '../data/projects';
 import { skillGroups } from '../data/skills';
-import { domains } from '../data/domains';
-import { miniFlows } from '../data/visuals';
-import EngineBackdrop from '../components/home/EngineBackdrop';
+import { domains, galleryOrder, skillsFor } from '../data/domains';
+import { calibration } from '../data/visuals';
+import { chapters } from '../scene/chapters';
+import ResidenceBackdrop from '../components/home/ResidenceBackdrop';
 import ChapterRail from '../components/home/ChapterRail';
-import ProjectMap from '../components/home/ProjectMap';
-import { Benchmark, Calibration, KindKey, Pipeline, Timeline, type StageKind } from '../components/home/Evidence';
+import { Timeline } from '../components/home/Evidence';
+import { AgentsRoom, DataRoom, MachineLearningRoom, ProjectLink, SoftwareRoom, roomProjects, rooms } from '../components/home/Rooms';
 
-// The home page is one walk through an engine (see docs/redesign/DESIGN.md). Each chapter is an ordinary
-// section; the WebGL engine behind them changes shape with the scroll and is never needed to read anything.
+// The home page is a walk through a house (see docs/redesign/DESIGN.md): arrival, the door, a gallery of skills,
+// a corridor of four rooms, a study and a courtyard. Each chapter is an ordinary section; the WebGL residence
+// behind them follows the scroll and is never needed to read or reach anything.
 
-const p = (slug: string) => projectBySlug(slug)!;
-const settle = caseStudyBySlug('settleai')!;
+const NAME = 'Mokshit Sharma';
+const DISCIPLINES = 'Applied AI · Machine learning · Software engineering';
+const FRAME_TITLES = galleryOrder.map((id) => domains.find((d) => d.id === id)!.title);
 
-// Where a project name leads: its case study if it has one, otherwise the archive filtered to it.
-const projectHref = (slug: string) => (p(slug).caseStudy ? `/projects/${slug}` : `/projects?q=${encodeURIComponent(p(slug).name)}`);
-
-function Chapter({ id, title, intro, children, width = 'lg:max-w-[40rem]' }: { id: string; title: ReactNode; intro?: ReactNode; children: ReactNode; width?: string }) {
+function Chapter({ id, title, intro, children, width = 'lg:max-w-[42rem]' }: { id: string; title: ReactNode; intro?: ReactNode; children: ReactNode; width?: string }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="relative z-10 py-28 md:py-36">
-      <div className="shell lg:pr-48">
+      <div className="shell lg:pr-52">
         <div className={`read-panel -mx-4 px-4 py-8 sm:mx-0 sm:px-6 lg:p-0 ${width}`}>
-          <h2 id={`${id}-title`} className="headline max-w-[44rem] text-[clamp(2.6rem,5.6vw,4.75rem)] text-snow">{title}</h2>
-          {intro && <p className="mt-5 max-w-[38rem] font-sans text-[clamp(1.1rem,1.5vw,1.3rem)] leading-snug text-snow/85">{intro}</p>}
+          <h2 id={`${id}-title`} className="serif-display max-w-[42rem] text-[clamp(2.5rem,5.2vw,4.4rem)] text-bone">{title}</h2>
+          {intro && <p className="mt-5 max-w-[36rem] font-sans text-[clamp(1.05rem,1.4vw,1.25rem)] leading-snug text-bone/85">{intro}</p>}
           {children}
         </div>
       </div>
@@ -36,81 +35,164 @@ function Chapter({ id, title, intro, children, width = 'lg:max-w-[40rem]' }: { i
   );
 }
 
-function ProjectLink({ slug }: { slug: string }) {
-  return <Link to={projectHref(slug)} className="link text-snow">{p(slug).name}</Link>;
-}
+/* ------------------------------------------------------------ Arrival */
 
-/* ------------------------------------------------------------ Introduction */
-
-function Opening() {
+function Arrival() {
   return (
-    <section id="opening" aria-labelledby="hero-title" className="relative z-10 flex min-h-[100svh] items-end pb-14 pt-28 md:pb-20">
-      <div className="shell lg:pr-48">
-        <p className="ui text-ash">{profile.currentRole}, {profile.currentOrgShort}</p>
-        <h1 id="hero-title" className="hero-name hero-intro mt-3 text-[clamp(4.25rem,14vw,12.5rem)] text-snow">
-          Mokshit<br />Sharma
-        </h1>
-        <p className="mt-8 max-w-[37rem] font-sans text-[clamp(1.15rem,1.75vw,1.5rem)] font-medium leading-snug text-snow">
+    <section id="arrival" aria-labelledby="hero-title" className="relative z-10 flex min-h-[100svh] items-end pb-14 pt-28 md:pb-20">
+      <div className="shell lg:pr-52">
+        <div className="nameplate">
+          <h1 id="hero-title" className="nameplate-name hero-intro text-[clamp(1.6rem,4.2vw,3.3rem)] uppercase">{NAME}</h1>
+          <p className="nameplate-line mt-4 uppercase">{DISCIPLINES}</p>
+        </div>
+        <p className="ui mt-6 text-stone">{profile.currentRole} at {profile.currentOrg}, {profile.location}</p>
+        <p className="mt-4 max-w-[36rem] font-sans text-[clamp(1.15rem,1.7vw,1.45rem)] font-medium leading-snug text-bone">
           I build AI systems in which the model proposes and code decides, and I run a live delivery platform in Indore
           as its only engineer.
         </p>
-        <div className="mt-9 flex flex-wrap gap-3">
-          <a href="#map" className="btn btn-volt">Explore the project map</a>
-          <a href={profile.resume} className="btn btn-line" download>
-            <Download size={17} aria-hidden />Download résumé
-          </a>
-        </div>
-        <div className="mt-12 flex max-w-[52rem] flex-col gap-3 border-t border-seam pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="fine max-w-[24rem] text-ash">The engine behind this page uses the colours of the diagrams below.</p>
-          <KindKey kinds={['model', 'rule', 'human']} />
+        <div className="mt-9 flex flex-wrap items-center gap-3">
+          <a href="#gallery" className="btn btn-brass">Open the door</a>
+          <a href={profile.resume} className="btn btn-line" download><Download size={17} aria-hidden />Download résumé</a>
+          <Link to="/projects" className="ui ml-2 font-semibold text-bone"><span className="link">All {projects.length} projects</span></Link>
         </div>
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------------------ Domains */
+/* ------------------------------------------------------------ Entrance: the directory */
 
-function Domains() {
-  // Shipped software at the top, raw data at the bottom: the order of the engine's layers.
-  const stack = [...domains].reverse();
+function Entrance() {
+  const where: Record<string, string> = {
+    gallery: 'Five areas of skill, each framed with the projects behind it',
+    corridor: 'Four doors, one per kind of project',
+    'room-ml': `${roomProjects(rooms[0]).length} projects`,
+    'room-agents': `${roomProjects(rooms[1]).length} projects`,
+    'room-data': `${roomProjects(rooms[2]).length} projects`,
+    'room-software': `${roomProjects(rooms[3]).length} projects`,
+    study: 'Experience, education and certificates',
+    courtyard: 'Contact, résumé and profiles',
+  };
   return (
-    <Chapter
-      id="domains"
-      title="Data in at the bottom, products out at the top"
-      intro="Five areas of work, stacked the way data moves through them. Each is backed by five projects you can open."
-      width="lg:max-w-[40rem]"
-    >
-      <ol className="relative mt-12 border-l border-seam pl-6 sm:pl-8">
-        <span className="absolute -left-[5px] -top-1 h-2.5 w-2.5 rotate-45 border-l border-t border-ion" aria-hidden />
-        {stack.map((d) => (
-          <li key={d.id} className="border-t border-seam py-6 first:border-t-0 first:pt-0">
-            <h3 className="headline text-[1.75rem] text-snow">{d.title}</h3>
-            <p className="ui mt-1.5 text-ash">{d.line}</p>
-            <p className="ui mt-3 text-snow/90">{d.evidence}</p>
-            <ul className="fine mt-3 flex flex-wrap gap-x-4 gap-y-1.5" aria-label={`${d.title} projects`}>
-              {d.projects.map((s) => (
-                <li key={s}><ProjectLink slug={s} /></li>
+    <section id="entrance" aria-labelledby="entrance-title" className="relative z-10 flex min-h-[150vh] items-end pb-28">
+      <div className="shell lg:pr-52">
+        <div className="read-panel -mx-4 px-4 py-8 sm:mx-0 sm:px-6 lg:max-w-[34rem] lg:p-0">
+          <h2 id="entrance-title" className="serif-display text-[clamp(2.2rem,4.4vw,3.6rem)] text-bone">Come in</h2>
+          <p className="mt-4 font-sans text-[1.125rem] leading-snug text-bone/85">
+            The work is laid out like a house. Walk through it, or go straight to a room.
+          </p>
+          <nav aria-label="Directory" className="mt-8 border-t border-joint">
+            <ul>
+              {chapters.filter((c) => where[c.id]).map((c) => (
+                <li key={c.id} className="border-b border-joint">
+                  <a href={`#${c.id}`} className="group grid grid-cols-[1fr_auto] items-baseline gap-4 py-3 no-underline">
+                    <span className="ui font-semibold text-bone group-hover:text-brass">{c.name}</span>
+                    <span className="fine text-right text-stone">{where[c.id]}</span>
+                  </a>
+                </li>
               ))}
             </ul>
-          </li>
-        ))}
-      </ol>
-    </Chapter>
+          </nav>
+        </div>
+      </div>
+    </section>
   );
 }
 
-/* ------------------------------------------------------------ Project map */
+/* ------------------------------------------------------------ Gallery */
 
-function MapChapter() {
+function Gallery() {
+  const frames = galleryOrder.map((id) => domains.find((d) => d.id === id)!);
   return (
-    <Chapter
-      id="map"
-      title="Every project, on one map"
-      intro={`All ${projects.length} published projects, from a production platform to first notebooks. Point at a node, or pick a domain to see the projects behind it.`}
-      width="lg:max-w-none"
-    >
-      <div className="mt-10"><ProjectMap /></div>
+    <section id="gallery" aria-labelledby="gallery-title" className="relative z-10 pt-28 md:pt-36">
+      <div className="shell lg:pr-52">
+        <div className="read-panel -mx-4 px-4 py-8 sm:mx-0 sm:px-6 lg:max-w-[42rem] lg:p-0">
+          <h2 id="gallery-title" className="serif-display text-[clamp(2.5rem,5.2vw,4.4rem)] text-bone">The gallery</h2>
+          <p className="mt-5 max-w-[36rem] font-sans text-[clamp(1.05rem,1.4vw,1.25rem)] leading-snug text-bone/85">
+            Five areas of work, one frame each. Every skill is named as it is on the Skills page, and every frame leads to
+            the projects that show it.
+          </p>
+        </div>
+        <ol className="mt-16">
+          {frames.map((d) => (
+            <li key={d.id} data-frame className="flex min-h-[92vh] items-center py-10 lg:max-w-[42rem]">
+              <article aria-labelledby={`${d.id}-frame`} className="frame w-full">
+                <h3 id={`${d.id}-frame`} className="serif-display text-[clamp(1.9rem,3.2vw,2.6rem)] text-bone">{d.title}</h3>
+                <p className="ui mt-2 text-stone">{d.line}</p>
+                <ul className="mt-5 flex flex-wrap gap-1.5" aria-label="Skills">
+                  {skillsFor(d).map((s) => <li key={s} className="tag">{s}</li>)}
+                </ul>
+                <p className="ui mt-5 border-l-2 border-brass pl-4 text-bone/90">{d.evidence}</p>
+                <ul className="fine mt-5 flex flex-wrap gap-x-4 gap-y-1.5" aria-label={`${d.title} projects`}>
+                  {d.projects.map((s) => <li key={s}><ProjectLink slug={s} /></li>)}
+                </ul>
+              </article>
+            </li>
+          ))}
+        </ol>
+        <div className="read-panel -mx-4 px-4 pb-8 sm:mx-0 sm:px-6 lg:p-0">
+          <Link to="/skills" className="btn btn-line">Every skill, with the projects that show it</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ Corridor */
+
+function DoorPreview({ id, tint }: { id: string; tint: string }) {
+  // Small drawings of what is behind each door, from the room's own evidence.
+  if (id === 'room-ml') {
+    return (
+      <svg viewBox="0 0 120 60" className="h-14 w-28" aria-hidden>
+        {calibration.map((c, i) => (
+          <g key={c.bin}>
+            <rect x={10 + i * 38} y={56 - c.predicted * 160} width="12" height={c.predicted * 160} fill="none" stroke={tint} strokeWidth="1.5" />
+            <rect x={24 + i * 38} y={56 - c.observed * 160} width="12" height={c.observed * 160} fill={tint} />
+          </g>
+        ))}
+      </svg>
+    );
+  }
+  if (id === 'room-agents') {
+    const kinds = ['human', 'model', 'rule', 'io', 'rule', 'model', 'rule', 'rule', 'io'];
+    return (
+      <svg viewBox="0 0 120 60" className="h-14 w-28" aria-hidden>
+        <line x1="6" x2="114" y1="30" y2="30" stroke="#34302b" />
+        {kinds.map((k, i) => {
+          const x = 8 + i * 13;
+          return k === 'rule' ? <rect key={i} x={x - 4} y="26" width="8" height="8" fill={tint} /> : <circle key={i} cx={x} cy="30" r="4" fill={k === 'human' ? '#efe9df' : 'none'} stroke={k === 'model' ? '#7cc6d2' : '#efe9df'} strokeWidth="1.5" />;
+        })}
+      </svg>
+    );
+  }
+  if (id === 'room-data') {
+    return (
+      <svg viewBox="0 0 120 60" className="h-14 w-28" aria-hidden>
+        {[0, 1, 2, 3].map((k) => <line key={k} x1="6" x2="114" y1={12 + k * 13} y2={12 + k * 13} stroke="#34302b" />)}
+        {[38, 70, 52, 90].map((w, k) => <rect key={k} x="6" y={5 + k * 13} width={w} height="5" fill={tint} opacity={0.9 - k * 0.15} />)}
+      </svg>
+    );
+  }
+  return <img src="/images/movigo-retailer-vehicles.jpg" alt="" width={540} height={705} loading="lazy" decoding="async" className="h-20 w-auto border border-joint object-cover object-top" />;
+}
+
+function Corridor() {
+  return (
+    <Chapter id="corridor" title="Four rooms" intro="Each door opens on one kind of work. Go through in order, or pick a room." width="lg:max-w-none">
+      <ul className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {rooms.map((r) => (
+          <li key={r.id}>
+            <a href={`#${r.id}`} className="doorway" style={{ ['--tint' as string]: r.tint }}>
+              <DoorPreview id={r.id} tint={r.tint} />
+              <span className="sign mt-auto pt-10" style={{ color: r.tint }}>{roomProjects(r).length} projects</span>
+              <span className="serif-display mt-2 text-[1.65rem] text-bone">{r.title}</span>
+              <span className="ui mt-2 text-stone">{r.line}</span>
+              <span className="ui mt-4 font-semibold text-bone"><span className="link">Enter the room</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/projects" className="btn btn-line">Search all {projects.length} projects</Link>
         <Link to="/projects?cases=1" className="btn btn-line">Case studies only</Link>
@@ -119,202 +201,25 @@ function MapChapter() {
   );
 }
 
-/* ------------------------------------------------------------ Featured systems */
+/* ------------------------------------------------------------ Study */
 
-function System({ id, area, title, slug, children, visual }: { id: string; area: string; title: string; slug: string; children: ReactNode; visual: ReactNode }) {
+function Study() {
   return (
-    <article aria-labelledby={`${id}-t`} className="grid gap-10 border-t border-seam pt-10 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:gap-14">
-      <div>
-        <p className="fine text-ash">{area}</p>
-        <h3 id={`${id}-t`} className="headline mt-1 text-[clamp(2rem,3.4vw,2.9rem)] text-snow">{title}</h3>
-        {children}
-        <Link to={`/projects/${slug}`} className="btn btn-line mt-7">Read the {title} case study</Link>
-      </div>
-      <div className="self-center">{visual}</div>
-    </article>
-  );
-}
-
-function Systems() {
-  const settleStages = settle.flow!.stages.map((s) => ({ label: s.label, kind: (s.kind ?? 'io') as StageKind }));
-  const shot = settle.figures![0];
-  return (
-    <Chapter
-      id="systems"
-      title="Featured systems"
-      intro="Five projects with the most behind them: a production platform, two agent systems, a model and an engine, each shown with its own evidence."
-      width="lg:max-w-none"
-    >
-      <div className="mt-14 space-y-20">
-        <System
-          id="movigo"
-          area="Production platform, current employer"
-          title="Movigo"
-          slug="movigo"
-          visual={
-            <div className="grid max-w-[34rem] grid-cols-2 items-end gap-4 sm:gap-6">
-              <img src="/images/movigo-retailer-vehicles.jpg" alt="Movigo retailer app home screen with a search bar, the coins wallet banner and six vehicle types to book." width={540} height={705} loading="lazy" decoding="async" className="block h-auto w-full border border-seam" />
-              <img src="/images/movigo-retailer-coins.jpg" alt="Movigo retailer app coins wallet screen showing available coins, a weekly milestone and how coins are redeemed." width={540} height={1005} loading="lazy" decoding="async" className="block h-auto w-full border border-seam" />
-            </div>
-          }
-        >
-          <p className="ui mt-4 text-[1.0625rem] text-snow/85">
-            A delivery marketplace connecting retailers with two-, three- and four-wheeler drivers. I rebuilt it after an
-            outsourced team delivered designs but no software, and I run the backend, both apps and the operations console.
-          </p>
-          <dl className="mt-7 grid grid-cols-2 gap-x-8 gap-y-5">
-            {[['400+', 'API routes'], ['40', 'data models'], ['3', 'store listings'], ['1K+', 'installs per app on Google Play']].map(([v, l]) => (
-              <div key={l} className="stat"><dt>{l}</dt><dd>{v}</dd></div>
-            ))}
-          </dl>
-          <ul className="ui mt-7 space-y-2.5 border-l-2 border-ion pl-4 text-snow/90">
-            <li>One conditional database write makes exactly one of several accepting drivers win a booking.</li>
-            <li>Pricing, zones, surge and dispatch radius change from the console, with no app release.</li>
-            <li>One road-distance matrix call per booking instead of one per driver.</li>
-          </ul>
-          <ul className="fine mt-5 flex flex-wrap gap-x-5 gap-y-1.5">
-            {p('movigo').links.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-snow">
-                  <span className="link">{l.label}</span><ArrowUpRight size={14} aria-hidden /><span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </System>
-
-        <System
-          id="settle"
-          area="Agentic AI, PayPal AI Hackathon 2026 entry"
-          title="SettleAI"
-          slug="settleai"
-          visual={
-            <figure className="border border-seam bg-carbon">
-              <img src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} loading="lazy" decoding="async" className="block h-auto w-full" />
-              <figcaption className="fine px-3 py-2 text-ash">{shot.caption}</figcaption>
-            </figure>
-          }
-        >
-          <p className="ui mt-4 text-[1.0625rem] text-snow/85">{settle.lede}</p>
-          <p className="headline mt-6 text-2xl text-snow">No agent holds a tool that can move money.</p>
-          <div className="mt-6"><Pipeline stages={settleStages} /></div>
-          <div className="mt-5"><KindKey /></div>
-          <ul className="ui mt-6 grid gap-x-8 gap-y-2 text-snow/90 sm:grid-cols-2">
-            <li>146 unit, integration and end-to-end tests.</li>
-            <li>A 50-way concurrency test never overspends escrow.</li>
-            <li>Receipts verify offline in 81 ms; one changed byte breaks them.</li>
-            <li>In its evaluation: 0% false releases, every tampered proof caught.</li>
-          </ul>
-        </System>
-
-        <System id="cricxai" area="Machine learning" title="CricXAI" slug="cricxai" visual={<div className="border border-seam bg-carbon/80 p-5"><Calibration /></div>}>
-          <p className="ui mt-4 text-[1.0625rem] text-snow/85">{p('cricxai').summary}</p>
-          <dl className="mt-7 flex flex-wrap gap-x-12 gap-y-5">
-            {[['0.749', 'dismissal ROC-AUC'], ['0.867', 'runs, mean absolute error'], ['1.36M', 'deliveries']].map(([v, l]) => (
-              <div key={l} className="stat"><dt>{l}</dt><dd>{v}</dd></div>
-            ))}
-          </dl>
-          <p className="ui mt-6 text-snow/90">
-            Features are leakage-safe and validation is grouped by match. The Parquet store is about 15 times smaller than
-            the CSV and loads about 10 times faster. 71 pytest tests.
-          </p>
-        </System>
-
-        <System
-          id="naman"
-          area="Agentic AI"
-          title="Naman"
-          slug="naman"
-          visual={
-            <div className="border border-seam bg-carbon/80 p-6">
-              <p className="fine text-ash">One request through the agent graph</p>
-              <div className="mt-5"><Pipeline stages={miniFlows.naman as { label: string; kind: StageKind }[]} /></div>
-              <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-seam pt-6">
-                <div className="stat"><dt>outreach emails with an unsupported claim, before a code verifier</dt><dd>48 of 49</dd></div>
-                <div className="stat"><dt>after the verifier</dt><dd className="!text-ion">0 of 21</dd></div>
-              </dl>
-            </div>
-          }
-        >
-          <p className="ui mt-4 text-[1.0625rem] text-snow/85">{p('naman').summary}</p>
-          <p className="ui mt-4 text-snow/90">
-            Approval is its own LangGraph node, so after a pause every tool runs exactly once. 164 pytest tests.
-          </p>
-        </System>
-
-        <System id="routecore" area="Algorithms" title="RouteCore" slug="routecore" visual={<div className="border border-seam bg-carbon/80 p-5"><Benchmark /></div>}>
-          <p className="ui mt-4 text-[1.0625rem] text-snow/85">{p('routecore').summary}</p>
-          <p className="ui mt-4 text-snow/90">At 100,000 points the hand-built k-d tree is 408 times faster than brute force. 47 JUnit tests in 8 suites.</p>
-        </System>
-      </div>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------ How I build */
-
-const steps: { title: string; body: ReactNode }[] = [
-  {
-    title: 'Split the problem into stages',
-    body: <>In <ProjectLink slug="toolforge" />, turning an API spec into a tool server takes seven stages, from reading the spec to a security audit, and each stage has one owner.</>,
-  },
-  {
-    title: 'Decide who acts at each stage',
-    body: <>A model proposes, code decides, a person approves. In <ProjectLink slug="settleai" /> agents scope jobs and judge proof, but only a guard in code can release a payout.</>,
-  },
-  {
-    title: 'Make the critical write exact',
-    body: <>In <ProjectLink slug="movigo" />, one conditional write settles a race between drivers: exactly one wins, and the others are told the job is gone.</>,
-  },
-  {
-    title: 'Measure it, refusals included',
-    body: <><ProjectLink slug="dociq" /> is evaluated on whether it refuses when the documents hold no answer: 11 of 11 retrieval hits and 1 of 1 correct refusal offline.</>,
-  },
-  {
-    title: 'Build for the people who run it',
-    body: <>Movigo’s operations team changes prices, zones and surge from the console. No setting waits on an app release.</>,
-  },
-  {
-    title: 'Ship versions and keep improving',
-    body: <>Customer churn went from a notebook to a SHAP prototype to <ProjectLink slug="customer-churn-xai" />, which explains each prediction in plain English.</>,
-  },
-];
-
-function Approach() {
-  return (
-    <Chapter id="approach" title="How I build" intro="Six steps that run through the work, each shown in a real project." width="lg:max-w-[60rem]">
-      <ol className="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
-        {steps.map((s, i) => (
-          <li key={s.title} className="border-t border-seam pt-5">
-            <span className="label text-ion" aria-hidden>Step {i + 1}</span>
-            <h3 className="headline mt-2 text-[1.5rem] text-snow">{s.title}</h3>
-            <p className="ui mt-2.5 text-snow/80">{s.body}</p>
-          </li>
-        ))}
-      </ol>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------ Experience */
-
-function Experience() {
-  return (
-    <Chapter id="experience" title="Experience" width="lg:max-w-none">
+    <Chapter id="study" title="The study" intro="Where the work was done, and what backs it." width="lg:max-w-none">
       <div className="mt-12 grid gap-12 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] xl:gap-14">
         <div>
-          <p className="fine text-ion">Since {formatMonth(currentRole.start)}</p>
-          <h3 className="headline mt-1 text-[clamp(1.9rem,3vw,2.5rem)] text-snow">{currentRole.title}</h3>
-          <p className="ui mt-1 font-semibold text-snow">{currentRole.org}</p>
-          <ol className="ui mt-5 space-y-1 border-l-2 border-ion pl-4">
+          <p className="fine text-brass">Since {formatMonth(currentRole.start)}</p>
+          <h3 className="serif-display mt-1 text-[clamp(1.9rem,3vw,2.5rem)] text-bone">{currentRole.title}</h3>
+          <p className="ui mt-1 font-semibold text-bone">{currentRole.org}</p>
+          <ol className="ui mt-5 space-y-1 border-l-2 border-brass pl-4">
             {currentRole.titles!.map((t) => (
-              <li key={t.title} className="text-ash"><span className="text-snow">{t.title}</span>, from {formatMonth(t.from)}</li>
+              <li key={t.title} className="text-stone"><span className="text-bone">{t.title}</span>, from {formatMonth(t.from)}</li>
             ))}
           </ol>
-          <p className="ui mt-6 text-snow/85">{currentRole.summary}</p>
-          <ul className="ui mt-5 space-y-2 text-snow/85">
+          <p className="ui mt-6 text-bone/85">{currentRole.summary}</p>
+          <ul className="ui mt-5 space-y-2 text-bone/85">
             {currentRole.work!.slice(0, 3).map((w) => (
-              <li key={w} className="flex gap-3"><span className="mt-[0.5rem] inline-block h-2 w-2 shrink-0 bg-ion" aria-hidden />{w}</li>
+              <li key={w} className="flex gap-3"><span className="mt-[0.5rem] inline-block h-2 w-2 shrink-0 bg-brass" aria-hidden />{w}</li>
             ))}
           </ul>
         </div>
@@ -324,84 +229,84 @@ function Experience() {
         </div>
       </div>
 
-      <div className="mt-20 grid gap-12 border-t border-seam pt-10 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-20 grid gap-12 border-t border-joint pt-10 md:grid-cols-2 xl:grid-cols-3">
         <div>
-          <h3 className="fine text-ash">Education</h3>
-          <p className="headline mt-3 text-[1.5rem] text-snow">{education.degree}</p>
-          <p className="ui mt-2 text-snow/85">{education.school}</p>
-          <p className="ui mt-1 text-ash">{education.years}. {education.grade}.</p>
+          <h3 className="fine text-stone">Education</h3>
+          <p className="serif-display mt-3 text-[1.5rem] text-bone">{education.degree}</p>
+          <p className="ui mt-2 text-bone/85">{education.school}</p>
+          <p className="ui mt-1 text-stone">{education.years}. {education.grade}.</p>
           {inProgress.map((i) => (
-            <p key={i.title} className="ui mt-6 border-l-2 border-iris pl-4 text-snow">
-              <span className="font-semibold">{i.title}.</span> <span className="text-ash">{i.detail}</span>
+            <p key={i.title} className="ui mt-6 border-l-2 border-glass pl-4 text-bone">
+              <span className="font-semibold">{i.title}.</span> <span className="text-stone">{i.detail}</span>
             </p>
           ))}
         </div>
         <div>
-          <h3 className="fine text-ash">Certificates</h3>
+          <h3 className="fine text-stone">Certificates</h3>
           <ul className="mt-3">
             {credentials.map((c) => (
-              <li key={c.title} className="ui grid grid-cols-[1fr_auto] gap-x-4 border-b border-seam py-2">
+              <li key={c.title} className="ui grid grid-cols-[1fr_auto] gap-x-4 border-b border-joint py-2">
                 <span>
                   {c.href ? (
-                    <a href={c.href} target="_blank" rel="noopener noreferrer" className="link font-semibold text-snow">
+                    <a href={c.href} target="_blank" rel="noopener noreferrer" className="link font-semibold text-bone">
                       {c.title}<span className="sr-only"> (certificate, opens in a new tab)</span>
                     </a>
                   ) : (
-                    <span className="font-semibold text-snow">{c.title}</span>
+                    <span className="font-semibold text-bone">{c.title}</span>
                   )}
-                  <span className="block text-ash">{c.issuer}</span>
+                  <span className="block text-stone">{c.issuer}</span>
                 </span>
-                {c.date && <span className="whitespace-nowrap text-ash">{c.date}</span>}
+                {c.date && <span className="whitespace-nowrap text-stone">{c.date}</span>}
               </li>
             ))}
           </ul>
         </div>
         <div className="md:col-span-2 xl:col-span-1">
-          <h3 className="fine text-ash">Skills, each backed by projects</h3>
+          <h3 className="fine text-stone">Skills, each backed by projects</h3>
           <dl className="mt-3 space-y-4">
             {skillGroups.slice(0, 5).map((g) => (
               <div key={g.id}>
-                <dt className="ui font-semibold text-snow">{g.title}</dt>
-                <dd className="ui mt-0.5 text-ash">{g.skills.slice(0, 4).map((s) => s.name).join('; ')}</dd>
+                <dt className="ui font-semibold text-bone">{g.title}</dt>
+                <dd className="ui mt-0.5 text-stone">{g.skills.slice(0, 4).map((s) => s.name).join('; ')}</dd>
               </div>
             ))}
           </dl>
-          <Link to="/skills" className="ui mt-5 inline-flex font-semibold text-snow"><span className="link">Every skill, with the projects that show it</span></Link>
+          <a href={profile.resume} className="btn btn-brass mt-7" download><Download size={17} aria-hidden />Download résumé</a>
         </div>
       </div>
     </Chapter>
   );
 }
 
-/* ------------------------------------------------------------ Closing */
+/* ------------------------------------------------------------ Courtyard */
 
-function Closing() {
+function Courtyard() {
   const external = [
     ['GitHub', profile.github],
     ['LinkedIn', profile.linkedin],
   ];
   return (
-    <section id="closing" aria-labelledby="closing-title" className="relative z-10 flex min-h-[100svh] items-end pb-20 pt-28">
-      <div className="shell lg:pr-48">
-        <div className="read-panel -mx-4 px-4 py-8 sm:mx-0 sm:px-6 lg:max-w-[46rem] lg:p-0">
-          <h2 id="closing-title" className="headline text-[clamp(2.6rem,6vw,5.25rem)] text-snow">Open to AI, data and software roles</h2>
-          <p className="mt-6 max-w-[36rem] font-sans text-[clamp(1.1rem,1.5vw,1.3rem)] leading-snug text-snow/85">{profile.availability}.</p>
-          <a href={`mailto:${profile.email}`} className="headline mt-10 inline-block break-all text-[clamp(1.5rem,3vw,2.4rem)] text-ion no-underline hover:underline">
+    <section id="courtyard" aria-labelledby="courtyard-title" className="relative z-10 flex min-h-[100svh] items-end pb-20 pt-28">
+      <div className="shell lg:pr-52">
+        <div className="read-panel -mx-4 px-4 py-8 sm:mx-0 sm:px-6 lg:max-w-[44rem] lg:p-0">
+          <h2 id="courtyard-title" className="serif-display text-[clamp(2.6rem,6vw,5rem)] text-bone">Open to AI, data and software roles</h2>
+          <p className="mt-6 max-w-[36rem] font-sans text-[clamp(1.05rem,1.4vw,1.25rem)] leading-snug text-bone/85">{profile.availability}.</p>
+          <a href={`mailto:${profile.email}`} className="serif-display mt-10 inline-block break-all text-[clamp(1.5rem,3vw,2.4rem)] text-brass no-underline hover:underline">
             {profile.email}
           </a>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href={profile.resume} className="btn btn-volt" download><Download size={17} aria-hidden />Download résumé</a>
+            <a href={profile.resume} className="btn btn-brass" download><Download size={17} aria-hidden />Download résumé</a>
             <Link to="/contact" className="btn btn-line">Send a message</Link>
           </div>
           <ul className="ui mt-8 flex flex-wrap gap-x-6 gap-y-2">
             {external.map(([label, href]) => (
               <li key={label}>
-                <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-snow">
+                <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-bone">
                   <span className="link">{label}</span><ArrowUpRight size={15} aria-hidden /><span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </li>
             ))}
-            <li className="text-ash">{profile.location}</li>
+            <li className="text-stone">{profile.location}</li>
           </ul>
         </div>
       </div>
@@ -412,16 +317,19 @@ function Closing() {
 export default function Home() {
   const [active, setActive] = useState(0);
   return (
-    <div className="home relative bg-void text-snow">
-      <EngineBackdrop onChapter={setActive} />
+    <div className="home relative bg-soot text-bone">
+      <ResidenceBackdrop onChapter={setActive} name={NAME.toUpperCase()} line={DISCIPLINES.toUpperCase()} frames={FRAME_TITLES} />
       <ChapterRail active={active} />
-      <Opening />
-      <Domains />
-      <MapChapter />
-      <Systems />
-      <Approach />
-      <Experience />
-      <Closing />
+      <Arrival />
+      <Entrance />
+      <Gallery />
+      <Corridor />
+      <MachineLearningRoom />
+      <AgentsRoom />
+      <DataRoom />
+      <SoftwareRoom />
+      <Study />
+      <Courtyard />
     </div>
   );
 }

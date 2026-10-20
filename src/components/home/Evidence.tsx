@@ -20,7 +20,7 @@ function Dot({ kind }: { kind: StageKind }) {
 
 export function KindKey({ kinds = ['model', 'rule', 'human', 'io'] }: { kinds?: StageKind[] }) {
   return (
-    <ul className="fine flex flex-wrap gap-x-5 gap-y-1.5 text-ash" aria-label="Key">
+    <ul className="fine flex flex-wrap gap-x-5 gap-y-1.5 text-stone" aria-label="Key">
       {kinds.map((k) => (
         <li key={k} className="inline-flex items-center gap-2"><Dot kind={k} />{kindLabel[k]}</li>
       ))}
@@ -29,13 +29,13 @@ export function KindKey({ kinds = ['model', 'rule', 'human', 'io'] }: { kinds?: 
 }
 
 /** A pipeline whose stages are coloured by who acts: a model, code, a person, or the outside world. */
-export function Pipeline({ stages }: { stages: { label: string; kind: StageKind }[] }) {
+export function Pipeline({ stages, vertical = false }: { stages: { label: string; kind: StageKind }[]; vertical?: boolean }) {
   return (
-    <ol className="pipeline" style={{ ['--n' as string]: stages.length }}>
+    <ol className={vertical ? 'pipeline-v' : 'pipeline'} style={{ ['--n' as string]: stages.length }}>
       {stages.map((s) => (
         <li key={s.label}>
           <Dot kind={s.kind} />
-          <span className="fine font-medium text-snow/90">{s.label}</span>
+          <span className="fine font-medium text-bone/90">{s.label}</span>
           <span className="sr-only">: {kindLabel[s.kind]}</span>
         </li>
       ))}
@@ -55,8 +55,8 @@ export function Calibration() {
         </desc>
         {[0, 0.1, 0.2, 0.3].map((t) => (
           <g key={t}>
-            <line x1="44" x2="470" y1={16 + h - (t / max) * h} y2={16 + h - (t / max) * h} stroke="#1e2635" />
-            <text x="36" y={20 + h - (t / max) * h} textAnchor="end" fontSize="12" fill="#8b95a7" fontFamily="Archivo Variable, Archivo, sans-serif">{t * 100}%</text>
+            <line x1="44" x2="470" y1={16 + h - (t / max) * h} y2={16 + h - (t / max) * h} stroke="#34302b" />
+            <text x="36" y={20 + h - (t / max) * h} textAnchor="end" fontSize="12" fill="#a49e95" fontFamily="Archivo Variable, Archivo, sans-serif">{t * 100}%</text>
           </g>
         ))}
         {calibration.map((c, i) => {
@@ -64,17 +64,17 @@ export function Calibration() {
           const bar = (v: number) => (v / max) * h;
           return (
             <g key={c.bin}>
-              <rect x={x0} y={16 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke="#4f8cff" strokeWidth="2" />
-              <rect x={x0 + 52} y={16 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill="#57dbe6" />
-              <text x={x0 + 49} y={16 + h + 20} textAnchor="middle" fontSize="13" fill="#e9edf3" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600">{c.bin}</text>
-              <text x={x0 + 49} y={16 + h + 37} textAnchor="middle" fontSize="11" fill="#8b95a7" fontFamily="Archivo Variable, Archivo, sans-serif">{c.n.toLocaleString('en-US')} balls</text>
+              <rect x={x0} y={16 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke="#7cc6d2" strokeWidth="2" />
+              <rect x={x0 + 52} y={16 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill="#c9a46a" />
+              <text x={x0 + 49} y={16 + h + 20} textAnchor="middle" fontSize="13" fill="#efe9df" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600">{c.bin}</text>
+              <text x={x0 + 49} y={16 + h + 37} textAnchor="middle" fontSize="11" fill="#a49e95" fontFamily="Archivo Variable, Archivo, sans-serif">{c.n.toLocaleString('en-US')} balls</text>
             </g>
           );
         })}
       </svg>
-      <figcaption className="fine mt-2 flex flex-wrap gap-x-5 gap-y-1 text-ash">
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 border-2 border-volt" aria-hidden />Predicted</span>
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 bg-ion" aria-hidden />Observed</span>
+      <figcaption className="fine mt-2 flex flex-wrap gap-x-5 gap-y-1 text-stone">
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 border-2 border-glass" aria-hidden />Predicted</span>
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 bg-brass" aria-hidden />Observed</span>
         <span>Deliveries grouped by predicted dismissal probability, from the active model’s evaluation.</span>
       </figcaption>
     </figure>
@@ -86,7 +86,7 @@ export function Benchmark() {
   return (
     <figure>
       <table className="w-full border-collapse">
-        <caption className="fine mb-3 text-left text-ash">
+        <caption className="fine mb-3 text-left text-stone">
           RouteCore: 2,000 nearest-neighbour queries, log scale. Answers match brute force at every size.
         </caption>
         <thead className="sr-only">
@@ -95,27 +95,27 @@ export function Benchmark() {
         <tbody>
           {kdBenchmark.map((r) => (
             <tr key={r.n}>
-              <th scope="row" className="fine w-20 py-1.5 pr-3 text-left font-semibold text-snow">{r.n}</th>
+              <th scope="row" className="fine w-20 py-1.5 pr-3 text-left font-semibold text-bone">{r.n}</th>
               <td className="py-1.5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="block h-2 bg-ash/45" style={{ width: `${scale(r.brute) * 100}%` }} aria-hidden />
-                    <span className="fine whitespace-nowrap text-ash">{r.brute.toLocaleString('en-US')} ms</span>
+                    <span className="block h-2 bg-stone/45" style={{ width: `${scale(r.brute) * 100}%` }} aria-hidden />
+                    <span className="fine whitespace-nowrap text-stone">{r.brute.toLocaleString('en-US')} ms</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="block h-2 bg-ion" style={{ width: `${scale(r.kd) * 100}%` }} aria-hidden />
-                    <span className="fine whitespace-nowrap font-semibold text-snow">{r.kd} ms</span>
+                    <span className="block h-2 bg-brass" style={{ width: `${scale(r.kd) * 100}%` }} aria-hidden />
+                    <span className="fine whitespace-nowrap font-semibold text-bone">{r.kd} ms</span>
                   </div>
                 </div>
               </td>
-              <td className="fine w-16 py-1.5 pl-3 text-right font-bold text-snow">{(r.brute / r.kd).toFixed(1)}x</td>
+              <td className="fine w-16 py-1.5 pl-3 text-right font-bold text-bone">{(r.brute / r.kd).toFixed(1)}x</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="fine mt-2 flex gap-5 text-ash">
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-2 w-5 bg-ash/45" aria-hidden />Brute force</span>
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-2 w-5 bg-ion" aria-hidden />k-d tree</span>
+      <p className="fine mt-2 flex gap-5 text-stone">
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-2 w-5 bg-stone/45" aria-hidden />Brute force</span>
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-2 w-5 bg-brass" aria-hidden />k-d tree</span>
       </p>
     </figure>
   );
@@ -137,11 +137,11 @@ export function Timeline({ roles, now = '2026-10' }: { roles: Role[]; now?: stri
         {/* Year lines over the bar column only (the label column is 13rem plus a 1rem gap). */}
         <div className="pointer-events-none absolute inset-y-0 left-0 right-0 hidden sm:left-[14rem] sm:block" aria-hidden>
           {[2025, 2026].map((y) => (
-            <div key={y} className="absolute inset-y-0 border-l border-seam" style={{ left: `${((monthIndex(`${y}-01`) - start) / span) * 100}%` }}>
-              <span className="fine absolute top-0 left-1.5 text-ash">{y}</span>
+            <div key={y} className="absolute inset-y-0 border-l border-joint" style={{ left: `${((monthIndex(`${y}-01`) - start) / span) * 100}%` }}>
+              <span className="fine absolute top-0 left-1.5 text-stone">{y}</span>
             </div>
           ))}
-          <span className="fine absolute top-0 left-0 text-ash">2024</span>
+          <span className="fine absolute top-0 left-0 text-stone">2024</span>
         </div>
         <ol className="relative space-y-0.5 pt-7">
           {roles.map((r) => {
@@ -152,18 +152,18 @@ export function Timeline({ roles, now = '2026-10' }: { roles: Role[]; now?: stri
             const current = r.end === 'present';
             return (
               <li key={r.id} className="grid grid-cols-1 items-center gap-x-4 sm:grid-cols-[13rem_1fr]">
-                <span className={`fine truncate ${current ? 'font-semibold text-snow' : 'text-snow/80'}`}>
+                <span className={`fine truncate ${current ? 'font-semibold text-bone' : 'text-bone/80'}`}>
                   {r.org}<span className="sr-only">, {r.title}, {formatRange(r.start, r.end)}</span>
                 </span>
                 <span className="relative block h-4" aria-hidden>
-                  <span className={`absolute top-1 h-2 ${current ? 'bg-ion' : 'bg-ash/50'}`} style={{ left: `${left}%`, width: `${width}%` }} />
+                  <span className={`absolute top-1 h-2 ${current ? 'bg-brass' : 'bg-stone/50'}`} style={{ left: `${left}%`, width: `${width}%` }} />
                 </span>
               </li>
             );
           })}
         </ol>
       </div>
-      <figcaption className="fine mt-4 text-ash">Each bar runs from the start to the end month on the offer letter or certificate.</figcaption>
+      <figcaption className="fine mt-4 text-stone">Each bar runs from the start to the end month on the offer letter or certificate.</figcaption>
     </figure>
   );
 }

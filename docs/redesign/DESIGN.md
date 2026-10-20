@@ -3,56 +3,50 @@
 Phase 2 of the cinematic rebuild. Content stays in `src/data/*` (verified against the career dossier);
 this document covers the visual layer only.
 
-## Concept: the engine (replaces the night city, 20 Oct 2026)
+## Concept: the Architect's Residence (replaces the engine, 20 Oct 2026)
 
-The subject builds AI systems in which a model proposes, code decides and a person approves the risky step,
-and runs a live delivery platform alone. The home page is set inside one engine: a particle structure that
-changes shape as the reader scrolls. Its three hues are that rule, used everywhere a diagram shows who acts:
+The portfolio is a contemporary house at dusk. The visitor reads a nameplate, watches a walnut pivot door open,
+walks a gallery of five framed skill areas, reaches an atrium with four doors (one per kind of project), enters
+each room, sits in the study, and leaves through a courtyard whose wall sinks and whose roof lifts away.
+Architecture is the frame; every fact is ordinary HTML from `src/data`.
 
-| Token | Hex | Meaning |
+| Token | Hex | Role |
 |---|---|---|
-| Void | `#05070C` | Page background, clear colour of the scene |
-| Carbon / Panel | `#0B0F17` / `#10151F` | Raised surfaces: map panel, chart frames |
-| Seam | `#1E2635` | Rules and borders |
-| Snow | `#E9EDF3` | Primary text (16.9:1 on Void) |
-| Ash | `#8B95A7` | Secondary text (6.6:1) |
-| Volt | `#4F8CFF` | A model proposes; primary buttons |
-| Ion | `#57DBE6` | Code decides; current state, case-study rings |
-| Iris | `#A78BFA` | A person approves; in-progress work |
+| Soot | `#0D0C0B` | Page background |
+| Char / Plinth | `#171614` / `#211F1C` | Panels, frames, doorways |
+| Joint | `#34302B` | Rules and borders |
+| Bone | `#EFE9DF` | Primary text (16.4:1 on Soot) |
+| Stone | `#A49E95` | Secondary text (7.4:1) |
+| Brass | `#C9A46A` | Warm light, primary buttons, code-decides marks |
+| Walnut | `#8A5C3B` | Frames, the door |
+| Glass | `#7CC6D2` | The one cool accent: model-proposes marks, ML room |
 
-Type stays Archivo (variable width, self-hosted) for display and interface, Source Serif 4 for long reading.
-The hero name animates its width axis once as the opening scrolls away.
+Type: Source Serif 4 at its display optical size for headings; Archivo for interface and body; Archivo
+expanded caps only for the nameplate and door signs (lettering on a wall). Fonts are self-hosted.
 
-## Home page choreography
+## Scroll choreography
 
-One fixed canvas (`src/scene/Engine.ts`, plain three.js, one draw call of points plus link and plate lines)
-behind ordinary sections. `src/scene/chapters.ts` maps each chapter to a shape; each chapter holds its shape
-and travels to the next in its last 30%.
+`src/scene/Residence.ts` is one procedural three.js scene (boxes with canvas-drawn concrete, walnut and stone
+textures; no downloaded assets). It is driven by a single station number `s` (`src/scene/chapters.ts`), and
+everything is a pure function of `s`, so scrolling back reverses it: camera along a Catmull-Rom path through 14
+stations, the door angle and light spill, frame lighting, room glow, the courtyard unfolding. The gallery's
+station comes from where its HTML frames sit on screen, so the camera stands at the frame being read.
 
 ```
- chapter        engine shape                         DOM
- ──────────────────────────────────────────────────────────────────────────────────────────────────
- Introduction   core: three shells, ring armature,   name, one-sentence role, project map + résumé,
-                signals crossing the links            colour key
- Domains        five stacked layers; some points     five domains, software at top, data at bottom,
-                rise through them                     one measured result and five projects each
- Project map    flat disc of rings, dimmed           SVG map of all 53 projects (real buttons), domain
-                                                      highlight, detail panel, archive links
- Featured,      wide quiet field                     Movigo (screenshots, counts), SettleAI (pipeline,
- How I build,                                         screenshot), CricXAI (calibration), Naman
- Experience                                           (pipeline, verifier result), RouteCore (benchmark);
-                                                      six steps; role, timeline, education, credentials
- Contact        a ring seen from just above          availability, email, résumé, GitHub, LinkedIn
+ chapter          station   scene                                   HTML
+ arrival           0        dusk exterior, nameplate wall, glass    nameplate (h1), role, Open the door, résumé
+ entrance          0 → 1    pivot door opens, light spills          directory of every room (direct links)
+ gallery           2 → 6    hallway, five frames light in turn      five framed domains: skills, result, projects
+ corridor          7        atrium, four lit doorways               four door links with counts and previews
+ rooms             8 → 11   camera at each doorway, room glows      featured projects with their own evidence
+ study             12       desk, lamp, shelves, frames             role, timeline, education, certificates
+ courtyard         13       wall sinks, roof lifts, pool, sky       availability, email, résumé, profiles
 ```
 
-### Loading and fallbacks
-
-- A still SVG of the core (`EnginePoster.tsx`) is prerendered, so first paint never waits on WebGL.
-- The engine loads as its own chunk on idle. No WebGL2, a lost context, or frames under 20 fps after
-  dropping the pixel ratio: the poster stays and every chapter still reads as an ordinary section.
-- Phones get 2,400 points instead of 5,600 and a pixel ratio cap of 1.5; no pointer parallax on touch.
-- Reduced motion: no unfold, drift, spin or travel; the engine cuts between still shapes per chapter.
-- The render loop stops while the tab is hidden.
+Fallbacks: a prerendered SVG elevation shows first and stays without WebGL2 or on slow devices (pixel ratio and
+shadows drop first, then the scene stops). Phones: no shadows, no antialiasing, pixel ratio capped at 1.5.
+Reduced motion: no camera travel; the scene cuts to the station of each chapter. Navigation: header, a room list
+on the right (a Rooms button on phones), the entrance directory and door links all use ordinary anchors.
 
 ## Pages without WebGL
 
