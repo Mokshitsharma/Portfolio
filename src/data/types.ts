@@ -108,7 +108,6 @@ export interface Role {
 
 export interface Skill {
   name: string;
-  production?: boolean; // used in a system with real users
   projects: string[]; // project slugs that show it
 }
 

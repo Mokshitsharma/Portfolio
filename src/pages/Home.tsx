@@ -289,7 +289,7 @@ function Career() {
 function Credentials() {
   return (
     <Chapter id="credentials" title="What I work with" wide>
-      <p className="ui mt-4 text-haze">Only skills with working code behind them. A filled square marks use in production at Movigo.</p>
+      <p className="ui mt-4 text-haze">Each one is backed by projects I have built; the Skills page links every skill to its projects.</p>
       <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
         {skillGroups.slice(0, 6).map((g) => (
           <div key={g.id} className="border-t border-kerb pt-4">
@@ -297,8 +297,8 @@ function Credentials() {
             <ul className="ui mt-3 space-y-1.5 text-paper">
               {g.skills.slice(0, 4).map((s) => (
                 <li key={s.name} className="flex items-start gap-2.5">
-                  <span className={`mt-[0.45rem] inline-block h-2 w-2 shrink-0 ${s.production ? 'bg-sodium' : 'border border-haze/70'}`} aria-hidden />
-                  <span>{s.name}{s.production && <span className="sr-only"> (used in production)</span>}</span>
+                  <span className="mt-[0.45rem] inline-block h-2 w-2 shrink-0 bg-sodium" aria-hidden />
+                  <span>{s.name}</span>
                 </li>
               ))}
             </ul>

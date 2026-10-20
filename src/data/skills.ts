@@ -1,6 +1,6 @@
 import type { SkillGroup } from './types';
 
-// Only skills with working code behind them. `production` marks use in a system with real users (Movigo).
+// Every skill links to the projects that use it.
 export const skillGroups: SkillGroup[] = [
   {
     id: 'agents',
@@ -39,14 +39,14 @@ export const skillGroups: SkillGroup[] = [
     title: 'Backend and real-time systems',
     intro: 'APIs that handle money, races and restarts.',
     skills: [
-      { name: 'Node.js and Express', production: true, projects: ['movigo', 'hyperlocal-marketplace', 'refera', 'voicedesk', 'dociq'] },
+      { name: 'Node.js and Express', projects: ['movigo', 'hyperlocal-marketplace', 'refera', 'voicedesk', 'dociq'] },
       { name: 'Python and FastAPI', projects: ['cricxai', 'sensei-ai', 'ai-business-analytics'] },
       { name: 'TypeScript', projects: ['settleai', 'refera', 'hyperlocal-marketplace', 'fieldops-ai'] },
-      { name: 'Concurrency-safe writes and state machines', production: true, projects: ['movigo', 'hyperlocal-marketplace', 'refera'] },
-      { name: 'Pusher, WebSockets and Socket.io', production: true, projects: ['movigo', 'voicedesk', 'hyperlocal-marketplace'] },
-      { name: 'Payments and webhooks: Razorpay, PayPal', production: true, projects: ['movigo', 'settleai'] },
+      { name: 'Concurrency-safe writes and state machines', projects: ['movigo', 'hyperlocal-marketplace', 'refera'] },
+      { name: 'Pusher, WebSockets and Socket.io', projects: ['movigo', 'voicedesk', 'hyperlocal-marketplace'] },
+      { name: 'Payments and webhooks: Razorpay, PayPal', projects: ['movigo', 'settleai'] },
       { name: 'Ledgers, idempotency and signed receipts', projects: ['settleai', 'refera'] },
-      { name: 'Scheduled jobs and background queues', production: true, projects: ['movigo', 'dociq'] },
+      { name: 'Scheduled jobs and background queues', projects: ['movigo', 'dociq'] },
     ],
   },
   {
@@ -54,7 +54,7 @@ export const skillGroups: SkillGroup[] = [
     title: 'Databases',
     intro: '',
     skills: [
-      { name: 'MongoDB with geospatial queries', production: true, projects: ['movigo', 'voicedesk', 'dociq'] },
+      { name: 'MongoDB with geospatial queries', projects: ['movigo', 'voicedesk', 'dociq'] },
       { name: 'PostgreSQL with Prisma and Drizzle', projects: ['settleai', 'refera', 'hyperlocal-marketplace'] },
       { name: 'Supabase with row-level security', projects: ['dairy-collection-manager'] },
       { name: 'MariaDB with Sequelize', projects: ['fieldops-ai'] },
@@ -67,8 +67,8 @@ export const skillGroups: SkillGroup[] = [
     title: 'Frontend and mobile',
     intro: '',
     skills: [
-      { name: 'Flutter, including Android background services', production: true, projects: ['movigo', 'fieldops-ai'] },
-      { name: 'Play Store and App Store releases', production: true, projects: ['movigo'] },
+      { name: 'Flutter, including Android background services', projects: ['movigo', 'fieldops-ai'] },
+      { name: 'Play Store and App Store releases', projects: ['movigo'] },
       { name: 'React and Next.js', projects: ['settleai', 'hyperlocal-marketplace', 'refera', 'dociq', 'portfolio'] },
       { name: 'React Native with Expo', projects: ['refera'] },
       { name: 'Tailwind CSS', projects: ['portfolio', 'settleai', 'community-platform'] },
@@ -79,7 +79,7 @@ export const skillGroups: SkillGroup[] = [
     title: 'Infrastructure, testing and security',
     intro: '',
     skills: [
-      { name: 'Mobile CI with Codemagic', production: true, projects: ['movigo'] },
+      { name: 'Mobile CI with Codemagic', projects: ['movigo'] },
       { name: 'Docker and GitHub Actions', projects: ['toolforge', 'cricxai', 'dociq'] },
       { name: 'Vercel and serverless functions', projects: ['portfolio', 'dairy-collection-manager'] },
       { name: 'pytest, Vitest, JUnit, Playwright', projects: ['naman', 'settleai', 'routecore', 'refera'] },

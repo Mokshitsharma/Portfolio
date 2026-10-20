@@ -10,7 +10,6 @@ const groupLine: Record<string, Line> = {
 
 export default function Skills() {
   const total = skillGroups.reduce((n, g) => n + g.skills.length, 0);
-  const prod = skillGroups.reduce((n, g) => n + g.skills.filter((s) => s.production).length, 0);
   return (
     <>
       <PageHeader
@@ -18,8 +17,8 @@ export default function Skills() {
         line="signal"
         aside={
           <dl className="grid grid-cols-2 gap-8">
-            <div><dt className="label text-mist">Skills with code behind them</dt><dd className="display mt-2 text-6xl">{total}</dd></div>
-            <div><dt className="label text-mist">Used in production</dt><dd className="display mt-2 text-6xl text-field-light">{prod}</dd></div>
+            <div><dt className="label text-mist">Skills</dt><dd className="display mt-2 text-6xl">{total}</dd></div>
+            <div><dt className="label text-mist">Areas</dt><dd className="display mt-2 text-6xl">{skillGroups.length}</dd></div>
           </dl>
         }
       >
@@ -46,8 +45,8 @@ export default function Skills() {
                 {g.skills.map((s) => (
                   <li key={s.name} className="grid gap-3 py-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:gap-8">
                     <p className="flex items-start gap-3 font-sans text-[1.0625rem] font-semibold">
-                      <span className={`mt-[0.45rem] inline-block h-2.5 w-2.5 shrink-0 ${s.production ? 'bg-field' : 'border border-graphite/60'}`} aria-hidden />
-                      <span>{s.name}{s.production && <span className="label ml-2 font-normal text-clear">production</span>}</span>
+                      <span className="mt-[0.45rem] inline-block h-2.5 w-2.5 shrink-0 bg-field" aria-hidden />
+                      <span>{s.name}</span>
                     </p>
                     <ul className="flex flex-wrap gap-2">
                       {s.projects.map((slug) => {
