@@ -4,7 +4,7 @@ import { nav } from './Header';
 
 export default function SiteFooter() {
   return (
-    <footer className="plate">
+    <footer className="plate relative z-10">
       <div className="flex" aria-hidden>
         <span className="rail flex-1 bg-route" />
         <span className="rail flex-1 bg-signal" />

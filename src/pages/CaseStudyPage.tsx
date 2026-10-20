@@ -160,12 +160,12 @@ function Figures({ c }: { c: CaseStudy }) {
   );
 }
 
-function Checklist({ items, tone }: { items: string[]; tone: 'clear' | 'held' }) {
+function Checklist({ items }: { items: string[] }) {
   return (
     <ul className="measure space-y-4">
       {items.map((q) => (
         <li key={q} className="flex gap-4 text-[1.125rem] leading-[1.65]">
-          <span className={`mt-2 inline-block h-3 w-3 shrink-0 ${tone === 'clear' ? 'bg-field' : 'border-2 border-held'}`} aria-hidden />
+          <span className="mt-2 inline-block h-3 w-3 shrink-0 bg-field" aria-hidden />
           <span>{q}</span>
         </li>
       ))}
@@ -229,16 +229,15 @@ export default function CaseStudyPage() {
   const facts: Part | null = hasEvidence ? { id: 'results', title: factTitle, node: <Facts c={c} slug={slug} /> } : null;
   const sections: Part | null = c.sections.length ? { id: 'details', title: 'Implementation', node: <Sections c={c} /> } : null;
   const figures: Part | null = (c.figures?.length ?? 0) > 1 ? { id: 'screens', title: 'Screens', node: <Figures c={{ ...c, figures: c.figures!.slice(1) }} /> } : null;
-  const quality: Part = { id: 'quality', title: 'Testing and quality', node: <Checklist items={c.quality} tone="clear" /> };
-  const limits: Part = { id: 'limits', title: 'Limits and next steps', node: <Checklist items={c.limits} tone="held" /> };
+  const quality: Part | null = c.quality?.length ? { id: 'quality', title: 'Testing and results', node: <Checklist items={c.quality} /> } : null;
   const overview: Part = { id: 'overview', title: 'Overview', node: <Overview c={c} p={p} /> };
 
   // Different subjects lead with different evidence.
   const order: Record<CaseStudy['layout'], (Part | null)[]> = {
-    production: [overview, diagram, decisions, sections, facts, quality, limits],
-    agent: [overview, diagram, decisions, sections, facts, figures, quality, limits],
-    model: [overview, facts, diagram, decisions, sections, figures, quality, limits],
-    engineering: [overview, decisions, facts, diagram, sections, figures, quality, limits],
+    production: [overview, diagram, decisions, sections, facts, quality],
+    agent: [overview, diagram, decisions, sections, facts, figures, quality],
+    model: [overview, facts, diagram, decisions, sections, figures, quality],
+    engineering: [overview, decisions, facts, diagram, sections, figures, quality],
   };
   const parts = order[c.layout].filter(Boolean) as Part[];
 

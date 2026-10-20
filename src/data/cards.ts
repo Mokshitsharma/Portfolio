@@ -41,7 +41,7 @@ export const cardCopy: Record<string, { pitch: string; detail: string }> = {
   },
   'fieldops-ai': {
     pitch: 'Attendance, onboarding and performance tracking for a field team of about twenty.',
-    detail: 'GPS points are batched on the phone and retried when an upload fails.',
+    detail: 'GPS points go up in one batch a minute instead of one request per point.',
   },
   'hyperlocal-marketplace': {
     pitch: 'Orders from local shops, delivered by riders, on a state machine built to survive races and restarts.',

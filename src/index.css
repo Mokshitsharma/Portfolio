@@ -14,11 +14,16 @@
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
 
-  --color-night: #0e1c2b;
-  --color-night-2: #15293d;
-  --color-night-3: #1e3650;
-  --color-night-rule: #2c4560;
-  --color-mist: #9fb2c4;
+  /* Night palette (see docs/redesign/DESIGN.md). Contrast on night: paper 16.0, haze 8.1, sodium 10.0. */
+  --color-night: #08111d;
+  --color-dusk: #0f1c2c;
+  --color-kerb: #1f3249;
+  --color-haze: #9aacbf;
+  --color-sodium: #f2b13c;
+  --color-night-2: #0f1c2c;
+  --color-night-3: #1a2b40;
+  --color-night-rule: #1f3249;
+  --color-mist: #9aacbf;
   --color-paper: #e9ecef;
   --color-surface: #f7f8fa;
   --color-ink: #0e1c2b;
@@ -27,9 +32,9 @@
 
   --color-route: #f4c430;
   --color-signal: #4d7cfe;
-  --color-signal-light: #8eabff;
+  --color-signal-light: #8ea8ff;
   --color-field: #2f9e6e;
-  --color-field-light: #5fd3a0;
+  --color-field-light: #57c99a;
   --color-clear: #1d6b4c;
   --color-held: #b8382a;
   --color-held-light: #ff8a7a;
@@ -62,10 +67,10 @@
     text-decoration-thickness: 1px;
   }
 
-  ::selection { background: var(--color-route); color: var(--color-night); }
+  ::selection { background: var(--color-sodium); color: var(--color-night); }
 
   :focus-visible {
-    outline: 3px solid var(--color-route);
+    outline: 3px solid var(--color-sodium);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -160,6 +165,50 @@
 
   /* Rail: the thin line-coloured band used at section transitions. */
   .rail { height: 6px; }
+}
+
+/* Home page: the night city */
+@layer components {
+  /* The opening name. --hero-p (0-1) is set from the scroll handler; the name widens as the city takes over. */
+  .hero-name {
+    font-family: var(--font-sans);
+    font-weight: 850;
+    line-height: 0.84;
+    letter-spacing: -0.03em;
+    font-variation-settings: "wdth" calc(64 + var(--hero-p, 0) * 46);
+    opacity: calc(1 - var(--hero-p, 0) * 0.85);
+  }
+
+  /* Reading scrims over the city: left-weighted on wide screens, bottom-weighted on phones. */
+  .scrim-read {
+    background: linear-gradient(to top, rgb(8 17 29 / 0.97) 0%, rgb(8 17 29 / 0.8) 42%, rgb(8 17 29 / 0.15) 75%, transparent 100%);
+  }
+  @media (min-width: 1024px) {
+    .scrim-read {
+      background: linear-gradient(to right, rgb(8 17 29 / 0.94) 0%, rgb(8 17 29 / 0.82) 34%, rgb(8 17 29 / 0.2) 62%, transparent 80%);
+    }
+  }
+
+  /* A chapter's text block on phones gets its own backing so it reads over any part of the city. */
+  .chapter-panel { background: rgb(8 17 29 / 0.86); }
+  @media (min-width: 1024px) { .chapter-panel { background: none; } }
+
+  .field-input-dark {
+    @apply w-full border border-kerb bg-night px-3.5 py-3 font-sans text-paper;
+    font-size: 1rem;
+  }
+  .field-input-dark:focus-visible { border-color: var(--color-paper); }
+  .field-input-dark[aria-invalid="true"] { border-color: var(--color-held-light); }
+
+  .btn-sodium { @apply bg-sodium text-night hover:bg-[#ffc457]; }
+  .btn-ghost-night { @apply border-kerb text-paper hover:border-paper; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-intro { animation: hero-settle 1.4s cubic-bezier(.2,.7,.2,1) backwards; }
+  @keyframes hero-settle {
+    from { font-variation-settings: "wdth" 96; letter-spacing: 0.01em; opacity: 0; }
+  }
 }
 
 /* Motion. Everything is visible without it. */

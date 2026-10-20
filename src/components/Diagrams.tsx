@@ -14,9 +14,9 @@ const kindName: Record<NonNullable<Stage['kind']>, string> = {
 
 const marker: Record<NonNullable<Stage['kind']>, string> = {
   model: 'rounded-full border-signal-light bg-night',
-  rule: 'border-route bg-route',
-  human: 'rounded-full border-route bg-route',
-  io: 'border-paper bg-paper',
+  rule: 'border-sodium bg-sodium',
+  human: 'rounded-full border-paper bg-paper',
+  io: 'border-paper/70 bg-transparent',
 };
 
 // A pipeline: horizontal on wide screens (stations along a line), vertical on narrow ones.

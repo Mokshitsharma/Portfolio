@@ -13,12 +13,22 @@ export const nav = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [atTop, setAtTop] = useState(true);
   const button = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
 
   // Close on navigation.
   useEffect(() => setOpen(false), [pathname]);
+
+  // Over the home page's opening scene the bar is transparent; it gains its background once the page scrolls.
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY < 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  const clear = pathname === '/' && atTop && !open;
 
   // Escape closes the menu and returns focus to the toggle; opening moves focus to the first link.
   useEffect(() => {
@@ -35,13 +45,13 @@ export default function Header() {
   }, [open]);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `label relative py-2 no-underline transition-colors hover:text-paper ${isActive ? 'text-paper after:absolute after:inset-x-0 after:-bottom-[1px] after:h-[3px] after:bg-route' : 'text-mist'}`;
+    `label relative py-2 no-underline transition-colors hover:text-paper ${isActive ? 'text-paper after:absolute after:inset-x-0 after:-bottom-[1px] after:h-[3px] after:bg-sodium' : 'text-mist'}`;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-night-rule bg-night/95 text-paper backdrop-blur-sm">
+    <header className={`fixed inset-x-0 top-0 z-50 border-b text-paper transition-colors duration-300 ${clear ? 'border-transparent bg-transparent' : 'border-night-rule bg-night/95 backdrop-blur-sm'}`}>
       <div className="shell flex h-16 items-center justify-between gap-6">
         <Link to="/" className="group flex items-center gap-3 no-underline">
-          <span className="inline-block h-3 w-3 bg-route transition-transform group-hover:rotate-45" aria-hidden />
+          <span className="inline-block h-3 w-3 bg-sodium transition-transform group-hover:rotate-45" aria-hidden />
           <span className="font-sans text-lg font-bold tracking-tight" style={{ fontStretch: '78%' }}>{profile.name}</span>
         </Link>
 
@@ -55,7 +65,7 @@ export default function Header() {
               </li>
             ))}
             <li>
-              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-route btn !min-h-9 !px-4">
+              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-sodium btn !min-h-9 !px-4">
                 Résumé<span className="sr-only"> (opens in a new tab)</span>
               </a>
             </li>

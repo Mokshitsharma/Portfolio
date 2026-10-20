@@ -80,8 +80,7 @@ export interface CaseStudy {
   decisions: { title: string; body: string }[];
   sections: CaseSection[];
   facts?: Fact[];
-  quality: string[]; // testing, evaluation, controls
-  limits: string[]; // honest status and open work
+  quality?: string[]; // testing, evaluation and measured results
   figures?: Figure[];
   related?: string[]; // slugs
 }

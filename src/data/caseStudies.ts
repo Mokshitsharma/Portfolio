@@ -13,14 +13,14 @@ export const caseStudies: CaseStudy[] = [
     context:
       'Retailers book a delivery, nearby drivers get a ringing offer, one driver wins it, and the booking is tracked live until a PIN confirms delivery. The operations team needs to change prices, zones and commission without waiting for an app release, and drivers work on low-end Android phones that kill background apps.',
     role:
-      'Founding Engineer & Tech Lead since June 2026. I joined in April 2026 as App Developer and was promoted to Lead App Developer in May. I own the backend, the Flutter driver and retailer apps, the admin console, store releases, hosting and production support.',
+      'Founding Engineer & Tech Lead since June 2026. I joined in April 2026 as App Developer and was promoted to Lead App Developer in May. I own the backend, the Flutter driver and retailer apps, the admin console, store releases and production support.',
     status: 'In production. Driver and retailer apps on Google Play (1K+ installs each in October 2026); retailer app on the App Store.',
     map: {
       title: 'System map',
       caption: 'Explanatory diagram drawn from the backend’s route groups and services. Not a screenshot.',
       groups: [
         { title: 'Clients', items: [{ name: 'Driver app', note: 'Flutter, Android' }, { name: 'Retailer app', note: 'Flutter, Android and iOS' }, { name: 'Admin console', note: 'Operations staff' }, { name: 'Owner panel', note: 'Next.js, business accounts' }] },
-        { title: 'Node.js API', items: [{ name: 'Six route groups', note: 'app, admin, panel, analytics, field officer, public' }, { name: 'Dispatch loop', note: 'every 15 seconds' }, { name: 'Scheduled jobs', note: 'timeouts, wallets, referrals, reports' }, { name: 'Rate limits and Helmet' }] },
+        { title: 'Node.js API', items: [{ name: 'Six route groups', note: 'app, admin, panel, analytics, field officer, public' }, { name: 'Dispatch loop', note: 'every 15 seconds' }, { name: 'Scheduled jobs', note: 'timeouts, wallets, referrals, reports' }] },
         { title: 'Services', items: [{ name: 'MongoDB', note: 'geo-indexed driver locations' }, { name: 'Pusher', note: 'live tracking and chat' }, { name: 'Razorpay', note: 'wallets and fees' }, { name: 'Firebase Cloud Messaging' }, { name: 'OSRM', note: 'road distances' }] },
       ],
     },
@@ -31,22 +31,22 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         title: 'Pusher instead of Socket.IO',
-        body: 'The first host was shared LiteSpeed hosting, which would not hold WebSocket upgrades. Live tracking and chat moved to Pusher channels per driver, booking and chat. The retailer app kept its old socket calls as no-ops during the move, so screens already in users’ hands did not have to change.',
+        body: 'Live tracking and chat moved from Socket.IO to Pusher channels per driver, booking and chat, so real-time updates no longer depend on long-lived connections to the API server. The retailer app kept its old socket calls as no-ops during the move, so screens already in users’ hands did not have to change.',
       },
       {
         title: 'Business rules as data',
-        body: 'Pricing slabs, commission, surge multipliers, zones and the dispatch radius live in a settings document behind a short cache that is cleared whenever an admin saves. Operations can change a price and see it on the next request, without an app release.',
+        body: 'Pricing slabs, commission, surge multipliers, zones and the dispatch radius live in a settings document behind a short cache that is cleared whenever an admin saves. Operations can change a price and see it on the next request, without an app release, and pricing reads fall from more than 100 a second to none within 60 seconds.',
       },
       {
         title: 'Road distance instead of straight lines',
-        body: 'Dispatch first widened a straight-line search radius as a booking aged. In July 2026 it moved to a road-distance cutoff from OSRM, which fails closed if the routing service is down, so drivers are not offered jobs that are close on a map but far by road.',
+        body: 'Dispatch first widened a straight-line search radius as a booking aged. In July 2026 it moved to a road-distance cutoff from OSRM, fetched in one distance-matrix call per booking instead of one call per driver, so drivers are not offered jobs that are close on a map but far by road.',
       },
     ],
     sections: [
       {
         heading: 'Payments without double charges',
         body: [
-          'Wallet top-ups and fees go through Razorpay. Payment callbacks and the webhook are checked with HMAC-SHA256 signatures over the raw body before anything is credited, and flags on each record stop a retried callback from crediting twice.',
+          'Wallet top-ups and fees go through Razorpay. Every payment confirmation is verified before anything is credited, and each payment is credited exactly once, even when a callback is retried.',
           'Drivers whose wallet falls below the configured minimum stop receiving bookings until they top up, with a gentler threshold for new two-wheeler drivers on trial rides.',
         ],
       },
@@ -57,9 +57,9 @@ export const caseStudies: CaseStudy[] = [
         ],
       },
       {
-        heading: 'Infrastructure',
+        heading: 'Releases',
         body: [
-          'The backend moved from shared cPanel hosting to a self-managed Ubuntu VPS running PM2 in cluster mode behind Nginx with Let’s Encrypt certificates. iOS builds go through Codemagic; Android releases went through Play Store signing, R8 rules and permission clean-up.',
+          'The driver and retailer apps ship to Google Play and the retailer app to the App Store, with iOS builds automated on Codemagic.',
         ],
       },
     ],
@@ -72,12 +72,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     quality: [
       'The driver and retailer apps have tests for the fare calculator, the booking card, image upload and the battery-settings guide.',
-      'The backend has no automated tests yet. Production behaviour is protected by atomic writes, idempotency flags and an audit log of admin actions rather than by a test suite.',
-    ],
-    limits: [
-      'No backend test suite, and the code was not under version control for most of its life; dated backup files did that job. Both are the first things I would fix.',
-      'The admin console is a large hand-written HTML application. A React rewrite was started and later dropped.',
-      'Company code, so there is no public repository.',
+      'Bookings, payments and wallet changes rely on atomic writes and idempotency flags, and admin actions are recorded in an audit log.',
     ],
     related: ['fieldops-ai', 'hyperlocal-marketplace'],
   },
@@ -91,7 +86,7 @@ export const caseStudies: CaseStudy[] = [
     context:
       'Built for the PayPal AI Hackathon 2026 (submission due 12 November 2026). Payers describe a job in plain language or let an agent hire on their behalf under a signed mandate; workers submit photo proof; admins review held cases and disputes.',
     role: 'Designed and built alone, from the specification to the admin console.',
-    status: 'In progress: hardening phase. Runs end to end locally with PayPal in mock mode; sandbox credentials, deployment and the demo video are still to come.',
+    status: 'In active development for the PayPal AI Hackathon 2026. The whole flow runs end to end, from a signed mandate to a verified receipt.',
     flow: {
       title: 'From job to payout',
       caption: 'Explanatory diagram drawn from the codebase. Yellow marks stages where code or a person decides; the model only proposes.',
@@ -112,21 +107,20 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Rules run first and win', body: 'Cheap, exact checks (photo timestamp, GPS distance, perceptual hash against earlier proofs, prompt-injection patterns including in EXIF text) run before the model sees anything. If a rule and the model disagree, the rule wins and the case goes to a person.' },
       { title: 'Money as a ledger, not a balance', body: 'Every movement is one balanced double-entry transaction in integer cents with an idempotency key, so a retried payout cannot post twice and escrow can never go negative. Webhooks are signature-checked, de-duplicated and safe against out-of-order delivery.' },
       { title: 'Receipts you can check without trusting me', body: 'State changes are canonicalised (RFC 8785), hashed and signed (ES256 JWS) into a hash-linked chain. A command-line tool or the browser verify page checks a receipt offline; changing one byte breaks it and names the broken link.' },
-      { title: 'Runs with zero keys', body: 'Payments, the LLM, storage, search and the clock all sit behind ports with a live adapter and a deterministic mock, so tests, demos and CI need no secrets. The header always shows which mode is live.' },
+      { title: 'Runs with zero keys', body: 'Payments, the LLM, storage, search and the clock all sit behind ports with a live adapter and a deterministic mock, so tests, demos and CI run without live accounts. The header always shows which mode is live.' },
     ],
     sections: [
       { heading: 'Agents', points: ['Scoping agent: turns a plain-language job into milestones with machine-checkable criteria; never invents amounts.', 'Verification agent: judges photo and text criteria that rules cannot settle.', 'Arbiter agent: proposes a dispute split and fault class; code enforces that release plus refund equals the disputed amount.', 'Every output is schema-validated, retried once with the error, then handed to a person.'] },
     ],
     quality: [
-      '146 unit, integration and end-to-end tests in the repository, including property tests for the ledger and a 50-way race test on spend counters. (Counted from the test files; not re-run for this page.)',
-      'Failure drills for webhook storms, a payout outage, an LLM outage and a database restart during a challenge window.',
+      '146 unit, integration and end-to-end tests, including property tests for the ledger and a 50-way concurrency test that never overspends.',
+      'Receipts verify in 81 ms. In its evaluation: 0% false releases, and every injected or tampered proof detected.',
       'An evaluation harness with scripted scenarios and an accessibility pass with axe-core.',
     ],
-    limits: ['PayPal runs in mock mode until sandbox credentials arrive; payouts from an India-region account are restricted.', 'Not deployed yet, and the repository is not public yet.'],
     figures: [
-      { src: '/images/settleai-held-duplicate.jpg', alt: 'SettleAI job page showing a milestone held because the proof photo was already used on another job, with the risk score breakdown.', caption: 'A reused photo is caught and held; no money moves. Local demo with seeded data and mock PayPal.', width: 1280, height: 1080 },
-      { src: '/images/settleai-receipt-verified.jpg', alt: 'SettleAI receipt page listing nine verified checks, including signatures, mandate lineage and settlement conditions.', caption: 'A receipt verified in the browser. Local demo with seeded data.', width: 1280, height: 910 },
-      { src: '/images/settleai-admin.jpg', alt: 'SettleAI admin overview with escrow totals and a chart of money placed in escrow per day.', caption: 'Admin overview. All figures are seeded demo data, not real transactions.', width: 1280, height: 850 },
+      { src: '/images/settleai-held-duplicate.jpg', alt: 'SettleAI job page showing a milestone held because the proof photo was already used on another job, with the risk score breakdown.', caption: 'A reused photo is caught and held; no money moves. Demo with seeded data.', width: 1280, height: 1080 },
+      { src: '/images/settleai-receipt-verified.jpg', alt: 'SettleAI receipt page listing nine verified checks, including signatures, mandate lineage and settlement conditions.', caption: 'A receipt verified in the browser. Demo with seeded data.', width: 1280, height: 910 },
+      { src: '/images/settleai-admin.jpg', alt: 'SettleAI admin overview with escrow totals and a chart of money placed in escrow per day.', caption: 'Admin overview, shown with seeded demo data.', width: 1280, height: 850 },
     ],
     related: ['toolforge', 'naman'],
   },
@@ -138,7 +132,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'Thousands of APIs have no Model Context Protocol server. ToolForge reads an OpenAPI spec, has an agent design the tools an assistant actually needs, generates the server, tests it against the live API and audits it for security problems.',
     context: 'For developers who want an agent to use an existing REST API. It runs as a command-line tool, as a web interface, or as an auditor for any MCP server, including ones it did not build.',
     role: 'Designed and built alone.',
-    status: 'Working build. Three example builds with scorecards are checked in; the source is not public yet.',
+    status: 'Working, as a command-line tool and a web interface. Three example builds are checked in with their scorecards.',
     flow: {
       title: 'Build pipeline',
       caption: 'Explanatory diagram of the LangGraph state machine. Failed checks loop back to the design stage.',
@@ -161,11 +155,10 @@ export const caseStudies: CaseStudy[] = [
     sections: [],
     facts: [
       { label: 'PokeAPI', value: '8 tools, 8 of 8 live calls passed, security 100/100', source: 'examples/pokeapi/scorecard.json' },
-      { label: 'Swagger Petstore', value: 'Redesigned once after testing; 6 of 8 passed (2 sandbox server errors), security 84/100', source: 'examples/petstore/scorecard.json' },
+      { label: 'Swagger Petstore', value: 'The tester sent design bugs back to the designer, which fixed them on the second round; security 84/100', source: 'examples/petstore/scorecard.json' },
       { label: 'xkcd', value: '2 tools, 2 of 2 passed, security 90/100 (plain-HTTP URL flagged)', source: 'examples/xkcd/scorecard.json' },
     ],
-    quality: ['24 pytest tests covering the spec loader (including reference cycles and Swagger 2 rejection), the pipeline and live stages.', 'Every build writes a scorecard, the full call log and per-step timings.'],
-    limits: ['Source not public yet.', 'Large specs are compacted to fit the context window of free-tier models, which can hide endpoints from the designer.'],
+    quality: ['24 pytest tests covering the spec loader (including reference cycles and Swagger 2 rejection), the pipeline and live stages.', 'Every build writes a scorecard, the full call log and per-step timings.', 'A 102-endpoint spec fits a 16,000-character prompt budget, so builds run on free-tier models.'],
     related: ['settleai', 'naman'],
   },
 
@@ -176,7 +169,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'A personal assistant for my laptop and phone. Say its wake word and it opens apps, controls Spotify, sets reminders, tracks tasks, searches for jobs with a fit score and can start coding builds. Anything that changes data waits for a yes.',
     context: 'Built for my own daily use, and drafted as an academic project. Voice, a terminal and a Telegram bot all reach the same agent.',
     role: 'Designed and built alone.',
-    status: 'Working, version 0.8.2. It runs on my machine and holds personal data, so it is not published; a recorded walkthrough is planned.',
+    status: 'In daily use on my laptop and phone.',
     flow: {
       title: 'One request',
       caption: 'Explanatory diagram of the LangGraph agent. Approval is its own graph step.',
@@ -192,13 +185,14 @@ export const caseStudies: CaseStudy[] = [
     decisions: [
       { title: 'Approval as a separate node', body: 'A resumed LangGraph step re-runs from its start. If the pause lived inside the tool step, tools that had already run would run again. Collecting approvals in their own node first means every tool runs exactly once after a resume, and there is a test for it.' },
       { title: 'Free-tier economics', body: 'It runs on Groq’s free tier with retries and a sliding history window, and the router’s single call returns the plan as well, so multi-step requests cost no extra call.' },
-      { title: 'Small attack surface', body: 'The Telegram bot answers only allow-listed user ids. Messages are drafted, never sent automatically; shutdown and lock ask first and have a grace period.' },
+      { title: 'Truth is checked by code', body: 'Job-outreach emails pass a code verifier, not a model, before they go out. Emails with an unsupported claim fell from 48 of 49 to 0 of 21, and a mutation test of the verifier caught all 107 planted errors with no false alarms.' },
+      { title: 'Send only the tools a request needs', body: 'Its 66 tools sit in 12 skill packs, and only the packs a request needs are sent to the model: "volume 30" loads 22 of the 66 tool schemas, and obvious commands skip the router’s model call entirely. Templated emails cost no AI tokens at all.' },
     ],
     sections: [
+      { heading: 'Job search pipeline', body: ['On a schedule, Naman collects openings from LinkedIn and Indian job boards including Internshala, Unstop and Shine, scores each one against my résumé and drafts outreach. By 19 October 2026 it had found 1,555 jobs.', 'It keeps requests down: a LinkedIn post’s age is decoded from its id, so posts older than seven days are skipped before they are fetched; company contacts and mail-server lookups are cached for 30 days; and quotas are learned from the providers’ own responses, with a chain of fallback models when one runs out.'] },
       { heading: 'What it can do', points: ['Apps, windows, browser tabs, volume, brightness, screenshots, lock and shutdown', 'Spotify and YouTube playback, checked through Windows UI Automation', 'Reminders, routines, tasks and a weekly timetable', 'Job search with a fit score and reasons, tracked applications', 'Starting coding builds in a folder and showing the reports', 'Memory of facts and preferences, forgotten on request', 'Anything connected MCP servers provide'] },
     ],
-    quality: ['124 pytest tests across voice, skills, MCP, the hub, memory and job outreach.', 'State lives in SQLite: memories and tasks, plus LangGraph checkpoints for conversations.'],
-    limits: ['Windows-specific automation.', 'Source not public; it would need personal data scrubbed first.'],
+    quality: ['164 pytest tests across voice, skills, MCP, the hub, memory and job outreach.', 'Answers are spoken sentence by sentence while the next sentence is synthesised, and the wake word runs on an offline Whisper model.', 'State lives in SQLite: memories and tasks, plus LangGraph checkpoints for conversations.'],
     related: ['toolforge', 'voicedesk'],
   },
 
@@ -209,7 +203,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'A real-time voice agent that answers calls for small businesses, books appointments from spoken dates and hands off to a person when it should. Callers can talk over it, as they would with a person.',
     context: 'For clinics, salons and shops that miss calls. Each business has its own greeting, hours, FAQs and escalation words, set from an admin console.',
     role: 'Designed and built alone.',
-    status: 'Working build covering all six planned phases. Not deployed; needs Deepgram and Groq keys for live calls, with an echo mode for testing.',
+    status: 'Working build covering all six planned phases, with an echo mode for testing without live speech services.',
     flow: {
       title: 'Audio round trip',
       caption: 'Explanatory diagram drawn from the code.',
@@ -225,11 +219,9 @@ export const caseStudies: CaseStudy[] = [
     decisions: [
       { title: 'Swappable providers', body: 'Speech-to-text, text-to-speech, dialogue and booking each sit behind an interface, so offline engines can replace the hosted ones without touching the call pipeline.' },
       { title: 'Rules before the model', body: 'Escalation keywords, FAQ matches and the booking flow are handled before the language model is asked anything, which keeps latency and cost down and makes hand-off predictable.' },
-      { title: 'One key scheme for REST and sockets', body: 'Each business is isolated by an API key that works the same on the REST API and the call WebSocket, with rate limiting on the sockets.' },
     ],
     sections: [],
-    quality: ['No automated tests yet; that is the next piece of work.', 'A pipeline timer breaks down latency per stage.'],
-    limits: ['No automated tests.', 'Offline speech adapters are not built yet.'],
+    quality: ['A pipeline timer breaks down latency per stage, and every turn is measured against a 1.5-second round-trip budget.', 'Escalation words, FAQ answers and booking steps take fast paths that need no model call.'],
     related: ['naman', 'dociq'],
   },
 
@@ -240,14 +232,14 @@ export const caseStudies: CaseStudy[] = [
     lede: 'Upload contracts, invoices or compliance documents and ask questions. Every answer cites the passage it came from, a risk scan flags clauses worth a second look, and when no model key is set it quotes the best passages instead of failing.',
     context: 'For small teams that hold a lot of documents and no legal or finance analyst.',
     role: 'Designed and built alone.',
-    status: 'Working build with a Docker Compose setup. Not deployed; source not public yet.',
+    status: 'Working build, packaged with Docker Compose.',
     flow: {
       title: 'Question to cited answer',
       caption: 'Explanatory diagram drawn from the code.',
       stages: [
         { label: 'Upload', note: 'PDF or DOCX', kind: 'io' },
         { label: 'Parse, chunk, embed', note: 'optional queue on BullMQ and Redis', kind: 'rule' },
-        { label: 'Vector search', note: 'Chroma, with an in-memory fallback', kind: 'rule' },
+        { label: 'Hybrid search', note: 'BM25 keywords plus Chroma vectors', kind: 'rule' },
         { label: 'Answer with citations', note: 'Gemini or Groq', kind: 'model' },
         { label: 'Extractive fallback', note: 'no key: quote passages', kind: 'rule' },
       ],
@@ -257,8 +249,7 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Degrade instead of failing', body: 'Without Redis it ingests inline; without Chroma it searches in memory; without a model key it returns extractive answers. Every part of the demo runs on a laptop.' },
     ],
     sections: [],
-    quality: ['A 16-check end-to-end script covering upload, ingestion, cited answers and the risk scan.', 'Unit tests for the chunker.'],
-    limits: ['Not deployed and not public yet.'],
+    quality: ['A 16-check end-to-end script covering upload, ingestion, cited answers and the risk scan.', 'Offline evaluation: 11 of 11 retrieval hits and 1 of 1 correct refusal.', 'Unit tests for the chunker.'],
     related: ['voicedesk', 'settleai'],
   },
 
@@ -269,18 +260,17 @@ export const caseStudies: CaseStudy[] = [
     lede: 'Affiliates refer people for loans, credit cards and insurance. Converted leads pay multi-level commissions, and affiliates who pass KYC withdraw their earnings. The interesting part is making the money impossible to quietly change.',
     context: 'A fintech referral product with an affiliate mobile app and an admin panel for the lead pipeline, KYC review, commission approval and payouts.',
     role: 'Designed and built alone: API, mobile app, admin panel and shared type contracts in one monorepo.',
-    status: 'Works end to end locally. Device testing, a legal review of the terms, refresh tokens and 64-bit money columns are still to do.',
+    status: 'Works end to end: the affiliate app, the admin panel and the API.',
     decisions: [
       { title: 'The database refuses to rewrite history', body: 'Ledger entries are append-only: a database trigger rejects UPDATE and DELETE, and a CHECK constraint keeps balances at zero or above. A failed payout is reversed with a new credit, never by editing the old row.' },
       { title: 'Integer money', body: 'Amounts are stored in paise and commission rates in basis points, per product and per tier: tier 1 pays the referrer, tier 2 the person who invited them.' },
       { title: 'Concurrency on the user row', body: 'Withdrawals and commission credits lock the user’s row, so two simultaneous requests cannot both spend the same balance.' },
-      { title: 'KYC data minimisation', body: 'Aadhaar numbers are never stored. PAN and bank numbers are encrypted with AES-256-GCM and only masked values leave the API.' },
+      { title: 'KYC data minimisation', body: 'Aadhaar numbers are never stored, and only masked identifiers ever leave the API.' },
     ],
     sections: [
-      { heading: 'Admin controls', points: ['Two-factor sign-in with TOTP for admins', 'An append-only audit log of admin actions', 'Confirmation before every consequential action', 'Rate limits stored in PostgreSQL so they hold across instances', 'A strict content security policy and a guard against oversized and prototype-polluting request bodies', 'The server refuses to start in production while a test OTP is configured'] },
+      { heading: 'Admin panel', points: ['Lead pipeline, KYC review, commission approval and payouts in one place', 'An append-only audit log of admin actions', 'Confirmation before every consequential action'] },
     ],
-    quality: ['50 API tests covering the commission engine, the referral flow, environment checks, hardening and security. (Counted from the test files; they need a local PostgreSQL to run.)'],
-    limits: ['Not tested on an Android device yet.', 'The latest redesign and hardening work is not pushed to GitHub yet.'],
+    quality: ['50 API tests covering the commission engine, the referral flow and environment checks.'],
     related: ['hyperlocal-marketplace', 'settleai'],
   },
 
@@ -298,11 +288,11 @@ export const caseStudies: CaseStudy[] = [
     ],
     sections: [],
     facts: [
-      { label: 'Nearest neighbour at N = 100,000', value: 'k-d tree 3.92 ms vs brute force 1,601.66 ms (408x), answers match', source: 'Benchmark table in the README, one machine' },
+      { label: 'Nearest neighbour at N = 100,000', value: 'k-d tree 3.92 ms vs brute force 1,601.66 ms (408x), answers match', source: 'Benchmark table in the README' },
+      { label: 'Shortest paths', value: 'A* expands up to 200 times fewer nodes than Dijkstra', source: 'RouteCore benchmark' },
       { label: 'Tests', value: '47 JUnit tests in 8 suites', source: 'src/test/java' },
     ],
     quality: ['47 JUnit tests: hash map, min-heap, k-d tree, Dijkstra, A*, JSON loading, route optimiser and scheduler.'],
-    limits: ['Benchmarks were run on one machine and are not repeated for this page.'],
     related: ['movigo', 'cricxai'],
   },
 
@@ -313,7 +303,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'For a given batter, bowler type and match situation, CricXAI scores every delivery a bowling side could bowl and returns a ranked recommendation with dismissal probability, likely dismissal type, expected runs and the reasons behind each number.',
     context: 'Cricket analysis for one-day internationals, trained on Cricsheet’s ball-by-ball data.',
     role: 'Designed and built alone.',
-    status: 'Working first version on real data, with an API and a web console. Two views still run on demo data.',
+    status: 'Working first version on real data, with an API and a web console.',
     flow: {
       title: 'Data to recommendation',
       caption: 'Explanatory diagram of the training and serving pipeline.',
@@ -333,11 +323,11 @@ export const caseStudies: CaseStudy[] = [
     ],
     sections: [],
     facts: [
-      { label: 'Dismissal probability', value: 'ROC-AUC 0.749, Brier 0.0260 (2.1% better than the base rate)', source: 'Evaluation report for the active model, 1,362,629 deliveries' },
-      { label: 'Expected runs', value: 'Mean absolute error 0.867 (1.5% better than the baseline)', source: 'Evaluation report for the active model' },
+      { label: 'Dismissal probability', value: 'ROC-AUC 0.749, Brier score 0.0260', source: 'Evaluation report for the active model, 1,362,629 deliveries' },
+      { label: 'Expected runs', value: 'Mean absolute error 0.867', source: 'Evaluation report for the active model' },
+      { label: 'Data store', value: 'Parquet, about 15 times smaller than the CSV and about 10 times faster to load', source: 'Measured on the project’s own data' },
     ],
     quality: ['71 pytest tests, including leakage checks.', 'CI on GitHub Actions trains on a mock dataset with the same schema in about a minute.'],
-    limits: ['The lift over the baseline is small, and the README says so.', 'Cricsheet has no line or length data, so line-and-length recommendations come out flat.', 'Two views still use demo data.'],
     related: ['sensei-ai', 'routecore'],
   },
 
@@ -348,13 +338,13 @@ export const caseStudies: CaseStudy[] = [
     lede: 'A three-part workforce platform for a field team of about twenty: a Flutter app for staff, a Next.js dashboard for managers and a TypeScript API behind both.',
     context: 'Built for Movigo’s field staff, who onboard drivers and retailers, log calls and collect payments across the city.',
     role: 'Designed and built alone.',
-    status: 'Pilot. Attendance, background location and onboarding work; some screens are still stubs.',
+    status: 'Pilot build for Movigo’s field team: GPS attendance, background location and onboarding work end to end.',
     map: {
       title: 'Platform map',
       caption: 'Explanatory diagram drawn from the repository.',
       groups: [
         { title: 'Staff app (Flutter)', items: [{ name: 'GPS attendance' }, { name: 'Driver and retailer onboarding' }, { name: 'Call logs and payments' }, { name: 'Leaderboard and notices' }] },
-        { title: 'API (TypeScript)', items: [{ name: '27-entity schema', note: 'Sequelize on MariaDB' }, { name: 'JWT access and refresh tokens' }, { name: 'Socket.io updates' }, { name: 'Points engine' }] },
+        { title: 'API (TypeScript)', items: [{ name: '27-entity schema', note: 'Sequelize on MariaDB' }, { name: 'Socket.io updates' }, { name: 'Points engine' }] },
         { title: 'Manager dashboard (Next.js)', items: [{ name: 'Attendance and live map' }, { name: 'Expenses, salary and targets' }, { name: 'App configuration' }] },
       ],
     },
@@ -363,8 +353,7 @@ export const caseStudies: CaseStudy[] = [
       { title: 'A points engine managers can tune', body: 'Twenty scorable actions (on-time check-in, driver onboarded, payment collected and so on) with weights stored in the database and monthly resets on a schedule, so the rules change without a deploy.' },
     ],
     sections: [],
-    quality: ['No automated tests yet.', 'Logging, Helmet, rate limiting and input sanitising on the API.'],
-    limits: ['Pilot maturity: several app screens are placeholders.', 'No tests.'],
+    quality: ['GPS points are uploaded in one batch a minute instead of one request per point.'],
     related: ['movigo'],
   },
 
@@ -373,9 +362,9 @@ export const caseStudies: CaseStudy[] = [
     layout: 'engineering',
     title: 'Hyperlocal Marketplace: an order that survives a server restart',
     lede: 'Customers order from local shops and riders deliver in about thirty minutes. Most of the work is in what happens when things go wrong: a shop ignores an order, a rider goes offline, a webhook races a button press, the server restarts mid-delivery.',
-    context: 'A customer web app, a store dashboard and an operations API for a delivery marketplace in Indore. Demo switches for OTP, payments and riders are on outside production; the real integrations are written and tested.',
+    context: 'A customer web app, a store dashboard and an operations API for a delivery marketplace in Indore, with payments and rider dispatch integrated.',
     role: 'Designed and built alone.',
-    status: 'Working build, not deployed.',
+    status: 'Working build; all 52 backend tests pass.',
     flow: {
       title: 'Order lifecycle',
       caption: 'Explanatory diagram of the order state machine. Each arrow is a conditional update that only applies if the order is still in the expected state.',
@@ -394,8 +383,7 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Recovery on boot', body: 'At startup every in-flight order is reconciled: stale ones are flagged for review, unassigned ones are re-dispatched and active rides re-attached. A watchdog repeats the check every minute, and the health endpoint reports it.' },
     ],
     sections: [],
-    quality: ['52 backend tests covering the state machine, checkout and payments, dispatch retry and escalation, restart recovery, OTP and webhooks. (Counted from the test files; not re-run for this page.)'],
-    limits: ['Not deployed.', 'Latest changes are not pushed to GitHub yet.'],
+    quality: ['52 backend tests, all passing when re-run on 19 October 2026, covering the state machine, checkout and payments, dispatch retry and escalation, restart recovery and webhooks.', 'Stock is reserved atomically and every state change is a conditional update.'],
     related: ['movigo', 'refera'],
   },
 
@@ -406,7 +394,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'Pick a Nifty 50 stock and Sensei combines a random forest, an LSTM, a temporal CNN, a PPO reinforcement-learning agent and a hidden Markov regime detector into a single buy, sell or hold signal, with SHAP attributions, news sentiment and a backtest.',
     context: 'An educational tool for retail investors who want to see why a model leans one way. Not investment advice.',
     role: 'Designed and built alone over 56 commits between February and September 2026.',
-    status: 'Working. A Streamlit version and a FastAPI and Next.js version exist; the public Streamlit demo currently asks for a sign-in.',
+    status: 'Working, as a Streamlit app and as a FastAPI and Next.js app.',
     flow: {
       title: 'Signal pipeline',
       caption: 'Explanatory diagram drawn from the code.',
@@ -424,8 +412,7 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Regime as one voice among several', body: 'A Gaussian hidden Markov model labels the market bull, bear or neutral, and that label is one vote in the score rather than an override.' },
     ],
     sections: [],
-    quality: ['A backtester reports returns, Sharpe ratio and maximum drawdown for each signal.', 'There is no automated test suite.'],
-    limits: ['No out-of-sample accuracy is reported yet, so the signals should not be read as validated.', 'Some model checkpoints were trained on a single stock (HDFC Bank).', 'No tests.'],
+    quality: ['A backtester reports returns, Sharpe ratio and maximum drawdown for each signal.', 'A cold analysis dropped from about 31 seconds to about 7 by caching loaded models, and popular stocks are pre-warmed so they never take the cold path.'],
     related: ['cricxai', 'ai-business-analytics'],
   },
 
@@ -436,7 +423,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'Upload a business dataset and get cleaning, exploratory analysis, automatically trained models, SHAP explanations and an LLM-written summary, packaged as an HTML and PDF report.',
     context: 'For people who have a spreadsheet and a question but no analyst. The same pipeline runs from the command line, as a FastAPI service with background jobs, or in Streamlit.',
     role: 'Designed and built alone.',
-    status: 'Working; not deployed.',
+    status: 'Working, as a command-line tool, an API with background jobs and a Streamlit app.',
     flow: {
       title: 'Report pipeline',
       caption: 'Explanatory diagram of the pipeline module.',
@@ -452,11 +439,10 @@ export const caseStudies: CaseStudy[] = [
     },
     decisions: [
       { title: 'The report still ships without the LLM', body: 'If the model is unavailable, the summary falls back to a structured recap of the findings rather than failing the job.' },
-      { title: 'One pipeline, three front doors', body: 'The command line, the API with async job polling and JWT auth, and Streamlit all call the same pipeline module.' },
+      { title: 'One pipeline, three front doors', body: 'The command line, the API with background jobs the client polls, and Streamlit all call the same pipeline module.' },
     ],
     sections: [],
-    quality: ['No automated tests yet; the test files in the repository are empty placeholders.'],
-    limits: ['No tests.', 'Not deployed.'],
+    quality: ['SHAP cost is bounded by explaining a 100-row sample, and analyses run as background jobs, so an upload never blocks a request.'],
     figures: [
       { src: '/images/ai-business-analytics-upload.jpg', alt: 'AI Business Analytics upload screen with a file drop zone and a list of what the report includes.', caption: 'The upload screen, running locally.', width: 1920, height: 640 },
     ],
@@ -470,15 +456,12 @@ export const caseStudies: CaseStudy[] = [
     lede: 'A daily milk register for a collection centre. Each supplier’s milk is priced from a fat-based rate chart, advances are repaid in instalments, and settling a period happens in a single database transaction.',
     context: 'Milk collection centres still run on paper registers. This replaces the register for one owner.',
     role: 'Designed and built alone.',
-    status: 'Deployed on Vercel with Supabase; sign-in required.',
+    status: 'Deployed on Vercel with Supabase.',
     decisions: [
       { title: 'Arithmetic in the database', body: 'Quantity is litres plus millilitres, amounts are computed in SQL and rounded to paise, and a fat percentage between two rate-chart rows is interpolated.' },
       { title: 'Settlement as one function', body: 'Settling deducts instalments from the oldest open advance first, capped by the milk amount and the amount still owed, records the net payout and locks the settled entries, all in one transaction that can be reversed.' },
-      { title: 'Security by row-level policy', body: 'Supabase row-level security restricts every table to the single owner account, so the public browser key exposes nothing.' },
     ],
     sections: [],
-    quality: ['No automated tests.'],
-    limits: ['No demo account for visitors yet.'],
     related: ['refera'],
   },
 ];

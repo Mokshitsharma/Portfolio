@@ -19,8 +19,8 @@ export default function About() {
           </p>
           <p>
             That job is where most of my engineering judgement comes from. Two drivers accept the same booking at the same
-            moment; a payment callback arrives twice; a cheap phone kills the app that is supposed to ring; shared hosting will
-            not hold a WebSocket. Each of those is now a specific piece of code, described in the{' '}
+            moment; a payment callback arrives twice; a cheap phone kills the app that is supposed to ring.
+            Each of those is now a specific piece of code, described in the{' '}
             <Link to="/projects/movigo" className="link">Movigo case study</Link>.
           </p>
         </div>

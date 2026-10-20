@@ -132,11 +132,12 @@ export function TransitMap() {
 
 /* ---------------------------------------------------------------- Mini pipeline */
 
+// Same colours as the gates in the home page city: blue model, amber code, white person.
 const kindDot: Record<string, string> = {
   model: 'border-signal-light bg-transparent rounded-full',
-  rule: 'border-route bg-route',
-  human: 'border-route bg-route rounded-full',
-  io: 'border-paper bg-paper',
+  rule: 'border-sodium bg-sodium',
+  human: 'border-paper bg-paper rounded-full',
+  io: 'border-paper/70 bg-transparent',
 };
 
 export function MiniFlow({ stages, tone = 'dark', vertical = false }: { stages: { label: string; kind: string }[]; tone?: 'dark' | 'light'; vertical?: boolean }) {
@@ -182,7 +183,7 @@ export function KindLegend({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
     <ul className={`fine flex flex-wrap gap-x-5 gap-y-1.5 ${tone === 'dark' ? 'text-mist' : 'text-graphite'}`} aria-label="Legend">
       {items.map(([k, label]) => (
         <li key={k} className="inline-flex items-center gap-2">
-          <span className={`inline-block h-3 w-3 border-2 ${kindDot[k]} ${tone === 'light' && k === 'io' ? '!border-ink !bg-ink' : ''} ${tone === 'light' && k === 'model' ? '!border-signal' : ''}`} aria-hidden />
+          <span className={`inline-block h-3 w-3 border-2 ${kindDot[k]} ${tone === 'light' && (k === 'io' || k === 'human') ? '!border-ink' : ''} ${tone === 'light' && k === 'human' ? '!bg-ink' : ''} ${tone === 'light' && k === 'model' ? '!border-signal' : ''}`} aria-hidden />
           {label}
         </li>
       ))}
@@ -196,7 +197,8 @@ export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }
   const max = 0.32;
   const h = 220;
   const ink = tone === 'dark' ? '#e9ecef' : '#0e1c2b';
-  const muted = tone === 'dark' ? '#9fb2c4' : '#4a5968';
+  const muted = tone === 'dark' ? '#9aacbf' : '#4a5968';
+  const green = tone === 'dark' ? '#57c99a' : '#2f9e6e';
   return (
     <figure>
       <svg viewBox="0 0 480 300" className="h-auto w-full" role="img" aria-labelledby="cal-title cal-desc">
@@ -215,8 +217,8 @@ export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }
           const bar = (v: number) => (v / max) * h;
           return (
             <g key={c.bin}>
-              <rect x={x0} y={20 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke="#2f9e6e" strokeWidth="3" />
-              <rect x={x0 + 52} y={20 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill="#2f9e6e" />
+              <rect x={x0} y={20 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke={green} strokeWidth="3" />
+              <rect x={x0 + 52} y={20 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill={green} />
               <text x={x0 + 49} y={20 + h + 20} textAnchor="middle" fontSize="13" fill={ink} fontFamily="Archivo" fontWeight="600">{c.bin}</text>
               <text x={x0 + 49} y={20 + h + 37} textAnchor="middle" fontSize="11" fill={muted} fontFamily="Archivo">{c.n.toLocaleString('en-US')} balls</text>
             </g>
@@ -224,8 +226,8 @@ export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }
         })}
       </svg>
       <figcaption className={`fine mt-2 flex flex-wrap gap-x-5 ${tone === 'dark' ? 'text-mist' : 'text-graphite'}`}>
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 border-2 border-field" aria-hidden />Predicted dismissal rate</span>
-        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 bg-field" aria-hidden />Observed rate</span>
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3 border-2" style={{ borderColor: green }} aria-hidden />Predicted dismissal rate</span>
+        <span className="inline-flex items-center gap-2"><span className="inline-block h-3 w-3" style={{ background: green }} aria-hidden />Observed rate</span>
         <span>Grouped by predicted probability. Source: evaluation report of the active model.</span>
       </figcaption>
     </figure>
@@ -277,7 +279,8 @@ export function BenchmarkChart({ tone = 'light' }: { tone?: 'light' | 'dark' }) 
 
 /* ---------------------------------------------------------------- Refera ledger */
 
-export function LedgerDiagram() {
+export function LedgerDiagram({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
+  const dark = tone === 'dark';
   const rows = [
     ['Credit', 'Commission approved for a converted lead'],
     ['Debit', 'Withdrawal requested'],
@@ -285,22 +288,22 @@ export function LedgerDiagram() {
   ];
   return (
     <figure className="font-sans">
-      <div className="border border-ink bg-surface">
-        <p className="label border-b border-ink px-4 py-2.5 text-graphite">ledger_entries, append-only</p>
+      <div className={dark ? 'border border-kerb bg-dusk text-paper' : 'border border-ink bg-surface'}>
+        <p className={`label border-b px-4 py-2.5 ${dark ? 'border-kerb text-haze' : 'border-ink text-graphite'}`}>ledger_entries, append-only</p>
         <ol>
           {rows.map(([type, text], i) => (
-            <li key={i} className="grid grid-cols-[4.5rem_1fr] border-b border-rule px-4 py-2.5 text-[0.9375rem]">
-              <span className={type === 'Credit' ? 'font-semibold text-clear' : 'font-semibold text-ink'}>{type}</span>
+            <li key={i} className={`grid grid-cols-[4.5rem_1fr] border-b px-4 py-2.5 text-[0.9375rem] ${dark ? 'border-kerb' : 'border-rule'}`}>
+              <span className={`font-semibold ${type === 'Credit' ? (dark ? 'text-field-light' : 'text-clear') : dark ? 'text-paper' : 'text-ink'}`}>{type}</span>
               <span>{text}</span>
             </li>
           ))}
         </ol>
         <div className="grid grid-cols-[4.5rem_1fr] bg-held/8 px-4 py-2.5 text-[0.9375rem]">
-          <span className="font-semibold text-held line-through">Update</span>
-          <span className="text-held">Rejected by a database trigger. History is only ever added to.</span>
+          <span className={`font-semibold line-through ${dark ? 'text-held-light' : 'text-held'}`}>Update</span>
+          <span className={dark ? 'text-held-light' : 'text-held'}>Rejected by a database trigger. History is only ever added to.</span>
         </div>
       </div>
-      <figcaption className="fine mt-2 text-graphite">Explanatory diagram of Refera’s ledger rules. Entry types, not real data.</figcaption>
+      <figcaption className={`fine mt-2 ${dark ? 'text-haze' : 'text-graphite'}`}>Explanatory diagram of Refera’s ledger rules. Entry types, not real data.</figcaption>
     </figure>
   );
 }
@@ -332,7 +335,8 @@ const monthIndex = (ym: string) => {
   return y * 12 + (m - 1);
 };
 
-export function RoleTimeline({ roles, now = '2026-10' }: { roles: Role[]; now?: string }) {
+export function RoleTimeline({ roles, now = '2026-10', tone = 'light' }: { roles: Role[]; now?: string; tone?: 'light' | 'dark' }) {
+  const dark = tone === 'dark';
   const start = monthIndex('2024-06');
   const end = monthIndex(now) + 1;
   const span = end - start;
@@ -344,8 +348,8 @@ export function RoleTimeline({ roles, now = '2026-10' }: { roles: Role[]; now?: 
           {years.map((y) => {
             const left = Math.max(0, ((monthIndex(`${y}-01`) - start) / span) * 100);
             return (
-              <div key={y} className="absolute top-0 bottom-0 border-l border-dashed border-graphite/30" style={{ left: `${left}%` }}>
-                <span className="label absolute -top-6 left-1 text-graphite">{y}</span>
+              <div key={y} className={`absolute top-0 bottom-0 border-l border-dashed ${dark ? 'border-haze/25' : 'border-graphite/30'}`} style={{ left: `${left}%` }}>
+                <span className={`label absolute -top-6 left-1 ${dark ? 'text-haze' : 'text-graphite'}`}>{y}</span>
               </div>
             );
           })}
@@ -358,8 +362,8 @@ export function RoleTimeline({ roles, now = '2026-10' }: { roles: Role[]; now?: 
             const width = Math.max(((e - s) / span) * 100, 1.6);
             const current = r.end === 'present';
             const label = (
-              <span className="fine block truncate font-semibold text-ink">
-                {r.org} <span className="font-normal text-graphite">{formatRange(r.start, r.end)}</span>
+              <span className={`fine block truncate font-semibold ${dark ? 'text-paper' : 'text-ink'}`}>
+                {r.org} <span className={`font-normal ${dark ? 'text-haze' : 'text-graphite'}`}>{formatRange(r.start, r.end)}</span>
               </span>
             );
             return (
@@ -369,7 +373,7 @@ export function RoleTimeline({ roles, now = '2026-10' }: { roles: Role[]; now?: 
                     {label}
                   </span>
                   <span
-                    className={`absolute bottom-1 h-3 ${current ? 'bg-route' : 'bg-night'}`}
+                    className={`absolute bottom-1 h-3 ${current ? 'bg-sodium' : dark ? 'bg-haze/70' : 'bg-night'}`}
                     style={{ left: `${left}%`, width: `${width}%` }}
                     aria-hidden
                   />
@@ -379,7 +383,7 @@ export function RoleTimeline({ roles, now = '2026-10' }: { roles: Role[]; now?: 
           })}
         </ol>
       </div>
-      <figcaption className="fine mt-4 text-graphite">Each bar runs from the start to the end month on the offer letter or certificate. Yellow is the current role.</figcaption>
+      <figcaption className={`fine mt-4 ${dark ? 'text-haze' : 'text-graphite'}`}>Each bar runs from the start to the end month on the offer letter or certificate. Amber is the current role.</figcaption>
     </figure>
   );
 }

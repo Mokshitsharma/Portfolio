@@ -24,12 +24,11 @@ export const roles: Role[] = [
     end: 'present',
     type: 'Employment',
     summary:
-      'The company’s only engineer. I took over after an outsourced team had delivered designs but no working software, rebuilt the product from scratch and launched it, and now own the backend, both mobile apps, the operations console, hosting and production support.',
+      'The company’s only engineer. I took over after an outsourced team had delivered designs but no working software, rebuilt the product from scratch and launched it, and now own the backend, both mobile apps, the operations console and production support.',
     work: [
       'Node.js and MongoDB backend with real-time dispatch, race-safe booking acceptance and signature-verified Razorpay payments',
       'Flutter driver and retailer apps, released on Google Play and the App Store',
       'Server-driven pricing, zones, surge multipliers and dispatch radius that operations can change without an app release',
-      'Moved hosting from shared cPanel to a self-managed VPS with PM2, Nginx and TLS',
       'Field-staff platform for attendance, onboarding and performance',
     ],
     projects: ['movigo', 'fieldops-ai', 'movigo-broadcast'],

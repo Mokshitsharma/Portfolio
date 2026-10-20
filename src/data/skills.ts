@@ -79,13 +79,10 @@ export const skillGroups: SkillGroup[] = [
     title: 'Infrastructure, testing and security',
     intro: '',
     skills: [
-      { name: 'Linux VPS with PM2, Nginx and TLS', production: true, projects: ['movigo'] },
       { name: 'Mobile CI with Codemagic', production: true, projects: ['movigo'] },
       { name: 'Docker and GitHub Actions', projects: ['toolforge', 'cricxai', 'dociq'] },
       { name: 'Vercel and serverless functions', projects: ['portfolio', 'dairy-collection-manager'] },
       { name: 'pytest, Vitest, JUnit, Playwright', projects: ['naman', 'settleai', 'routecore', 'refera'] },
-      { name: 'Rate limiting, Helmet and content security policy', production: true, projects: ['movigo', 'refera'] },
-      { name: 'Field encryption (AES-256-GCM) and TOTP sign-in', projects: ['refera'] },
     ],
   },
   {

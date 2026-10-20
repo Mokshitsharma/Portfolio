@@ -6,7 +6,12 @@ import { LIMITS, validateContact, type ContactErrors } from '../../api/_lib/vali
 type Status = 'idle' | 'sending' | 'sent' | 'failed';
 const empty = { name: '', email: '', message: '', website: '' };
 
-export default function ContactForm() {
+// `tone` matches the surface the form sits on: light on the contact page, dark on the home page.
+export default function ContactForm({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
+  const dark = tone === 'dark';
+  const labelTone = dark ? 'text-haze' : 'text-graphite';
+  const input = dark ? 'field-input-dark' : 'field-input';
+  const errTone = dark ? 'text-held-light' : 'text-held';
   const [data, setData] = useState(empty);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [status, setStatus] = useState<Status>('idle');
@@ -43,7 +48,7 @@ export default function ContactForm() {
 
   const field = (name: 'name' | 'email', label: string, type: string, autoComplete: string, max: number) => (
     <div>
-      <label htmlFor={`contact-${name}`} className="label block text-graphite">{label}</label>
+      <label htmlFor={`contact-${name}`} className={`label block ${labelTone}`}>{label}</label>
       <input
         id={`contact-${name}`}
         name={name}
@@ -55,9 +60,9 @@ export default function ContactForm() {
         onChange={onChange}
         aria-invalid={errors[name] ? true : undefined}
         aria-describedby={errors[name] ? `contact-${name}-error` : undefined}
-        className="field-input mt-2"
+        className={`${input} mt-2`}
       />
-      {errors[name] && <p id={`contact-${name}-error`} className="ui mt-1.5 text-held">{errors[name]}</p>}
+      {errors[name] && <p id={`contact-${name}-error`} className={`ui mt-1.5 ${errTone}`}>{errors[name]}</p>}
     </div>
   );
 
@@ -68,8 +73,8 @@ export default function ContactForm() {
         {field('email', 'Your email', 'email', 'email', LIMITS.email)}
       </div>
       <div>
-        <label htmlFor="contact-message" className="label block text-graphite">Message</label>
-        <p id="contact-message-hint" className="fine mt-1">The role or project, the team, and what you would want me to work on.</p>
+        <label htmlFor="contact-message" className={`label block ${labelTone}`}>Message</label>
+        <p id="contact-message-hint" className={`fine mt-1 ${dark ? 'text-haze' : ''}`}>The role or project, the team, and what you would want me to work on.</p>
         <textarea
           id="contact-message"
           name="message"
@@ -80,9 +85,9 @@ export default function ContactForm() {
           onChange={onChange}
           aria-invalid={errors.message ? true : undefined}
           aria-describedby={errors.message ? 'contact-message-hint contact-message-error' : 'contact-message-hint'}
-          className="field-input mt-2 resize-y"
+          className={`${input} mt-2 resize-y`}
         />
-        {errors.message && <p id="contact-message-error" className="ui mt-1.5 text-held">{errors.message}</p>}
+        {errors.message && <p id="contact-message-error" className={`ui mt-1.5 ${errTone}`}>{errors.message}</p>}
       </div>
       {/* Left empty by people; bots that fill every field are dropped by the server. */}
       <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden>
@@ -90,7 +95,7 @@ export default function ContactForm() {
         <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" value={data.website} onChange={onChange} />
       </div>
       <div className="flex flex-wrap items-center gap-5">
-        <button type="submit" disabled={status === 'sending'} className="btn-ink btn disabled:opacity-70">
+        <button type="submit" disabled={status === 'sending'} className={`${dark ? 'btn-sodium' : 'btn-ink'} btn disabled:opacity-70`}>
           {status === 'sending' ? (
             <>
               <Loader2 size={18} className="animate-spin motion-reduce:animate-none" aria-hidden /> Sending
@@ -100,9 +105,9 @@ export default function ContactForm() {
           )}
         </button>
         <p role="status" className="ui">
-          {status === 'sent' && <span className="text-clear">Message sent. I reply to the email address you gave.</span>}
+          {status === 'sent' && <span className={dark ? 'text-field-light' : 'text-clear'}>Message sent. I reply to the email address you gave.</span>}
           {status === 'failed' && (
-            <span className="text-held">
+            <span className={errTone}>
               The message did not send. Email me at{' '}
               <a className="link" href={`mailto:${profile.email}`}>{profile.email}</a> instead.
             </span>
