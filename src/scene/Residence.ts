@@ -183,6 +183,8 @@ export class Residence {
     this.renderer.shadowMap.type = PCFShadowMap;
     this.scene.fog = this.fog;
     this.scene.background = new Color(0xe4e8e8);
+    this.size = `${window.innerWidth}x${window.innerHeight}@${this.renderer.getPixelRatio()}`;
+    this.renderer.setSize(window.innerWidth, window.innerHeight, false);
 
     this.path = new CatmullRomCurve3(CAMERA.map((c) => new Vector3(...c.pos)), false, 'centripetal', 0.5);
     // The house is built in steps that hand the main thread back between them, so building it never blocks
@@ -191,6 +193,7 @@ export class Residence {
       // Compile every material's shader before the first frame, in parallel where the driver allows, instead of
       // stalling the main thread inside the first render.
       .then(() => this.renderer.compileAsync(this.scene, this.camera))
+      .then(() => this.upload())
       .then(() => {
         this.built = true;
         this.resize();
@@ -211,6 +214,33 @@ export class Residence {
   /** Let the browser handle input and paint before the next step of the build. */
   private step() {
     return new Promise<void>((resolve, reject) => setTimeout(() => (this.disposed ? reject(new Error('disposed')) : resolve()), 0));
+  }
+
+  /**
+   * Send every texture to the GPU before the first frame, then wait for the GPU to finish that work and the shader
+   * compiles without blocking. The first call that needs the GPU in sync (resizing the canvas, the first draw)
+   * otherwise waits for all of it on the main thread: about a second on an integrated GPU, which froze scrolling
+   * just as the house appeared. A fence, polled once a frame, lets the page keep scrolling meanwhile.
+   */
+  private async upload() {
+    let since = performance.now();
+    for (const d of this.disposables) {
+      if (!(d as Texture).isTexture) continue;
+      this.renderer.initTexture(d as Texture);
+      if (performance.now() - since > 24) {
+        await this.step();
+        since = performance.now();
+      }
+    }
+    const gl = this.renderer.getContext() as WebGL2RenderingContext;
+    const fence = gl.fenceSync?.(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    if (!fence) return;
+    gl.flush();
+    const until = performance.now() + 8000;
+    while (gl.getSyncParameter(fence, gl.SYNC_STATUS) !== gl.SIGNALED && performance.now() < until) {
+      await new Promise<void>((resolve, reject) => setTimeout(() => (this.disposed ? reject(new Error('disposed')) : resolve()), 16));
+    }
+    gl.deleteSync(fence);
   }
 
   /* ------------------------------------------------------------------ building */
@@ -1195,10 +1225,18 @@ export class Residence {
     }
   }
 
+  private size = '';
+
   private resize = () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    this.renderer.setSize(w, h, false);
+    // Resizing the canvas reallocates its drawing buffer and makes the GPU catch up, so it happens only when the
+    // size has really changed (the first time is in the constructor, before any GPU work is queued).
+    const key = `${w}x${h}@${this.renderer.getPixelRatio()}`;
+    if (key !== this.size) {
+      this.size = key;
+      this.renderer.setSize(w, h, false);
+    }
     const aspect = w / h;
     this.wide = aspect >= 1.1 && w >= 1024;
     this.camera.aspect = aspect;

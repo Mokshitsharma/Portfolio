@@ -15,9 +15,13 @@ import ResidencePoster from './ResidencePoster';
 // after first paint and replaces it. One scroll handler turns the reader's position into a camera station, a
 // reading dim and the phone progress bar, writing to the DOM directly so React does not re-render on scroll.
 
+// Creating a context to test for WebGL2 costs about 250 ms, so it runs inside the idle loader, never at start-up.
 function webgl2() {
+  if (typeof WebGL2RenderingContext === 'undefined') return false;
   try {
-    return Boolean(document.createElement('canvas').getContext('webgl2'));
+    const gl = document.createElement('canvas').getContext('webgl2');
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+    return Boolean(gl);
   } catch {
     return false;
   }
@@ -101,14 +105,21 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
     update();
 
     // Load the residence once the browser is idle, so it never competes with the first paint. Phones and touch
-    // screens wait for the visitor to start moving (a scroll, touch or key) before building the house at all: the
-    // still elevation is already on screen, and a phone that is only glanced at never pays for the 3D.
+    // screens start 2.5 s after the page has finished loading, or at once when the visitor starts moving (a scroll,
+    // touch or key), so the gate is ready to open by the time they reach it while the first content settles first.
+    // The still on screen meanwhile is the scene's own arrival frame (ResidencePoster), so nothing changes when the
+    // live scene takes over.
     let idle = 0;
+    let scheduled = false;
+    let later = 0;
+    const afterLoad = () => {
+      later = window.setTimeout(() => onIntent?.(), 2500);
+    };
     const intent = ['scroll', 'touchstart', 'pointerdown', 'keydown'] as const;
     let onIntent: (() => void) | null = null;
-    if (canvas.current && webgl2()) {
+    if (canvas.current && typeof WebGL2RenderingContext !== 'undefined') {
       const load = () =>
-        Promise.all([import('../../scene/Residence'), document.fonts?.ready])
+        (webgl2() ? Promise.all([import('../../scene/Residence'), document.fonts?.ready]) : Promise.reject(new Error('no WebGL2')))
           .then(([{ Residence }]) => {
             if (cancelled || !canvas.current) return;
             const r = new Residence(canvas.current, {
@@ -135,6 +146,8 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
           .catch(() => setLive(false));
       const w = window as Window;
       const schedule = () => {
+        if (scheduled) return;
+        scheduled = true;
         idle = typeof w.requestIdleCallback === 'function' ? w.requestIdleCallback(load, { timeout: 1500 }) : w.setTimeout(load, 300);
       };
       if (light) {
@@ -144,12 +157,16 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
           schedule();
         };
         intent.forEach((e) => window.addEventListener(e, onIntent!, { passive: true, once: true }));
+        if (document.readyState === 'complete') afterLoad();
+        else window.addEventListener('load', afterLoad, { once: true });
       } else schedule();
     }
 
     return () => {
       cancelled = true;
       window.cancelIdleCallback?.(idle);
+      window.clearTimeout(later);
+      window.removeEventListener('load', afterLoad);
       if (onIntent) intent.forEach((e) => window.removeEventListener(e, onIntent!));
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
@@ -160,7 +177,8 @@ export default function ResidenceBackdrop({ onChapter, name, line, content }: { 
   return (
     <>
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ivory">
-        <ResidencePoster className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${live ? 'opacity-0' : 'opacity-100'}`} />
+        {/* The still is the scene's own first frame: the canvas fades in over it, and only then does the still hide. */}
+        <ResidencePoster className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${live ? 'opacity-0 delay-1000' : 'opacity-100'}`} />
         <canvas ref={canvas} className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${live ? 'opacity-100' : 'opacity-0'}`} />
         <div ref={dim} className="absolute inset-0 bg-ivory" style={{ opacity: 0 }} />
         <div className="residence-scrim absolute inset-0" />

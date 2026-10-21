@@ -104,17 +104,26 @@ pages and forced the nav to a 3 px height.) Phones use the "Rooms" button and sh
 
 ## Performance and fallbacks
 
-- The scene chunk loads after first paint (idle callback). Phones and touch screens load it only on the first
-  scroll, touch or key, and draw frames on demand (no continuous loop).
-- `build()` is async and yields between sections; `ready` resolves after `renderer.compileAsync`, so neither the
-  build nor shader compilation blocks for seconds. Static boxes and light pools are merged per material.
+- The scene chunk loads after first paint (idle callback). Phones and touch screens start 2.5 s after the page's
+  load event, or at once on the first scroll, touch or key, and draw frames on demand (no continuous loop). They
+  used to wait for the first scroll, so the gate stayed shut for several seconds after the visitor began scrolling.
+- `build()` is async and yields between sections; `ready` resolves after `renderer.compileAsync` and `upload()`.
+  `upload()` sends every texture to the GPU, then waits on a WebGL fence polled once a frame, so the GPU's catch-up
+  (about a second on an integrated GPU) no longer blocks the main thread at the first resize or draw. The canvas is
+  sized once in the constructor and resized only when its size changes. Static boxes and light pools are merged
+  per material. Measured on Intel HD 620: the last main-thread task before the house appears went from 1.48 s to
+  0.42 s.
+- The WebGL2 test that creates a throwaway context (about 250 ms) runs inside the idle loader, not at start-up.
 - Frame-time watch: above 40 ms median the pixel ratio and shadows drop; above 60 ms after that the scene stops
   and the poster shows. (Laptops on battery cap animation at 30 fps, hence 40 rather than 34.)
-- Fallback: `ResidencePoster.tsx`, a prerendered SVG elevation drawn once (`#rp-art`) and shown through two crops.
-  From `md` up: `viewBox="424 180 900 540"`, `xMaxYMax slice`, which puts the gateway where the 3D arrival has it,
-  right of the text and clear of the rail. Below `md`: `viewBox="825 202 470 1017"`, `xMidYMin slice`, a close crop
-  that shows the lintel, nameplate and gate together above the hero card. Shown before the scene loads and without
-  WebGL2.
+- Still: `ResidencePoster.tsx` shows a frame rendered from the scene itself (canvas only, reduced motion) instead of
+  a drawing, so the live house fades in over an identical picture. Two WebP files in `public/images`:
+  `residence-arrival-wide.webp` (1920x1080, 34 KB) for the scene's wide layout (at least 1024 px and aspect 1.1,
+  the same rule as `Residence.resize`) and `residence-arrival-tall.webp` (390x844 at 2x, 18 KB) otherwise, both
+  `object-fit: cover`. The canvas fades in over the still, which hides only after that fade. Shown before the
+  scene loads and as the backdrop without WebGL2. **Re-capture both whenever the arrival changes** (camera, gate,
+  nameplate, lighting): `node private/tools/still.cjs` against a production build, then convert to WebP at
+  quality 80.
 - Reduced motion: no camera travel, still frames per chapter; door and gate positions still follow the station. The
   scene never runs its loop, CSS motion is behind `prefers-reduced-motion: no-preference`, smooth scrolling is off,
   and the rail's label transitions are disabled.
