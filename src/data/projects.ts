@@ -96,7 +96,7 @@ export const projects: Project[] = [
   {
     id: 'P23', slug: 'disaster-response-agent', name: 'Disaster Response Agent', category: 'agents', maturity: 'prototype', period: 'Dec 2025',
     summary: 'A chat assistant for disaster safety that searches the web live through Claude tool use, gives evacuation guidance and keeps conversation memory.',
-    stack: ['Python', 'Streamlit', 'Anthropic Claude API'], links: [gh('Disaster-Management-System')],
+    stack: ['Python', 'Streamlit', 'Anthropic Claude API'], links: [gh('Disaster-Management-System'), { label: 'Live app', href: 'https://disaster-management-ms.streamlit.app', kind: 'demo' }],
   },
   {
     id: 'P26', slug: 'founderlens-ai', name: 'FounderLens AI', category: 'agents', maturity: 'prototype', period: 'Dec 2025',
