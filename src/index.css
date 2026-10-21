@@ -20,7 +20,7 @@
   --color-seam: #d2c6b1;
   --color-slate: #5c5449;
   --color-charcoal: #221e19;
-  --color-brass: #85632d;
+  --color-brass: #7d5d2a; /* 4.9:1 on limestone, 5.4:1 on ivory, so small brass type passes AA */
   --color-brass-fill: #dcc08c;
   --color-oak: #c39a6b;
   --color-walnut: #6b4428;
@@ -41,11 +41,11 @@
   --color-paper: #221e19;
   --color-ink: #221e19;
   --color-surface: #ede6d8;
-  --color-sodium: #85632d;
+  --color-sodium: #7d5d2a;
 
   --color-route: #a35a24;
-  --color-signal: #85632d;
-  --color-signal-light: #85632d;
+  --color-signal: #7d5d2a;
+  --color-signal-light: #7d5d2a;
   --color-field: #2d6c88;
   --color-field-light: #2d6c88;
   --color-clear: #3f6f3a;
@@ -248,12 +248,16 @@
   }
   .read-panel .btn, .read-panel .frame, .read-panel .project-file, .read-panel .doorway, .read-panel figure, .read-panel img { text-shadow: none; }
 
-  /* The chapter rail on wide screens: ticks, with the current room's name; every name on hover or keyboard focus,
-     when the rail becomes a small menu with its own surface. Hidden names stay in the accessibility tree. */
-  .rail .rail-label { display: inline-block; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 220ms ease, opacity 160ms ease; }
-  .rail a[aria-current] .rail-label, .rail:hover .rail-label, .rail:focus-within .rail-label { max-width: 12rem; opacity: 1; }
-  .rail { border: 1px solid transparent; transition: background-color 160ms ease, border-color 160ms ease; }
-  .rail:hover, .rail:focus-within { background: rgb(248 244 236 / 0.94); border-color: var(--color-seam); text-shadow: none; }
+  /* The chapter rail on wide screens: a slim column of ticks at the edge of the house. The current room's name shows
+     for a moment when it changes (data-announce), and every name on hover or keyboard focus, when the rail gets a
+     small surface of its own. Hidden names stay in the accessibility tree. */
+  .chapter-rail .rail-label { display: inline-block; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 220ms ease, opacity 160ms ease; }
+  .chapter-rail[data-announce] a[aria-current] .rail-label, .chapter-rail:hover .rail-label, .chapter-rail:focus-within .rail-label { max-width: 12rem; opacity: 1; }
+  .chapter-rail { border: 1px solid transparent; transition: background-color 160ms ease, border-color 160ms ease; }
+  .chapter-rail:hover, .chapter-rail:focus-within { background: rgb(248 244 236 / 0.96); border-color: var(--color-seam); text-shadow: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-rail, .chapter-rail .rail-label { transition: none; }
+  }
 
   .btn-brass { @apply bg-brass-fill text-charcoal hover:bg-[#d0b073]; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 1px 0 rgb(107 68 40 / 0.18); }
   .btn-line { @apply border-charcoal/35 bg-transparent text-charcoal hover:border-charcoal hover:bg-white/40; }

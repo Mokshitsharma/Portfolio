@@ -327,11 +327,20 @@ export function certPrint(content: CertContent, diploma = false) {
   ctx.letterSpacing = '0px';
   y += 70;
   g.fillStyle = '#221e19';
-  const titleFont = `460 ${diploma ? 46 : 54}px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif`;
-  for (const l of wrapText(g, content.title, titleFont, w - pad * 2).slice(0, 4)) {
+  // The title steps down in size until it clears the date line, so a long title never runs into it.
+  let size = diploma ? 46 : 54;
+  let titleFont = '';
+  let lines: string[] = [];
+  for (;;) {
+    titleFont = `460 ${size}px "Source Serif 4 Variable", "Source Serif 4", Georgia, serif`;
+    lines = wrapText(g, content.title, titleFont, w - pad * 2);
+    if (y + (lines.length - 1) * size * 1.15 <= h - 112 || size <= 34) break;
+    size -= 2;
+  }
+  for (const l of lines.slice(0, 4)) {
     g.font = titleFont;
     g.fillText(l, w / 2, y);
-    y += diploma ? 54 : 62;
+    y += size * 1.15;
   }
   if (content.date) {
     g.fillStyle = '#5c5449';
@@ -386,6 +395,17 @@ function heading(g: CanvasRenderingContext2D, kicker: string, title: string, tin
   g.fillText(title, x, y + size + 6);
 }
 
+/** A display's caption, wrapped to at most two lines. */
+function caption(g: CanvasRenderingContext2D, text: string, x: number, y: number, max: number, size = 28) {
+  const font = `450 ${size}px "Archivo Variable", Archivo, sans-serif`;
+  g.fillStyle = '#5c5449';
+  g.textAlign = 'left';
+  wrapText(g, text, font, max).slice(0, 2).forEach((l, k) => {
+    g.font = font;
+    g.fillText(l, x, y + k * size * 1.25);
+  });
+}
+
 /** The focal display of a project room, drawn from its figure. */
 export function figurePrint(room: RoomContent, figure: RoomFigure) {
   const tint = room.tint;
@@ -396,7 +416,7 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
     heading(g, kicker, room.title, tint, 70, 90);
     const [x0, y0, cw, chh] = [90, 250, 700, 360];
     g.lineWidth = 2;
-    g.font = '500 22px "Archivo Variable", Archivo, sans-serif';
+    g.font = '500 26px "Archivo Variable", Archivo, sans-serif';
     for (let k = 0; k <= 3; k++) {
       const y = y0 + chh - (k / 3) * chh;
       g.strokeStyle = '#d2c6b1';
@@ -417,16 +437,14 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
       g.fillStyle = '#85632d';
       g.fillRect(bx + 80, y0 + chh - oh, 70, oh);
       g.fillStyle = '#221e19';
-      g.font = '600 24px "Archivo Variable", Archivo, sans-serif';
-      g.fillText(b.bin, bx + 20, y0 + chh + 40);
+      g.font = '600 30px "Archivo Variable", Archivo, sans-serif';
+      g.fillText(b.bin, bx + 10, y0 + chh + 44);
     });
-    g.fillStyle = '#5c5449';
-    g.font = '450 22px "Archivo Variable", Archivo, sans-serif';
-    g.fillText(figure.caption, x0, y0 + chh + 92);
+    caption(g, figure.caption, x0, y0 + chh + 92, 740);
     g.fillStyle = '#d2c6b1';
     g.fillRect(860, 230, 2, 460);
     g.fillStyle = '#221e19';
-    g.font = '600 26px "Archivo Variable", Archivo, sans-serif';
+    g.font = '600 30px "Archivo Variable", Archivo, sans-serif';
     g.fillText('Featured in this room', 900, 270);
     room.projects.forEach((name, k) => {
       g.fillStyle = tint;
@@ -445,7 +463,7 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
     const { c, g } = sheet(1800, 620, tint);
     heading(g, kicker, room.title, tint, 70, 84, 58);
     const n = figure.stages.length;
-    const x0 = 120;
+    const x0 = 170;
     const span = 1800 - 2 * x0;
     const y = 320;
     g.strokeStyle = '#c9b89a';
@@ -473,18 +491,18 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
         g.strokeStyle = s.kind === 'model' ? '#2d6c88' : '#221e19';
         g.stroke();
       }
+      // Labels alternate between two rows, so each can be wider than the gap between stages without touching the
+      // next label on its row.
       g.fillStyle = '#221e19';
       g.textAlign = 'center';
-      const font = '560 30px "Archivo Variable", Archivo, sans-serif';
-      wrapText(g, s.label, font, 170).slice(0, 2).forEach((l, m) => {
+      const font = '560 36px "Archivo Variable", Archivo, sans-serif';
+      wrapText(g, s.label, font, (1.8 * span) / Math.max(1, n - 1)).slice(0, 2).forEach((l, m) => {
         g.font = font;
-        g.fillText(l, x, y + 66 + m * 34 + (k % 2) * 76);
+        g.fillText(l, x, y + 70 + m * 40 + (k % 2) * 96);
       });
       g.textAlign = 'left';
     });
-    g.fillStyle = '#5c5449';
-    g.font = '450 24px "Archivo Variable", Archivo, sans-serif';
-    g.fillText(figure.caption, x0, 580);
+    caption(g, figure.caption, x0, 588, span, 30);
     return finish(c);
   }
   if (figure.kind === 'ledger') {
@@ -505,9 +523,7 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
         g.fillText(l, 440, y + 22 + m * 46);
       });
     });
-    g.fillStyle = '#5c5449';
-    g.font = '450 24px "Archivo Variable", Archivo, sans-serif';
-    g.fillText(figure.caption, 70, 1150);
+    caption(g, figure.caption, 70, 1150, 860, 30);
     return finish(c);
   }
   // Benchmark: brute force against the k-d tree, two bars per size on a log scale.
@@ -526,13 +542,11 @@ export function figurePrint(room: RoomContent, figure: RoomFigure) {
     g.fillStyle = tint;
     g.fillRect(290, y + 36, w2, 28);
     g.fillStyle = '#5c5449';
-    g.font = '450 22px "Archivo Variable", Archivo, sans-serif';
-    g.fillText(`brute force ${r.brute} ms`, 300 + w1, y + 22);
-    g.fillText(`k-d tree ${r.kd} ms`, 300 + w2, y + 58);
+    g.font = '500 26px "Archivo Variable", Archivo, sans-serif';
+    g.fillText(`brute force ${r.brute} ms`, 300 + w1, y + 24);
+    g.fillText(`k-d tree ${r.kd} ms`, 300 + w2, y + 60);
   });
-  g.fillStyle = '#5c5449';
-  g.font = '450 23px "Archivo Variable", Archivo, sans-serif';
-  g.fillText(figure.caption, 60, 720);
+  caption(g, figure.caption, 60, 690, 1080);
   return finish(c);
 }
 
@@ -616,7 +630,7 @@ export function invitationPrint(inv: Invitation) {
   g.fillStyle = '#9a7434';
   g.fillText(inv.email, w / 2, y);
   g.fillStyle = '#5c5449';
-  g.font = '450 40px "Archivo Variable", Archivo, sans-serif';
-  g.fillText(inv.line, w / 2, y + 110);
+  g.font = '500 52px "Archivo Variable", Archivo, sans-serif';
+  g.fillText(inv.line, w / 2, y + 120);
   return finish(c);
 }

@@ -1,14 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { chapters } from '../../scene/chapters';
 
-// Where you are in the house, and a way to go anywhere in it. Wide screens: a column of tick marks on the right
-// edge with only the current room named, so it never covers the scene; hovering or tabbing into it names every room.
+// Where you are in the house, and a way to go anywhere in it. Wide screens: a slim column of tick marks at the right
+// edge, the current room's tick long and brass. Its name shows for a moment on arriving in a room, then gives the
+// scene back; hovering or tabbing into the rail names every room on a small surface of its own.
 // Phones: a "Rooms" button that opens the same list. Every entry is a link, so the walk can be skipped from
 // the keyboard; the current chapter is marked for screen readers as well as visually.
 export default function ChapterRail({ active }: { active: number }) {
   const [open, setOpen] = useState(false);
+  const [announce, setAnnounce] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
   const sheet = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setAnnounce(true);
+    const t = window.setTimeout(() => setAnnounce(false), 2600);
+    return () => window.clearTimeout(t);
+  }, [active]);
 
   useEffect(() => {
     if (!open) return;
@@ -46,7 +54,7 @@ export default function ChapterRail({ active }: { active: number }) {
 
   return (
     <>
-      <nav aria-label="Rooms of the house" className="rail fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 px-3 py-2 text-right read-panel lg:block xl:right-8">
+      <nav aria-label="Rooms of the house" data-announce={announce || undefined} className="chapter-rail read-panel fixed right-1 top-1/2 z-30 hidden -translate-y-1/2 px-3 py-2 text-right lg:block xl:right-3">
         {list()}
       </nav>
       <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end lg:hidden">

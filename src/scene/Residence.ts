@@ -54,6 +54,9 @@ const BOARD_X = 1.9;
 const BOARD_DIST = 3.45;
 const BOARD_SHIFT = 0.2;
 export const ROOM_X = [-5.4, -1.8, 1.8, 5.4];
+// How far left of each room's axis the camera looks on wide screens, so the room sits right of the text column
+// while its back-wall display stays clear of the chapter rail at the right edge.
+const ROOM_TURN = 0.9;
 const ROOM_TINT = ['#2d6c88', '#85632d', '#4a6488', '#a35a24']; // ML sky blue, agents brass, data slate blue, software amber
 
 // The front boundary: a limestone portal with the nameplate on its lintel and a pair of gate leaves.
@@ -70,7 +73,7 @@ const CAMERA: { pos: V3; look: V3 }[] = [
   }),
   { pos: [0, 2.0, -25.8], look: [0, 2.1, -38] }, // 7 atrium
   // 8-11: framed by each doorway, turned a few degrees left so the room sits right of the text column
-  ...ROOM_X.map((x) => ({ pos: [x, 1.65, -35.9] as V3, look: [x - 1.6, 1.65, -44] as V3 })),
+  ...ROOM_X.map((x) => ({ pos: [x, 1.65, -35.9] as V3, look: [x - ROOM_TURN, 1.65, -44] as V3 })),
   { pos: [12.9, 1.6, -29.9], look: [13.5, 1.55, -35] }, // 12 study, facing the credentials wall
   { pos: [17.4, 2.6, -31.0], look: [30.6, 1.7, -31.2] }, // 13 courtyard, down the rill to the focal wall
 ];
@@ -637,20 +640,22 @@ export class Residence {
       this.box([x - 1.46, 1.11, z - 0.33], [x - 1.455, 1.47, z + 0.33], screenMat, 1, false);
     }
     this.box([x - 1.0, 0, -40.9], [x - 0.6, 0.62, -40.5], R.walnutMat); // stool
-    // Glass-fronted cabinet on the right with binders in the room's blue and in sand.
+    // Glass-fronted cabinet on the right with binders in the room's blue and in sand. It stands forward of the
+    // screen, so it never covers the screen's list of featured projects from the doorway.
     const cab = this.mat(new MeshStandardMaterial({ map: R.oakTex, color: '#e3cfb2', roughness: 0.6 }));
-    this.box([x + 1.15, 0, back + 0.3], [x + 1.6, 2.3, -40.4], cab, 1);
+    const [c0, c1] = [-41.2, -38.9];
+    this.box([x + 1.15, 0, c0], [x + 1.6, 2.3, c1], cab, 1);
     const blue = this.mat(new MeshStandardMaterial({ color: tint, roughness: 0.7 }));
     const sand = this.mat(new MeshStandardMaterial({ color: '#d8cdb8', roughness: 0.7 }));
     for (let shelf = 0; shelf < 4; shelf++) {
       const y = 0.25 + shelf * 0.52;
-      for (let n = 0; n < 6; n++) {
-        const z = back + 0.42 + n * 0.42;
+      for (let n = 0; n < 5; n++) {
+        const z = c0 + 0.12 + n * 0.42;
         this.box([x + 1.12, y, z], [x + 1.15, y + 0.34, z + 0.3], (n + shelf) % 3 === 0 ? sand : blue, 1, false);
       }
     }
     const glass = this.mat(new MeshStandardMaterial({ color: '#d8e6ec', transparent: true, opacity: 0.22, roughness: 0.05, depthWrite: false }));
-    this.box([x + 1.1, 0.05, back + 0.32], [x + 1.115, 2.25, -40.42], glass, 1, false);
+    this.box([x + 1.1, 0.05, c0 + 0.02], [x + 1.115, 2.25, c1 - 0.02], glass, 1, false);
     // Linear pendant over a blue-grey rug, in a cool working white.
     this.box([x - 0.012, 3.05, -41.0], [x + 0.012, R.H + 0.9, -40.98], R.steelMat, 1, false);
     this.box([x - 1.0, 2.98, -41.04], [x + 1.0, 3.05, -40.94], R.steelMat, 1, false);
@@ -679,11 +684,13 @@ export class Residence {
     this.box([x + 1.56, 0.45, -41.75], [x + 1.6, 0.5, -40.05], R.brassMat, 1, false);
     this.box([x + 1.56, 3.0, -41.75], [x + 1.6, 3.05, -40.05], R.brassMat, 1, false);
     this.pool([x + 0.6, 0.013, -40.9], 2.4, 1.8, 'y+', '#f4f8ff', 0.18);
-    // The run of the agent, in a brass frame, under a picture light.
+    // The run of the agent, in a brass frame, under a picture light. Set a little left of centre and short of the
+    // right wall, so the whole run is in view from the doorway beside the text column.
     if (room?.figure) {
-      this.frameAround(x, 1.75, back, 3.18, 1.14, 'z+', R.brassMat, 0.04, 0.04);
-      this.print(figurePrint(room, room.figure), 3.1, 1.06, [x, 1.75, back + 0.042], 'z+', 0.97);
-      this.pictureLight(x, 2.42, back, 1.6, 'z+', R.brassMat, R.sconceMat, 3.4, 1.8);
+      const px = x - 0.15;
+      this.frameAround(px, 1.75, back, 2.88, 1.04, 'z+', R.brassMat, 0.04, 0.04);
+      this.print(figurePrint(room, room.figure), 2.8, 0.965, [px, 1.75, back + 0.042], 'z+', 0.97);
+      this.pictureLight(px, 2.42, back, 1.5, 'z+', R.brassMat, R.sconceMat, 3.4, 1.8);
     }
     // Round walnut table on a single pedestal, three oak chairs.
     const top = new CylinderGeometry(0.68, 0.68, 0.05, 40);
@@ -1224,7 +1231,16 @@ export class Residence {
     const steady = Math.max(smooth(1.5, 2, s) * (1 - smooth(6.3, 6.8, s)), smooth(11.4, 12, s) * (1 - smooth(12.2, 12.6, s)));
     const lean = 1 - steady * 0.9;
     // The rooms are turned a little to clear the text column on wide screens; tall screens have no side column.
-    if (!this.wide) this.look.x += 1.6 * smooth(7.4, 8, s) * (1 - smooth(11, 11.6, s));
+    const inRoom = smooth(7.4, 8, s) * (1 - smooth(11, 11.6, s));
+    if (!this.wide) {
+      this.look.x += ROOM_TURN * inRoom;
+      // Phones see the room through the upper half of the screen, so the camera steps a metre closer to the
+      // doorway and the back-wall display reads larger.
+      this.camera.position.z -= 1.0 * inRoom;
+    } else {
+      // Wide screens stand nearer the courtyard's focal wall, so the invitation on it reads at a glance.
+      this.camera.position.x += 2.0 * smooth(12.4, 13, s);
+    }
     // In the courtyard on a tall screen the text fills the lower half, so the camera looks down and the focal wall
     // rises above it.
     if (!this.wide) this.look.y -= 2.8 * smooth(12.4, 13, s);
