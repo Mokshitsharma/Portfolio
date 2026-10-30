@@ -156,5 +156,117 @@ const naman: Architecture = {
   ],
 };
 
-export const architectures: Architecture[] = [naman];
+/* ------------------------------------------------------------------ laid-out sheets */
+
+// Most systems are a pipeline with a few stores or services hanging off it. `sheet` lays those out: the pipeline
+// left to right (two rows, snaking, when it is long), each attached node above or below its stage, and on phones
+// one column with attachments beside it. Walkthrough steps name nodes only; the connector between two consecutive
+// steps is found automatically.
+
+type NodeSpec = Omit<ArchNode, 'd' | 'm'>;
+export interface SheetSpec {
+  slug: string;
+  title: string;
+  caption: string;
+  main: NodeSpec[];
+  side?: { node: NodeSpec; of: string; dir: 'in' | 'out'; above?: boolean; label?: string }[];
+  loops?: { from: string; to: string; label?: string }[];
+  walkthroughs: { id: string; title: string; steps: { node: string; say: string }[] }[];
+}
+
+const PITCH = 200;
+const MARGIN = 40;
+
+export function sheet(s: SheetSpec): Architecture {
+  const n = s.main.length;
+  const cols = n <= 5 ? n : Math.ceil(n / 2);
+  const rows = Math.ceil(n / cols);
+  const sides = s.side ?? [];
+  const rowOf = (id: string) => Math.floor(s.main.findIndex((x) => x.id === id) / cols);
+  const above = (r: number) => sides.some((x) => x.above && rowOf(x.of) === r);
+  const below = (r: number) => sides.some((x) => !x.above && rowOf(x.of) === r);
+  const hasBelow = below(rows - 1);
+  // Each row is spaced by what actually hangs off it: room above for its attachments (or a loop), below for others.
+  const loopRows = new Set((s.loops ?? []).filter((l) => rowOf(l.from) === rowOf(l.to)).map((l) => rowOf(l.from)));
+  const rowY: number[] = [];
+  for (let r = 0; r < rows; r++) {
+    const room = above(r) ? 125 : loopRows.has(r) ? 45 : 0;
+    rowY.push(r === 0 ? 50 + room : rowY[r - 1] + 150 + (below(r - 1) ? 125 : 0) + room);
+  }
+  const W = cols * PITCH + MARGIN * 2;
+
+  // Phones: one column; a stage with several attachments gets a taller block so they stack beside it.
+  const mY: number[] = [];
+  s.main.forEach((_, i) => mY.push(i ? mY[i - 1] + 120 * Math.max(1, sides.filter((x) => x.of === s.main[i - 1].id).length) : 60));
+
+  const pos = new Map<string, { d: [number, number]; m: [number, number]; row: number; col: number }>();
+  s.main.forEach((node, i) => {
+    const row = Math.floor(i / cols);
+    const k = i % cols;
+    const col = row % 2 ? cols - 1 - k : k;
+    pos.set(node.id, { d: [MARGIN + PITCH / 2 + col * PITCH, rowY[row]], m: [95, mY[i]], row, col });
+  });
+
+  // Attached nodes: in their stage's column, or the nearest free one in the same band.
+  const taken = new Set<string>();
+  let lastSideY = -Infinity;
+  const sideNodes = sides.map((x) => {
+    const at = pos.get(x.of)!;
+    const dy = x.above ? -125 : 125;
+    let col = at.col;
+    for (let step = 0; taken.has(`${at.row}:${dy}:${col}`); step++) col = at.col + (step % 2 ? -1 : 1) * Math.ceil((step + 1) / 2);
+    taken.add(`${at.row}:${dy}:${col}`);
+    const my = at.m[1] + 120 * sides.slice(0, sides.indexOf(x)).filter((y) => y.of === x.of).length;
+    lastSideY = Math.max(lastSideY, my);
+    return { ...x.node, d: [MARGIN + PITCH / 2 + col * PITCH, at.d[1] + dy] as [number, number], m: [270, my] as [number, number] };
+  });
+
+  const nodes: ArchNode[] = [...s.main.map((node) => ({ ...node, d: pos.get(node.id)!.d, m: pos.get(node.id)!.m })), ...sideNodes];
+  const edges: ArchEdge[] = [];
+  for (let i = 0; i < n - 1; i++) {
+    const a = s.main[i].id;
+    const b = s.main[i + 1].id;
+    const pa = pos.get(a)!;
+    const pb = pos.get(b)!;
+    // Between rows the line runs down the sheet's margin.
+    const x = pa.col === cols - 1 ? W - 18 : 18;
+    edges.push({ id: `${a}-${b}`, from: a, to: b, via: pa.row !== pb.row ? { d: [[x, pa.d[1]], [x, pb.d[1]]] } : undefined });
+  }
+  sides.forEach((x, i) => {
+    const main = pos.get(x.of)!;
+    const side = sideNodes[i];
+    const gapY = main.d[1] + (x.above ? -62 : 62);
+    // Wide: a shifted attachment turns in the gap between bands. Phone: lines turn in the gap between columns.
+    let d: [number, number][] | undefined = side.d[0] === main.d[0] ? undefined : [[main.d[0], gapY], [side.d[0], gapY]];
+    // A stage's second and later attachments leave it a little lower and turn a little further right.
+    const k = sides.slice(0, i).filter((y) => y.of === x.of).length;
+    let m: [number, number][] | undefined = side.m[1] === main.m[1] && !k ? undefined : [[174 + k * 10, main.m[1] + k * 16], [174 + k * 10, side.m[1]]];
+    if (x.dir === 'in') { d = d?.slice().reverse(); m = m?.slice().reverse(); }
+    const [from, to] = x.dir === 'out' ? [x.of, x.node.id] : [x.node.id, x.of];
+    edges.push({ id: `${from}-${to}`, from, to, label: x.label, via: d || m ? { d, m } : undefined });
+  });
+  (s.loops ?? []).forEach((l, i) => {
+    const a = pos.get(l.from)!;
+    const b = pos.get(l.to)!;
+    const gutter = 6 + (i % 2) * 8;
+    const d: [number, number][] | undefined =
+      a.col === b.col ? undefined : a.row === b.row ? [[a.d[0], a.d[1] - 62 - i * 6], [b.d[0] + (a.d[0] > b.d[0] ? 22 : -22), a.d[1] - 62 - i * 6]] : undefined;
+    edges.push({ id: `${l.from}-${l.to}`, from: l.from, to: l.to, label: l.label, via: { d, m: [[gutter, a.m[1]], [gutter, b.m[1] + (i % 2) * 14]] } });
+  });
+
+  const byPair = (a: string, b: string) => edges.find((e) => (e.from === a && e.to === b) || (e.from === b && e.to === a))?.id;
+  const walkthroughs: Walkthrough[] = s.walkthroughs.map((w) => ({
+    id: w.id,
+    title: w.title,
+    steps: w.steps.map((st, i) => ({ node: st.node, say: st.say, edge: i ? byPair(w.steps[i - 1].node, st.node) : undefined })),
+  }));
+
+  const Hd = rowY[rows - 1] + 35 + (hasBelow ? 125 : 0) + 40;
+  const Hm = Math.max(mY[n - 1], lastSideY) + 60;
+  return { slug: s.slug, title: s.title, caption: s.caption, size: { d: [W, Hd], m: [360, Hm] }, nodes, edges, walkthroughs };
+}
+
+import { sheets } from './sheets';
+
+export const architectures: Architecture[] = [naman, ...sheets.map(sheet)];
 export const architectureFor = (slug: string) => architectures.find((a) => a.slug === slug);

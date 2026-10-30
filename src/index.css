@@ -324,7 +324,7 @@
   .arch-swatch { @apply inline-block h-3 w-4 bg-white; border: 1.5px solid var(--c); }
   .arch-controls { @apply flex flex-wrap items-center gap-2; }
   .arch-select { @apply min-h-11 max-w-full border border-seam bg-white px-3 font-sans text-charcoal; font-size: 0.9375rem; }
-  .arch-btn { @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 border border-seam bg-white px-3 font-sans font-semibold text-charcoal transition-colors hover:border-charcoal disabled:opacity-40; font-size: 0.9375rem; }
+  .arch-btn { @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 whitespace-nowrap border border-seam bg-white px-2.5 sm:px-3 font-sans font-semibold text-charcoal transition-colors hover:border-charcoal disabled:opacity-40; font-size: 0.9375rem; }
   .arch-detail { @apply border-l border-seam pl-5; }
   @media (max-width: 767px) { .arch-detail { @apply border-l-0 border-t pl-0 pt-4; } }
 }

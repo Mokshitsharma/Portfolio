@@ -144,7 +144,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
         </div>
       </div>
 
-      <div className="arch-sheet mt-4" style={{ aspectRatio: `${W} / ${H}` }} data-lit={step >= 0 || undefined}>
+      <div className="arch-sheet mt-4" style={{ aspectRatio: `${W} / ${H}`, maxWidth: l === 'd' ? `${W * 1.05}px` : undefined }} data-lit={step >= 0 || undefined}>
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 h-full w-full" aria-hidden>
           <defs>
             <marker id={`${arch.slug}-head`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
