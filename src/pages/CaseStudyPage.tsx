@@ -8,6 +8,8 @@ import { lineFor, lineHex, type Line } from '../data/visuals';
 import ProjectVisual from '../components/ProjectVisual';
 import { cardFor } from '../data/cards';
 import { Flow, SystemMap } from '../components/Diagrams';
+import ArchitectureExplorer from '../components/ArchitectureExplorer';
+import { architectureFor } from '../data/architecture';
 import { Links, StatusMark, lineBg, lineText } from '../components/ui';
 import NotFound from './NotFound';
 
@@ -40,12 +42,12 @@ function Hero({ c, p, line }: { c: CaseStudy; p: Project; line: Line }) {
           </div>
           <div>
             {shot ? (
-              <figure className="border-[6px] border-[#4a3222] bg-limestone" style={{ boxShadow: `0 30px 60px -34px rgb(80 60 30 / 0.55), 0 0 0 1px ${lineHex[line]}55` }}>
+              <figure className="border border-charcoal/60 bg-limestone">
                 <img src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} className="block h-auto w-full" />
                 <figcaption className="fine bg-night-2 px-3 py-2 text-slate">{shot.caption}</figcaption>
               </figure>
             ) : (
-              <div className="border-[6px] border-[#4a3222]"><ProjectVisual slug={p.slug} variant="hero" /></div>
+              <div className="border border-charcoal/60"><ProjectVisual slug={p.slug} variant="hero" /></div>
             )}
             <dl className="ui mt-6 grid grid-cols-2 gap-x-6 gap-y-4">
               <div><dt className="label text-slate">Status</dt><dd className="mt-1"><StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" /></dd></div>
@@ -150,7 +152,7 @@ function Figures({ c }: { c: CaseStudy }) {
     <div className="grid gap-12 lg:grid-cols-2">
       {rest.map((f, i) => (
         <figure key={f.src} className={i === 0 && rest.length % 2 === 1 ? 'lg:col-span-2' : ''}>
-          <div className="border-[6px] border-[#4a3222] bg-limestone">
+          <div className="border border-charcoal/60 bg-limestone">
             <img src={f.src} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" className="block h-auto w-full" />
           </div>
           <figcaption className="fine mt-4 text-slate">{f.caption}</figcaption>
@@ -218,7 +220,10 @@ export default function CaseStudyPage() {
   if (!c || !p) return <NotFound />;
   const line = lineFor[p.category];
 
-  const diagram: Part | null = c.map
+  const arch = architectureFor(slug);
+  const diagram: Part | null = arch
+    ? { id: 'architecture', title: 'Architecture', node: <ArchitectureExplorer arch={arch} />, wide: true }
+    : c.map
     ? { id: 'architecture', title: 'Architecture', node: <SystemMap {...c.map} line={line} />, wide: true }
     : c.flow
       ? { id: 'architecture', title: c.flow.title, node: <Flow {...c.flow} line={line} />, wide: true }

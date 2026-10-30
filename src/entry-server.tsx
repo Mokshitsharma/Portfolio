@@ -18,3 +18,4 @@ export function render(url: string) {
 }
 
 export const routes = publicPages.map((p) => p.path);
+export { buildKnowledge } from './agent/knowledge';

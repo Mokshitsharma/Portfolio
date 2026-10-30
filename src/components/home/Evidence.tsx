@@ -55,8 +55,8 @@ export function Calibration() {
         </desc>
         {[0, 0.1, 0.2, 0.3].map((t) => (
           <g key={t}>
-            <line x1="44" x2="470" y1={16 + h - (t / max) * h} y2={16 + h - (t / max) * h} stroke="#d2c6b1" />
-            <text x="36" y={20 + h - (t / max) * h} textAnchor="end" fontSize="12" fill="#5c5449" fontFamily="Archivo Variable, Archivo, sans-serif">{t * 100}%</text>
+            <line x1="44" x2="470" y1={16 + h - (t / max) * h} y2={16 + h - (t / max) * h} stroke="#c3cdcb" />
+            <text x="36" y={20 + h - (t / max) * h} textAnchor="end" fontSize="12" fill="#4f5b69" fontFamily="Archivo Variable, Archivo, sans-serif">{t * 100}%</text>
           </g>
         ))}
         {calibration.map((c, i) => {
@@ -64,10 +64,10 @@ export function Calibration() {
           const bar = (v: number) => (v / max) * h;
           return (
             <g key={c.bin}>
-              <rect x={x0} y={16 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke="#2d6c88" strokeWidth="2" />
-              <rect x={x0 + 52} y={16 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill="#85632d" />
-              <text x={x0 + 49} y={16 + h + 20} textAnchor="middle" fontSize="13" fill="#221e19" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600">{c.bin}</text>
-              <text x={x0 + 49} y={16 + h + 37} textAnchor="middle" fontSize="11" fill="#5c5449" fontFamily="Archivo Variable, Archivo, sans-serif">{c.n.toLocaleString('en-US')} balls</text>
+              <rect x={x0} y={16 + h - bar(c.predicted)} width="46" height={bar(c.predicted)} fill="none" stroke="#0d6e63" strokeWidth="2" />
+              <rect x={x0 + 52} y={16 + h - bar(c.observed)} width="46" height={bar(c.observed)} fill="#2343b5" />
+              <text x={x0 + 49} y={16 + h + 20} textAnchor="middle" fontSize="13" fill="#16202b" fontFamily="Archivo Variable, Archivo, sans-serif" fontWeight="600">{c.bin}</text>
+              <text x={x0 + 49} y={16 + h + 37} textAnchor="middle" fontSize="11" fill="#4f5b69" fontFamily="Archivo Variable, Archivo, sans-serif">{c.n.toLocaleString('en-US')} balls</text>
             </g>
           );
         })}

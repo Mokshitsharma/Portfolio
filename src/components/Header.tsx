@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { profile } from '../data/profile';
+import { openAssistant } from '../agent/bus';
+import { ASSISTANT } from '../agent/config';
 
 export const nav = [
   { to: '/projects', label: 'Projects' },
@@ -67,6 +69,9 @@ export default function Header() {
               </li>
             ))}
             <li>
+              <button type="button" onClick={() => openAssistant()} className="label relative py-2 text-mist hover:text-paper">{ASSISTANT.open}</button>
+            </li>
+            <li>
               <a href={profile.resume} target="_blank" rel="noopener noreferrer" className={`btn !min-h-9 !px-4 ${home ? 'btn-brass' : 'btn-sodium'}`}>
                 Résumé<span className="sr-only"> (opens in a new tab)</span>
               </a>
@@ -74,6 +79,8 @@ export default function Header() {
           </ul>
         </nav>
 
+        <div className="flex items-center gap-1 lg:hidden">
+        <button type="button" onClick={() => { setOpen(false); openAssistant(); }} className="label border border-seam px-3 py-2 text-charcoal">{ASSISTANT.open}</button>
         <button
           ref={button}
           type="button"
@@ -85,6 +92,7 @@ export default function Header() {
           {open ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
           <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
         </button>
+        </div>
       </div>
 
       <div id="mobile-menu" ref={panel} hidden={!open} className="border-t border-night-rule bg-night lg:hidden">

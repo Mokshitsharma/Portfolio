@@ -19,7 +19,7 @@ function StatusBar() {
   const counts = maturities.map((m) => ({ m, n: projects.filter((p) => p.maturity === m).length })).filter((c) => c.n > 0);
   // From lit to unlit: the further a project got, the warmer its light.
   const shade: Record<Maturity, string> = {
-    production: '#85632d', deployed: '#c39a6b', working: '#3d3830', 'in-progress': '#2d6c88', prototype: '#8c8274', notebook: '#c9bda7', coursework: '#ddd3c1',
+    production: '#16202b', deployed: '#2343b5', working: '#4f5b69', 'in-progress': '#0d6e63', prototype: '#9aa7b0', notebook: '#c3cdcb', coursework: '#dae2e0',
   };
   return (
     <figure className="w-full max-w-md">
@@ -131,7 +131,7 @@ export default function Projects() {
               </select>
             </div>
             <label className="ui flex h-12 cursor-pointer items-center gap-3 font-semibold">
-              <input type="checkbox" name="cases" value="1" checked={onlyCases} onChange={(e) => update('cases', e.target.checked ? '1' : '')} className="h-5 w-5 accent-[#85632d]" />
+              <input type="checkbox" name="cases" value="1" checked={onlyCases} onChange={(e) => update('cases', e.target.checked ? '1' : '')} className="h-5 w-5 accent-[#2343b5]" />
               Case studies only
             </label>
           </div>

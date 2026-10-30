@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import SiteFooter from './SiteFooter';
+import Launcher from '../agent/Launcher';
 import { canonical, metaFor } from '../seo';
 
 // Keeps the document head in step with client-side navigation. The first load already has the right
@@ -54,6 +55,7 @@ export default function Layout() {
       </main>
       {/* The home page ends on its own closing chapter. */}
       {pathname !== '/' && <SiteFooter />}
+      <Launcher />
     </>
   );
 }

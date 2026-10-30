@@ -4,6 +4,7 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import { handleContact } from "./api/_lib/handle.js";
+import { handleChat } from "./api/_lib/chat.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +24,16 @@ async function startServer() {
   app.post("/api/contact", async (req, res) => {
     const { status, json } = await handleContact(req.body, req.ip || "local");
     res.status(status).json(json);
+  });
+
+  // Same handler as the Vercel function in api/chat.ts.
+  app.post("/api/chat", async (req, res) => {
+    await handleChat(req.body, req.ip || "local", {
+      status: (code) => { res.status(code); },
+      header: (name, value) => { res.setHeader(name, value); },
+      write: (chunk) => { res.write(chunk); },
+      end: () => { res.end(); },
+    });
   });
 
   if (process.env.NODE_ENV !== "production") {

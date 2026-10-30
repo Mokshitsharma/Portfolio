@@ -97,3 +97,9 @@ export const principles = [
     where: [{ label: 'SettleAI ports and mocks', slug: 'settleai' }, { label: 'docIQ refusal evaluation', slug: 'dociq' }, { label: 'CricXAI versioned evaluations', slug: 'cricxai' }],
   },
 ];
+
+// Photographs for the home page's two plates. Empty until the files are supplied; the plates then show a marked
+// placeholder rather than an invented likeness.
+export interface Photo { src: string; alt: string; width: number; height: number }
+export const portrait: Photo | null = null;
+export const pet: (Photo & { name: string; caption: string }) | null = null;

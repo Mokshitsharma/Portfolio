@@ -68,9 +68,9 @@ export function KindLegend({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
 export function CalibrationChart({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   const max = 0.32;
   const h = 220;
-  const ink = tone === 'dark' ? '#221e19' : '#221e19';
-  const muted = tone === 'dark' ? '#5c5449' : '#5c5449';
-  const green = tone === 'dark' ? '#2d6c88' : '#2d6c88';
+  const ink = tone === 'dark' ? '#16202b' : '#16202b';
+  const muted = tone === 'dark' ? '#4f5b69' : '#4f5b69';
+  const green = tone === 'dark' ? '#0d6e63' : '#0d6e63';
   return (
     <figure>
       <svg viewBox="0 0 480 300" className="h-auto w-full" role="img" aria-labelledby="cal-title cal-desc">
