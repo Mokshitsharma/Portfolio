@@ -1,5 +1,5 @@
 import { credentials, education, inProgress, principles, profile } from '../data/profile';
-import { categories, maturityLabel, projects } from '../data/projects';
+import { categories, firstSentence, maturityLabel, projects } from '../data/projects';
 import { caseStudies } from '../data/caseStudies';
 import { roles, formatRange } from '../data/experience';
 import { skillGroups } from '../data/skills';
@@ -82,6 +82,10 @@ export function buildKnowledge(): { docs: Doc[]; index: string; diagrams: string
         p.links.length ? 'Links: ' + p.links.map((l) => `${l.label} ${l.href}`).join('; ') + '.' : p.linkNote,
         p.tests,
         p.relation,
+        a && lines(
+          `Architecture (${a.title}): ` + a.nodes.map((n) => `${n.label}: ${n.what}${n.why ? ` ${n.why}` : ''}`).join(' '),
+          'Walkthroughs: ' + a.walkthroughs.map((w) => `${w.title}: ` + w.steps.map((s) => s.say).join(' ')).join(' | '),
+        ),
         c && lines(
           c.title, c.lede, `Context: ${c.context}`, `Role: ${c.role}`, `Status: ${c.status}`,
           c.flow && `${c.flow.title}: ` + c.flow.stages.map((s) => s.label + (s.note ? ` (${s.note})` : '')).join(' -> '),
@@ -91,21 +95,17 @@ export function buildKnowledge(): { docs: Doc[]; index: string; diagrams: string
           ...(c.facts ?? []).map((f) => `Fact: ${f.label}: ${f.value} (source: ${f.source})`),
           ...(c.quality ?? []).map((q) => `Quality: ${q}`),
         ),
-        a && lines(
-          `Architecture (${a.title}): ` + a.nodes.map((n) => `[node ${n.id}] ${n.label}: ${n.what}${n.why ? ` ${n.why}` : ''}`).join(' '),
-          'Walkthroughs: ' + a.walkthroughs.map((w) => `[${w.id}] ${w.title}: ` + w.steps.map((s) => s.say).join(' ')).join(' | '),
-        ),
       ),
     });
   }
 
   // A one-line entry per project, always sent, so the assistant can recommend across the whole collection.
   const index = projects
-    .map((p) => `${p.name} | ${p.slug} | ${categories.find((x) => x.id === p.category)!.title} | ${maturityLabel[p.maturity]} | ${p.stack.slice(0, 6).join(', ')}${p.caseStudy ? ' | deep dive' : ''}`)
+    .map((p) => `${p.name} | ${p.caseStudy ? `/projects/${p.slug}` : `/projects?q=${encodeURIComponent(p.name)}`} | ${categories.find((x) => x.id === p.category)!.title} | ${firstSentence(p.summary)}`)
     .join('\n');
 
   const diagrams = architectures
-    .map((a) => `${a.slug}: walkthroughs ${a.walkthroughs.map((w) => `${w.id} (${w.title})`).join(', ')}; nodes ${a.nodes.map((n) => n.id).join(', ')}`)
+    .map((a) => `${a.slug}: walkthroughs ${a.walkthroughs.map((w) => `${w.id} (${w.title})`).join(', ')}; nodes ${a.nodes.map((n) => `${n.id} (${n.label})`).join(', ')}`)
     .join('\n');
 
   return { docs, index, diagrams };

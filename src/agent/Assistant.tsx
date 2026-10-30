@@ -19,7 +19,8 @@ function parseDirective(text: string): { text: string; diagram?: DiagramCommand 
   if (!m) return { text: clean };
   const arch = architectureFor(m[1]);
   if (!arch) return { text: clean };
-  const node = m[2] && arch.nodes.some((n) => n.id === m[2]) ? m[2] : undefined;
+  // Models sometimes write a component's name instead of its id ("approval" for "approve"); match either.
+  const node = m[2] ? arch.nodes.find((n) => n.id === m[2] || n.label.toLowerCase() === m[2].replace(/-/g, ' '))?.id : undefined;
   const walkthrough = m[3] && arch.walkthroughs.some((w) => w.id === m[3]) ? m[3] : undefined;
   return { text: clean, diagram: node || walkthrough ? { slug: m[1], node, walkthrough } : undefined };
 }

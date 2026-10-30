@@ -106,6 +106,6 @@ export const portrait: Photo = {
 };
 export const pet: Photo & { name: string } = {
   src: '/images/pet-figure.webp', width: 521, height: 900,
-  alt: 'Illustration of Mokshit’s dog sitting, black, tan and cream, head tilted, tongue out.',
-  name: 'My dog',
+  alt: 'Illustration of Mario, Mokshit’s dog, sitting: black, tan and cream, head tilted, tongue out.',
+  name: 'Mario',
 };

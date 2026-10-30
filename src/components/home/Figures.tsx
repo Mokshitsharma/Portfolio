@@ -105,7 +105,7 @@ export function FigureTwo() {
   return (
     <div className="grid gap-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:gap-16 lg:pl-[8%]">
       <figure className="fig-2-plate w-fit">
-        <button type="button" onClick={bring} className="fig-pet group block" aria-label="Ask my dog to fetch a project">
+        <button type="button" onClick={bring} className="fig-pet group block" aria-label={`Ask ${pet.name} to fetch a project`}>
           <img key={hop} src={pet.src} alt={pet.alt} width={pet.width} height={pet.height} loading="lazy" decoding="async" className={`h-[17rem] w-auto md:h-[24rem] ${hop ? 'is-hopping' : ''}`} />
         </button>
         <figcaption className="fig-caption"><span>Fig. 2</span><span>{pet.name}</span></figcaption>
@@ -113,7 +113,7 @@ export function FigureTwo() {
       <div className="pb-2">
         <h2 id="pet-title" className="headline text-[clamp(1.75rem,3.4vw,2.6rem)] text-charcoal">Company while I build.</h2>
         <p className="ui mt-3 max-w-[30rem] text-slate">
-          Below is every project on one map. Not sure where to start? My dog will fetch one for you.
+          Below is every project on one map. Not sure where to start? {pet.name} will fetch one for you.
         </p>
         <button type="button" onClick={bring} className="btn btn-line mt-5">{brought ? 'Fetch another' : 'Fetch me a project'}</button>
         <p className="ui mt-3 min-h-[1.5rem] text-charcoal" aria-live="polite">

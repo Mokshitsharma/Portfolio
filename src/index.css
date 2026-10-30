@@ -308,8 +308,11 @@
     border: 1.5px solid var(--c, var(--color-slate));
     transition: background-color 250ms ease, box-shadow 250ms ease, opacity 250ms ease;
   }
-  .arch-node-label { @apply font-sans font-semibold text-charcoal; font-size: clamp(0.75rem, 1.3vw, 0.9375rem); }
-  .arch-node-sub { @apply font-sans text-slate; font-stretch: 86%; font-size: clamp(0.6875rem, 1vw, 0.8125rem); }
+  /* Text scales with the sheet, not the window, so a squeezed sheet (the assistant open beside it) still fits. */
+  .arch { container-type: inline-size; }
+  .arch-node-label { @apply font-sans font-semibold text-charcoal; font-size: clamp(0.6875rem, 1.45cqi, 0.9375rem); }
+  .arch-node-sub { @apply font-sans text-slate; font-stretch: 86%; font-size: clamp(0.625rem, 1.1cqi, 0.8125rem); }
+  @container (max-width: 820px) { .arch-sheet[data-layout="d"] .arch-node-sub { display: none; } }
   .arch-sheet[data-lit] .arch-node:not([data-state]) { opacity: 0.5; }
   .arch-node[data-state="now"] { background: color-mix(in oklab, var(--c) 12%, white); box-shadow: 0 0 0 3px color-mix(in oklab, var(--c) 30%, transparent); }
   .arch-node[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--color-brass); opacity: 1 !important; }
