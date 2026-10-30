@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { categories, firstSentence, maturityLabel, projects } from '../../data/projects';
 import type { Category, Project } from '../../data/types';
 import { lineFor, lineHex } from '../../data/visuals';
+import { onFetchProject } from '../../agent/bus';
 
 // Every published project as a map: one root, a branch per area of work, and the projects on the branch the
 // visitor opens. Wide screens draw it as a tree across the page; narrow screens as an indented outline, with each
@@ -12,9 +13,10 @@ const branchOf = (c: Category) => projects.filter((p) => p.category === c);
 const tint = (c: Category) => lineHex[lineFor[c]];
 const href = (p: Project) => (p.caseStudy ? `/projects/${p.slug}` : `/projects?q=${encodeURIComponent(p.name)}`);
 
-function ProjectNode({ p }: { p: Project }) {
+function ProjectNode({ p, fetched }: { p: Project; fetched?: boolean }) {
   return (
-    <Link to={href(p)} className="map-proj" style={{ ['--tint' as string]: tint(p.category) }}>
+    <Link to={href(p)} className="map-proj" data-slug={p.slug} data-fetched={fetched || undefined} style={{ ['--tint' as string]: tint(p.category) }}>
+      {fetched && <span className="map-fetched">Fetched</span>}
       <span className="font-sans text-[1rem] font-semibold leading-snug text-charcoal">{p.name}</span>
       <span className="fine mt-1 text-slate">{firstSentence(p.summary)}</span>
       <span className="fine mt-auto flex flex-wrap gap-x-3 pt-2 text-slate">
@@ -31,6 +33,19 @@ export default function ProjectMap() {
   const index = list.findIndex((c) => c.id === open);
   const branch = open ? branchOf(open) : [];
   const toggle = (c: Category) => setOpen((o) => (o === c ? null : c));
+
+  // Fig. 2 fetched a project: open its area, mark it and bring it into view.
+  const [fetched, setFetched] = useState<string | null>(null);
+  useEffect(() => onFetchProject((slug) => {
+    const p = projects.find((x) => x.slug === slug);
+    if (!p) return;
+    setOpen(p.category);
+    setFetched(slug);
+    window.setTimeout(() => {
+      const node = [...document.querySelectorAll<HTMLElement>(`.map-proj[data-slug="${slug}"]`)].find((el) => el.offsetParent !== null);
+      node?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }, 60);
+  }), []);
 
   return (
     <div>
@@ -75,7 +90,7 @@ export default function ProjectMap() {
               <ul className="grid grid-cols-4 gap-3">
                 {branch.map((p) => (
                   <li key={p.slug} className="relative">
-                    <ProjectNode p={p} />
+                    <ProjectNode p={p} fetched={fetched === p.slug} />
                   </li>
                 ))}
               </ul>
@@ -96,7 +111,7 @@ export default function ProjectMap() {
             <div id={`branch-${c.id}`} hidden={open !== c.id}>
               <p className="ui mt-3 text-slate">{c.blurb}</p>
               <ul className="mt-3 grid gap-2 border-l border-seam pl-4 sm:grid-cols-2">
-                {branchOf(c.id).map((p) => <li key={p.slug}><ProjectNode p={p} /></li>)}
+                {branchOf(c.id).map((p) => <li key={p.slug}><ProjectNode p={p} fetched={fetched === p.slug} /></li>)}
               </ul>
             </div>
           </li>

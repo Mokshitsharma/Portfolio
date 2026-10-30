@@ -2,40 +2,19 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Download } from 'lucide-react';
 import { currentRole, formatMonth, roles } from '../data/experience';
-import { credentials, education, inProgress, pet, portrait, profile, type Photo } from '../data/profile';
+import { credentials, education, inProgress, profile } from '../data/profile';
 import { projects } from '../data/projects';
 import { domains, galleryOrder, skillsFor } from '../data/domains';
 import { Timeline } from '../components/home/Evidence';
 import { CredentialWall, EducationFrame } from '../components/records';
 import { ProjectLink } from '../components/home/Rooms';
 import ProjectMap from '../components/home/ProjectMap';
+import { FigureOne, FigureTwo } from '../components/home/Figures';
 import { openAssistant } from '../agent/bus';
 
 // The home page is a short sequence of drawing plates (docs/redesign/DESIGN.md): Fig. 1 introduces me with
-// annotations that lead to the work behind them, Fig. 2 is my pet, whose leader line runs down into the map of every
-// project. Below the map: areas of work, experience and credentials, contact. Every annotation links to evidence.
-
-// Annotations around the portrait, in percentages of the plate: where the note sits (y on its side) and the point on
-// the frame its leader line ends at.
-const NOTES: { side: 'l' | 'r'; y: number; at: [number, number]; title: string; text: string; to: string }[] = [
-  { side: 'l', y: 14, at: [36, 24], title: 'Agents that ask before they act', text: 'Naman, SettleAI, ToolForge: LangGraph, MCP, approval steps', to: '/projects/naman' },
-  { side: 'l', y: 58, at: [36, 66], title: 'Models with readable reasons', text: 'CricXAI: ROC-AUC 0.749, SHAP for every recommendation', to: '/projects/cricxai' },
-  { side: 'r', y: 8, at: [64, 18], title: 'A live delivery platform', text: 'Movigo: the only engineer, backend to both store apps', to: '/projects/movigo' },
-  { side: 'r', y: 44, at: [64, 50], title: 'Data that feeds decisions', text: 'ETL into Power BI, pandas and SQL analyses', to: '/projects?category=data' },
-  { side: 'r', y: 76, at: [64, 82], title: 'AI and Data Science', text: 'Integrated B.Tech + M.Tech, DAVV Indore', to: '/about' },
-];
-
-function Plate({ photo, label, className = '' }: { photo: Photo | null; label: string; className?: string }) {
-  return (
-    <div className={`fig-frame ${className}`}>
-      {photo ? (
-        <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} decoding="async" />
-      ) : (
-        <div className="fig-empty"><span className="fine bg-white px-2 py-1 text-slate">{label}</span></div>
-      )}
-    </div>
-  );
-}
+// annotations that lead to the work behind them, Fig. 2 is my dog, who fetches a project from the map of every
+// project and whose leader line runs down into it. Below the map: areas of work, experience and credentials, contact. Every annotation links to evidence.
 
 function Section({ id, title, intro, children, className = '' }: { id: string; title: string; intro?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -69,43 +48,7 @@ function Introduction() {
           </div>
         </div>
 
-        <figure className="fig-1-plate">
-          {/* Wide screens: notes either side, leader lines into the frame. */}
-          <div className="relative hidden aspect-[7/6] md:block">
-            <div className="absolute inset-y-0 left-[36%] right-[36%]">
-              <Plate photo={portrait} label="Portrait to be added" className="!aspect-auto h-full" />
-            </div>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
-              {NOTES.map((n) => {
-                const x0 = n.side === 'l' ? 27 : 73;
-                const y0 = n.y + 2.5;
-                return <path key={n.title} pathLength={1} className="leader" d={`M${x0} ${y0} L${n.side === 'l' ? x0 + 3 : x0 - 3} ${y0} L${n.at[0]} ${n.at[1]}`} />;
-              })}
-            </svg>
-            {NOTES.map((n) => (
-              <span key={n.title} className="absolute h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-charcoal" style={{ left: `${n.at[0]}%`, top: `${n.at[1]}%` }} aria-hidden />
-            ))}
-            {NOTES.map((n) => (
-              <Link key={n.title} to={n.to} className={`note absolute w-[26%] ${n.side === 'l' ? 'left-0 text-right' : 'right-0'}`} style={{ top: `${n.y}%` }}>
-                <span className="note-title">{n.title}</span>
-                <span className="note-text">{n.text}</span>
-              </Link>
-            ))}
-          </div>
-          {/* Phones: the plate, then the notes as a keyed list. */}
-          <div className="md:hidden">
-            <Plate photo={portrait} label="Portrait to be added" className="mx-auto max-w-[16rem]" />
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-              {NOTES.map((n) => (
-                <li key={n.title} className="flex gap-3">
-                  <span className="mt-[0.6rem] h-px w-5 shrink-0 bg-charcoal" aria-hidden />
-                  <Link to={n.to} className="note"><span className="note-title">{n.title}</span><span className="note-text">{n.text}</span></Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <figcaption className="fig-caption"><span>Fig. 1</span><span>{profile.name}, {profile.location}</span></figcaption>
-        </figure>
+        <FigureOne />
       </div>
     </section>
   );
@@ -115,18 +58,7 @@ function Introduction() {
 function Companion() {
   return (
     <section aria-labelledby="pet-title" className="relative pt-10 md:pt-16">
-      <div className="shell grid gap-8 md:grid-cols-[minmax(0,4fr)_minmax(0,6fr)] md:items-end">
-        <figure className="fig-2-plate w-full max-w-[16rem] md:max-w-[20rem]">
-          <Plate photo={pet} label="Photo of my pet to be added" />
-          <figcaption className="fig-caption"><span>Fig. 2</span><span>{pet ? pet.name : 'My pet'}</span></figcaption>
-        </figure>
-        <div className="pb-2">
-          <h2 id="pet-title" className="headline text-[clamp(1.75rem,3.4vw,2.6rem)] text-charcoal">{pet ? pet.caption : 'Company while I build.'}</h2>
-          <p className="ui mt-3 max-w-[30rem] text-slate">
-            The rest of this page is the work: every project on one map, then the experience and credentials behind it.
-          </p>
-        </div>
-      </div>
+      <div className="shell"><FigureTwo /></div>
       {/* The leader from Fig. 2 runs on into the map's root. */}
       <div className="shell"><span className="map-wire ml-6 block h-16 w-px lg:mx-auto" aria-hidden /></div>
     </section>

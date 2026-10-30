@@ -98,8 +98,14 @@ export const principles = [
   },
 ];
 
-// Photographs for the home page's two plates. Empty until the files are supplied; the plates then show a marked
-// placeholder rather than an invented likeness.
+// Illustrations for the home page's two plates, cut out of their backgrounds so they stand on the page.
 export interface Photo { src: string; alt: string; width: number; height: number }
-export const portrait: Photo | null = null;
-export const pet: (Photo & { name: string; caption: string }) | null = null;
+export const portrait: Photo = {
+  src: '/images/me-figure.webp', width: 441, height: 1200,
+  alt: 'Illustration of Mokshit Sharma standing, in glasses, a navy short-sleeved shirt and cream trousers, hands in pockets.',
+};
+export const pet: Photo & { name: string } = {
+  src: '/images/pet-figure.webp', width: 521, height: 900,
+  alt: 'Illustration of Mokshit’s dog sitting, black, tan and cream, head tilted, tongue out.',
+  name: 'My dog',
+};
