@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUp, Play, X } from 'lucide-react';
 import { ASSISTANT } from './config';
 import { getContext, queueDiagram, showDiagram, type DiagramCommand } from './bus';
-import { projectBySlug } from '../data/projects';
+import { projectBySlug, projects } from '../data/projects';
+import { projectHref } from '../components/ui';
 import { architectureFor } from '../data/architecture';
 
 // The assistant panel. Loaded on first open. Answers stream from /api/chat; an answer can end with a diagram
@@ -25,6 +26,16 @@ function parseDirective(text: string): { text: string; diagram?: DiagramCommand 
   return { text: clean, diagram: node || walkthrough ? { slug: m[1], node, walkthrough } : undefined };
 }
 
+// Models sometimes invent a project address (/projects/paytm%20stock%20dashboard). Only case studies have pages,
+// so any /projects/<x> that is not one is resolved by slug or name to its real address in the archive.
+function sitePath(href: string) {
+  const m = href.match(/^\/projects\/([^?#]+)/);
+  if (!m) return href;
+  const key = decodeURIComponent(m[1]).trim().toLowerCase();
+  const p = projects.find((x) => x.slug === key || x.name.toLowerCase() === key || x.slug === key.replace(/\s+/g, '-'));
+  return p ? projectHref(p.slug) : `/projects?q=${encodeURIComponent(decodeURIComponent(m[1]))}`;
+}
+
 // A small Markdown subset: paragraphs, "- " lists, **bold** and [links](/path).
 function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
   const inline = (s: string, key: string): ReactNode[] =>
@@ -32,7 +43,7 @@ function Rich({ text, onNavigate }: { text: string; onNavigate: () => void }) {
       const link = part.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
       if (link) {
         const [, label, href] = link;
-        if (href.startsWith('/')) return <Link key={`${key}${i}`} to={href} onClick={onNavigate} className="link font-semibold text-brass">{label}</Link>;
+        if (href.startsWith('/')) return <Link key={`${key}${i}`} to={sitePath(href)} onClick={onNavigate} className="link font-semibold text-brass">{label}</Link>;
         if (/^https?:\/\//.test(href)) return <a key={`${key}${i}`} href={href} target="_blank" rel="noopener noreferrer" className="link font-semibold text-brass">{label}</a>;
         return label;
       }

@@ -83,7 +83,8 @@ function systemPrompt(context: ChatContext, docs: typeof knowledge.docs) {
   // diagrams relevant to this question and a few trimmed records (the current page's gets more room).
   const ids = new Set([context.slug, ...docs.map((d) => d.id)]);
   const diagrams = knowledge.diagrams.split("\n").filter((l) => ids.has(l.split(":")[0])).join("\n");
-  const records = docs.map((d) => `### ${d.title} (${d.url})\n${d.text.slice(0, d.id === context.slug ? 6000 : 2600)}`).join("\n\n");
+  // The page's own project and the best match get the most room; docs[0] is the profile, docs[1] the best match.
+  const records = docs.map((d, i) => `### ${d.title} (${d.url})\n${d.text.slice(0, d.id === context.slug ? 6000 : i === 1 ? 4500 : 2200)}`).join("\n\n");
   return `You are the portfolio assistant on Mokshit Sharma's website. You speak about Mokshit in the third person, for recruiters and engineers.
 
 Rules:

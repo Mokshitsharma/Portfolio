@@ -10,11 +10,11 @@ import { CredentialWall, EducationFrame } from '../components/records';
 import ProjectMap from '../components/home/ProjectMap';
 import Story from '../components/home/Story';
 import SelectedWork from '../components/home/SelectedWork';
-import { MarioFetch } from '../components/home/Figures';
+import { NamanFetch } from '../components/home/Figures';
 import { openAssistant } from '../agent/bus';
 
 // The home page tells one story (docs/redesign/DESIGN.md): who I am (the opening scenes), what I work on (the
-// notes drawn onto the figure), what I have built (Mario's map of every project), how those systems work (six
+// notes drawn onto the figure), what I have built (Naman's map of every project), how those systems work (six
 // selected systems followed step by step), then where I did it (experience) and what backs it (education,
 // skills, credentials).
 
@@ -41,7 +41,7 @@ function MapSection() {
               All {projects.length} projects by area. Open an area, then a project; those marked Deep dive have their architecture drawn out.
             </p>
           </div>
-          <MarioFetch />
+          <NamanFetch />
         </div>
         <div className="reveal"><ProjectMap /></div>
       </div>

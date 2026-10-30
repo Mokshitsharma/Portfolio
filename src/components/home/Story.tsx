@@ -1,6 +1,7 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { pet, portrait, profile } from '../../data/profile';
+import { companion, portrait, profile } from '../../data/profile';
+import NamanOrb, { type OrbMode } from '../NamanOrb';
 import { categories, projects } from '../../data/projects';
 import type { Category } from '../../data/types';
 import { areaHex } from '../../data/visuals';
@@ -10,8 +11,9 @@ import { openArea, openAssistant } from '../../agent/bus';
 // The opening of the home page: one sticky stage driven by scroll progress.
 //   0.00-0.14  I am introduced: name, role, figure on the right.
 //   0.14-0.44  The figure moves to the centre and six notes, one per area of work, are drawn onto it.
-//   0.44-0.64  The notes retract, I walk out, Mario walks in.
-//   0.64-1.00  Mario steps aside; lines grow from him into the map of the six areas, which can be clicked.
+//   0.44-0.64  The notes retract, I walk out, Naman (my voice agent, drawn as its orb) arrives.
+//   0.64-1.00  Naman steps aside; lines grow from him into the map of the six areas, which can be clicked,
+//              while his plan dots fill one per area, as the real orb shows a plan.
 // Every frame writes styles straight to the elements. With reduced motion the same content is laid out still.
 
 const AREAS: Category[] = ['agents', 'voice', 'llm', 'ml', 'data', 'systems'];
@@ -28,8 +30,9 @@ const NOTES: Record<Category, { title: string; text: string; to: string; pin: [n
 };
 
 const FIG_ASPECT = portrait.width / portrait.height;
-// Projects in an area, case studies first.
-const inArea = (c: Category) => projects.filter((p) => p.category === c || p.also?.includes(c)).sort((a, b) => Number(!!b.caseStudy) - Number(!!a.caseStudy));
+// Projects in an area: its own before those also listed there (so Movigo never leads another area), case studies first.
+const rank = (c: Category) => (p: (typeof projects)[number]) => (p.category === c ? 0 : 2) + (p.caseStudy ? 0 : 1);
+const inArea = (c: Category) => projects.filter((p) => p.category === c || p.also?.includes(c)).sort((a, b) => rank(c)(a) - rank(c)(b));
 const areaTitle = (c: Category) => categories.find((x) => x.id === c)!;
 
 function Intro({ className = '' }: { className?: string }) {
@@ -65,8 +68,8 @@ function StillStory() {
           ))}
         </ul>
         <div className="mt-14 flex items-end gap-6">
-          <img src={pet.src} alt={pet.alt} width={pet.width} height={pet.height} className="h-48 w-auto" loading="lazy" />
-          <p className="ui max-w-[26rem] pb-2 text-slate">This is {pet.name}. He keeps me company while I build, and he knows where everything is.</p>
+          <NamanOrb mode="happy" className="h-44 w-auto" />
+          <p className="ui max-w-[26rem] pb-2 text-slate">This is {companion.name}, my own voice agent. He runs my laptop and phone, asks before he acts, and knows where everything is.</p>
         </div>
       </div>
     </section>
@@ -82,7 +85,7 @@ export default function Story() {
 
   const intro = useRef<HTMLDivElement>(null);
   const fig = useRef<HTMLDivElement>(null);
-  const mario = useRef<HTMLDivElement>(null);
+  const naman = useRef<HTMLDivElement>(null);
   const notes = useRef<(HTMLElement | null)[]>([]);
   const leaders = useRef<(SVGPathElement | null)[]>([]);
   const pins = useRef<(HTMLSpanElement | null)[]>([]);
@@ -91,6 +94,8 @@ export default function Story() {
   const nodes = useRef<(HTMLButtonElement | null)[]>([]);
   const captions = useRef<(HTMLDivElement | null)[]>([]);
   const progress = useRef<HTMLDivElement>(null);
+  const [orb, setOrb] = useState<{ mode: OrbMode; done: number }>({ mode: 'listening', done: 0 });
+  const orbRef = useRef(orb);
 
   // Static geometry for the current stage size, in pixels.
   const g = useMemo(() => {
@@ -107,8 +112,8 @@ export default function Story() {
       const x = n.side === 'l' ? figLeft - gap - noteW : figLeft + figW + gap;
       return { x, y: n.y * h + figTop * 0.4, w: noteW };
     };
-    // The map: Mario at the root, a trunk up to a bus, a drop to each area.
-    const root: [number, number] = mobile ? [0.17 * w, 0.27 * h] : [0.14 * w, 0.6 * h];
+    // The map: Naman at the root, a trunk up to a bus, a drop to each area.
+    const root: [number, number] = mobile ? [0.17 * w, 0.27 * h] : [0.14 * w, 0.67 * h];
     const nodeW = mobile ? 0.62 * w : Math.min(0.105 * w, 170);
     const nodeH = mobile ? 0.075 * h : 150;
     const nodePos = AREAS.map((_, i) => (mobile ? [0.33 * w, 0.33 * h + i * 0.1 * h] : [0.32 * w + (i * 0.6 * w) / 5, 0.47 * h]) as [number, number]);
@@ -150,25 +155,34 @@ export default function Story() {
       set(notes.current[i], { opacity: String(show), transform: `translateY(${(1 - show) * 10}px)`, pointerEvents: show > 0.5 ? 'auto' : 'none' });
     });
 
-    // Mario walks in, then steps aside to the root of the map.
+    // Naman arrives, then steps aside to the root of the map.
     const enter = seg(p, 0.5, 0.62);
     const aside = seg(p, 0.64, 0.72);
     const mx = mix(mobile ? 1.1 * w : 0.7 * w, 0, enter);
     const tx = mobile ? 0.17 * w - 0.5 * w : 0.14 * w - 0.5 * w;
     // Feet land on the root of the map: y 0.27 of the stage on phones (from 0.9), 0.95 on wide screens (from 0.94).
     const ty = mobile ? -0.63 * h : 0.01 * h;
-    set(mario.current, {
+    set(naman.current, {
       transform: `translate(calc(-50% + ${mx + aside * tx}px), ${aside * ty}px) scale(${mix(1, mobile ? 0.36 : 0.55, aside)})`,
       opacity: String(enter),
     });
 
-    // The map grows out of Mario.
+    // Naman's mood follows the story: listening as he arrives, happy to meet you, working while he draws the map,
+    // with one plan dot per area filled as each appears.
+    const done = AREAS.filter((_, i) => p >= 0.8 + i * 0.025).length;
+    const mode: OrbMode = p < 0.56 ? 'listening' : p < 0.68 ? 'happy' : done < AREAS.length ? 'working' : 'happy';
+    if (mode !== orbRef.current.mode || done !== orbRef.current.done) {
+      orbRef.current = { mode, done };
+      setOrb(orbRef.current);
+    }
+
+    // The map grows out of Naman.
     set(trunk.current, { strokeDashoffset: String(1 - seg(p, 0.7, 0.8)) });
     AREAS.forEach((_, i) => {
       const a = 0.78 + i * 0.025;
       set(drops.current[i], { strokeDashoffset: String(1 - seg(p, a, a + 0.03)) });
       const n = seg(p, a + 0.02, a + 0.05);
-      set(nodes.current[i], { opacity: String(n), transform: `translate(-50%, -50%) translateY(${(1 - n) * 14}px)`, pointerEvents: n > 0.5 ? 'auto' : 'none' });
+      set(nodes.current[i], { opacity: String(n), transform: `translate(-50%, 0) translateY(${(1 - n) * 14}px)`, pointerEvents: n > 0.5 ? 'auto' : 'none' });
     });
 
     // Captions for each chapter.
@@ -196,7 +210,7 @@ export default function Story() {
           <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} fetchPriority="high" className="h-full w-auto" />
         </div>
 
-        {/* Lines: notes onto the figure, and the map out of Mario. Drawn in pixels so the stroke draws evenly. */}
+        {/* Lines: notes onto the figure, and the map out of Naman. Drawn in pixels so the stroke draws evenly. */}
         {g && (
           <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
             {!mobile && AREAS.map((c, i) => {
@@ -230,9 +244,9 @@ export default function Story() {
           })}
         </ul>
 
-        {/* Mario */}
-        <div ref={mario} className="story-mario" style={mobile ? { bottom: '10%', height: '46%' } : undefined}>
-          <img src={pet.src} alt={pet.alt} width={pet.width} height={pet.height} loading="lazy" decoding="async" className="h-full w-auto" />
+        {/* Naman */}
+        <div ref={naman} className="story-naman" style={mobile ? { bottom: '10%', height: '40%' } : { height: '52%' }}>
+          <NamanOrb mode={orb.mode} plan={AREAS.length} done={orb.done} className="h-full w-auto" title={`${companion.name}, my voice agent, drawn as its on-screen orb`} />
         </div>
 
         {/* The map of areas, clickable once drawn */}
@@ -245,7 +259,7 @@ export default function Story() {
               type="button"
               ref={(el) => { nodes.current[i] = el; }}
               className="story-node"
-              style={{ left: mobile ? x + g.nodeW / 2 : x, top: y, width: g.nodeW, minHeight: g.nodeH, ['--tint' as string]: areaHex[c] }}
+              style={{ left: mobile ? x + g.nodeW / 2 : x, top: y - g.nodeH / 2, width: g.nodeW, minHeight: g.nodeH, ['--tint' as string]: areaHex[c] }}
               onClick={() => openArea(c)}
             >
               <span className="font-sans text-[0.9375rem] font-semibold leading-tight text-charcoal">{areaTitle(c).short}</span>
@@ -262,8 +276,8 @@ export default function Story() {
         </div>
         <div ref={(el) => { captions.current[1] = el; }} className="story-caption story-caption-2">
           <p className="label text-brass">Fig. 2</p>
-          <h2 className="headline mt-1 text-[clamp(1.75rem,3vw,2.6rem)]">This is {pet.name}.</h2>
-          <p className="ui mt-2 text-slate">He keeps me company while I build, and he knows where everything is. Follow him to the work.</p>
+          <h2 className="headline mt-1 text-[clamp(1.75rem,3vw,2.6rem)]">This is {companion.name}.</h2>
+          <p className="ui mt-2 text-slate">My own voice agent: he runs my laptop and phone, plans each request and asks before anything risky. He knows where everything is. <Link to={`/projects/${companion.slug}`} className="link text-charcoal">See how he works</Link>, or follow him to the work.</p>
         </div>
         <div ref={(el) => { captions.current[2] = el; }} className="story-caption story-caption-3">
           <h2 className="headline text-[clamp(1.75rem,3vw,2.6rem)]">Everything I have built, by area</h2>

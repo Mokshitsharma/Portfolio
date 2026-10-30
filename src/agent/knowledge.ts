@@ -82,6 +82,9 @@ export function buildKnowledge(): { docs: Doc[]; index: string; diagrams: string
         p.links.length ? 'Links: ' + p.links.map((l) => `${l.label} ${l.href}`).join('; ') + '.' : p.linkNote,
         p.tests,
         p.relation,
+        // Measured results first, so trimming a long record never drops them.
+        ...(c?.facts ?? []).map((f) => `Result: ${f.label}: ${f.value} (source: ${f.source})`),
+        ...(c?.quality ?? []).map((q) => `Testing and evaluation: ${q}`),
         a && lines(
           `Architecture (${a.title}): ` + a.nodes.map((n) => `${n.label}: ${n.what}${n.why ? ` ${n.why}` : ''}`).join(' '),
           'Walkthroughs: ' + a.walkthroughs.map((w) => `${w.title}: ` + w.steps.map((s) => s.say).join(' ')).join(' | '),
@@ -92,8 +95,6 @@ export function buildKnowledge(): { docs: Doc[]; index: string; diagrams: string
           c.map && `${c.map.title}: ` + c.map.groups.map((g) => `${g.title}: ${g.items.map((i) => i.name + (i.note ? ` (${i.note})` : '')).join(', ')}`).join('; '),
           ...c.decisions.map((d) => `Decision: ${d.title}. ${d.body}`),
           ...c.sections.map((s) => `${s.heading}: ${[...(s.body ?? []), ...(s.points ?? [])].join(' ')}`),
-          ...(c.facts ?? []).map((f) => `Fact: ${f.label}: ${f.value} (source: ${f.source})`),
-          ...(c.quality ?? []).map((q) => `Quality: ${q}`),
         ),
       ),
     });

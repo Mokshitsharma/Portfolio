@@ -98,14 +98,11 @@ export const principles = [
   },
 ];
 
-// Illustrations for the home page's two plates, cut out of their backgrounds so they stand on the page.
+// The illustration in the opening story, cut out of its background so it stands on the page.
 export interface Photo { src: string; alt: string; width: number; height: number }
 export const portrait: Photo = {
   src: '/images/me-figure.webp', width: 441, height: 1200,
   alt: 'Illustration of Mokshit Sharma standing, in glasses, a navy short-sleeved shirt and cream trousers, hands in pockets.',
 };
-export const pet: Photo & { name: string } = {
-  src: '/images/pet-figure.webp', width: 521, height: 900,
-  alt: 'Illustration of Mario, Mokshit’s dog, sitting: black, tan and cream, head tilted, tongue out.',
-  name: 'Mario',
-};
+// The companion in the opening story and beside the map: Naman, my own voice agent, drawn as its on-screen orb.
+export const companion = { name: 'Naman', slug: 'naman' };
