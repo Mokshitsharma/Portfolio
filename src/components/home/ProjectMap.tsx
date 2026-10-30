@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { categories, firstSentence, maturityLabel, projects } from '../../data/projects';
 import type { Category, Project } from '../../data/types';
-import { lineFor, lineHex } from '../../data/visuals';
-import { onFetchProject } from '../../agent/bus';
+import { areaHex } from '../../data/visuals';
+import { onFetchProject, onOpenArea } from '../../agent/bus';
 
 // Every published project as a map: one root, a branch per area of work, and the projects on the branch the
 // visitor opens. Wide screens draw it as a tree across the page; narrow screens as an indented outline, with each
 // branch opening in place. The data comes straight from projects.ts; this file only draws it.
 
-const branchOf = (c: Category) => projects.filter((p) => p.category === c);
-const tint = (c: Category) => lineHex[lineFor[c]];
+// A branch holds the projects that live in an area and those also listed there (Movigo's ML, Naman's voice).
+const branchOf = (c: Category) => projects.filter((p) => p.category === c || p.also?.includes(c));
+const tint = (c: Category) => areaHex[c];
 const href = (p: Project) => (p.caseStudy ? `/projects/${p.slug}` : `/projects?q=${encodeURIComponent(p.name)}`);
 
 function ProjectNode({ p, fetched }: { p: Project; fetched?: boolean }) {
@@ -36,6 +37,14 @@ export default function ProjectMap() {
 
   // Fig. 2 fetched a project: open its area, mark it and bring it into view.
   const [fetched, setFetched] = useState<string | null>(null);
+  // The opening story's map opens an area here.
+  useEffect(() => onOpenArea((c) => {
+    if (!categories.some((x) => x.id === c)) return;
+    setOpen(c as Category);
+    setFetched(null);
+    document.getElementById('map')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }), []);
+
   useEffect(() => onFetchProject((slug) => {
     const p = projects.find((x) => x.slug === slug);
     if (!p) return;
@@ -66,7 +75,7 @@ export default function ProjectMap() {
             <li key={c.id} className="relative flex flex-col pt-6">
               <span className="map-wire absolute left-1/2 top-0 h-6 w-px" aria-hidden />
               <button type="button" className="map-cat" style={{ ['--tint' as string]: tint(c.id) }} aria-expanded={open === c.id} aria-controls="map-branch" onClick={() => toggle(c.id)}>
-                <span className="font-sans text-[0.9375rem] font-semibold leading-tight text-charcoal">{c.title}</span>
+                <span className="font-sans text-[0.9375rem] font-semibold leading-tight text-charcoal">{c.short}</span>
                 <span className="fine mt-1 text-slate">{branchOf(c.id).length} projects</span>
               </button>
               {open === c.id && <span className="map-wire absolute -bottom-6 left-1/2 h-6 w-px" aria-hidden />}

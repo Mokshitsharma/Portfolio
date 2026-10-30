@@ -5,15 +5,26 @@ import type { Category } from './types';
 
 export type Line = 'route' | 'signal' | 'field' | 'ink';
 
-// Which line colour a project carries.
+// Which line colour a project carries (older components use these four).
 export const lineFor: Record<Category, Line> = {
-  production: 'route',
-  agents: 'signal',
   ml: 'field',
-  fullstack: 'ink',
-  tools: 'ink',
+  agents: 'signal',
+  llm: 'signal',
+  voice: 'route',
   data: 'field',
+  systems: 'ink',
   learning: 'ink',
+};
+
+// One colour per area of work, used by the map, the scenes and project pages. Each passes 4.5:1 on the page.
+export const areaHex: Record<Category, string> = {
+  ml: '#0d6e63', // teal
+  agents: '#6a3daf', // violet
+  llm: '#a3355a', // berry
+  voice: '#a8461b', // rust
+  data: '#4a6b16', // olive
+  systems: '#36495e', // slate
+  learning: '#5f6b78', // graphite
 };
 
 // The colour of each area of work.

@@ -5,14 +5,14 @@ import type { Category, ExternalLink, Maturity, Project } from './types';
 
 const gh = (repo: string): ExternalLink => ({ label: 'Source on GitHub', href: `https://github.com/Mokshitsharma/${repo}`, kind: 'repo' });
 
-export const categories: { id: Category; title: string; blurb: string }[] = [
-  { id: 'production', title: 'Production platforms', blurb: 'Systems built for a real business and its staff, drivers and customers.' },
-  { id: 'agents', title: 'Agentic AI and LLM applications', blurb: 'Agents that call real tools, with deterministic checks and human approval around them.' },
-  { id: 'ml', title: 'Applied machine learning', blurb: 'Models with evaluation and explanations, from cricket strategy to churn.' },
-  { id: 'fullstack', title: 'Full-stack and mobile applications', blurb: 'Complete products with money, auth and data rules.' },
-  { id: 'tools', title: 'Algorithms and developer tools', blurb: 'Engines and utilities built from first principles.' },
-  { id: 'data', title: 'Data analysis and BI', blurb: 'Pipelines that feed dashboards, mostly market and retail data.' },
-  { id: 'learning', title: 'Learning and early projects', blurb: 'Coursework, exercises and first projects, kept for the record.' },
+export const categories: { id: Category; title: string; short: string; blurb: string }[] = [
+  { id: 'ml', title: 'Applied machine learning', short: 'Machine learning', blurb: 'Models trained and evaluated on held-out data, with explanations a non-specialist can read.' },
+  { id: 'agents', title: 'Agentic AI and tool use', short: 'Agentic AI', blurb: 'Agents that call real tools over MCP and LangGraph, with code checking every plan and a person approving the risky step.' },
+  { id: 'llm', title: 'LLM engineering and RAG', short: 'LLMs and RAG', blurb: 'Retrieval, cited answers and structured output, measured on held-out questions, including whether the system refuses when it should.' },
+  { id: 'voice', title: 'Voice AI', short: 'Voice AI', blurb: 'Real-time speech in and out: streaming recognition, fast paths before the model, and replies that stop when the caller talks.' },
+  { id: 'data', title: 'Data science and engineering', short: 'Data', blurb: 'Pipelines into DuckDB, PostgreSQL and dbt, statistics with honest intervals, and dashboards in Power BI and Streamlit.' },
+  { id: 'systems', title: 'Systems and backend engineering', short: 'Systems', blurb: 'Production backends, payments, ledgers and algorithms, with races, retries and restarts handled in code.' },
+  { id: 'learning', title: 'Learning and early projects', short: 'Early work', blurb: 'Coursework, exercises and first projects, kept for the record.' },
 ];
 
 // Status vocabulary. "Working" means it runs end to end.
@@ -29,8 +29,8 @@ export const maturityLabel: Record<Maturity, string> = {
 export const projects: Project[] = [
   // Production
   {
-    id: 'P06', slug: 'movigo', name: 'Movigo logistics platform', category: 'production', maturity: 'production', period: 'Apr 2026 - present',
-    summary: 'Live delivery marketplace connecting retailers and customers with 2-, 3- and 4-wheeler drivers: a Node.js dispatch and payments backend, Flutter driver and retailer apps on Google Play and the App Store, and the operations console.',
+    id: 'P06', slug: 'movigo', name: 'Movigo logistics platform', category: 'systems', also: ['ml', 'llm', 'voice'], maturity: 'production', period: 'Apr 2026 - present',
+    summary: 'A live delivery marketplace in Indore, built end to end as its only engineer, with a data and AI layer on top: demand forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
     stack: ['Node.js', 'Express', 'MongoDB', 'Flutter', 'Pusher', 'Razorpay', 'Firebase Cloud Messaging', 'OSRM'],
     links: [
       { label: 'Movigo Driver on Google Play', href: 'https://play.google.com/store/apps/details?id=com.app.movigodriver', kind: 'store' },
@@ -42,18 +42,18 @@ export const projects: Project[] = [
     caseStudy: true, featured: true,
   },
   {
-    id: 'P07', slug: 'fieldops-ai', name: 'FieldOps', category: 'production', maturity: 'prototype', period: 'May 2026',
+    id: 'P07', slug: 'fieldops-ai', name: 'FieldOps', category: 'systems', maturity: 'prototype', period: 'May 2026',
     summary: 'Workforce platform for a field team of about 20: GPS attendance from an Android foreground service, driver and retailer onboarding, call logs, HR records and a points engine whose weights live in the database.',
     stack: ['TypeScript', 'Express', 'Sequelize', 'MariaDB', 'Socket.io', 'Next.js', 'Flutter'],
     links: [], linkNote: 'Built for Movigo; company code.', caseStudy: true,
   },
   {
-    id: 'P08', slug: 'movigo-broadcast', name: 'Movigo Broadcast', category: 'production', maturity: 'working', period: 'Sep 2026',
+    id: 'P08', slug: 'movigo-broadcast', name: 'Movigo Broadcast', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Campaign tool for sending one message with an image to a contact list: upload CSV or XLSX, map the phone and name columns, send.',
     stack: ['Node.js', 'Express', 'JavaScript'], links: [], linkNote: 'Built for Movigo; company code.',
   },
   {
-    id: 'P09', slug: 'hyperlocal-marketplace', name: 'Hyperlocal Marketplace', category: 'production', maturity: 'working', period: 'Sep 2026',
+    id: 'P09', slug: 'hyperlocal-marketplace', name: 'Hyperlocal Marketplace', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Customers order from local Indore shops and riders deliver in about 30 minutes. The order state machine survives races, payment webhooks and server restarts.',
     stack: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle', 'Socket.io', 'React', 'Next.js', 'TypeScript'],
     links: [], linkNote: 'Built for Movigo; company code.', tests: '52 backend tests, all passing.', caseStudy: true,
@@ -75,31 +75,31 @@ export const projects: Project[] = [
     links: [], tests: '24 pytest tests.', caseStudy: true, featured: true,
   },
   {
-    id: 'P03', slug: 'naman', name: 'Naman', category: 'agents', maturity: 'working', period: 'Sep-Oct 2026',
+    id: 'P03', slug: 'naman', name: 'Naman', category: 'agents', also: ['voice'], maturity: 'working', period: 'Sep-Oct 2026',
     summary: 'A voice agent on my laptop and phone. It opens apps, controls media, tracks tasks and searches for jobs, and waits for a yes before anything that changes data.',
     stack: ['Python', 'LangGraph', 'Groq', 'MCP', 'faster-whisper', 'Telegram', 'SQLite'],
     links: [], tests: '164 pytest tests.',
     caseStudy: true, featured: true,
   },
   {
-    id: 'P04', slug: 'voicedesk', name: 'VoiceDesk', category: 'agents', maturity: 'working', period: 'Sep 2026',
+    id: 'P04', slug: 'voicedesk', name: 'VoiceDesk', category: 'voice', maturity: 'working', period: 'Sep 2026',
     summary: 'A real-time voice receptionist for local businesses. It answers questions, books appointments from spoken dates and hands off to a person; callers can interrupt it mid-sentence.',
     stack: ['Node.js', 'WebSocket', 'AudioWorklet', 'Deepgram', 'Groq', 'MongoDB'],
     links: [gh('VoiceDesk---AI-Voice-calling-agent')], caseStudy: true,
   },
   {
-    id: 'P05', slug: 'dociq', name: 'docIQ', category: 'agents', maturity: 'working', period: 'Sep 2026',
+    id: 'P05', slug: 'dociq', name: 'docIQ', category: 'llm', maturity: 'working', period: 'Sep 2026',
     summary: 'Ask questions of contracts and invoices and get answers that cite the passage. A risk scan flags clauses; with no API key it quotes passages instead of failing.',
     stack: ['Node.js', 'Express', 'MongoDB', 'Chroma', 'BullMQ', 'Next.js', 'Gemini', 'Groq'],
     links: [], tests: 'A 16-check end-to-end script and unit tests for the chunker.', caseStudy: true,
   },
   {
-    id: 'P23', slug: 'disaster-response-agent', name: 'Disaster Response Agent', category: 'agents', maturity: 'prototype', period: 'Dec 2025',
+    id: 'P23', slug: 'disaster-response-agent', name: 'Disaster Response Agent', category: 'llm', maturity: 'prototype', period: 'Dec 2025',
     summary: 'A chat assistant for disaster safety that searches the web live through Claude tool use, gives evacuation guidance and keeps conversation memory.',
     stack: ['Python', 'Streamlit', 'Anthropic Claude API'], links: [gh('Disaster-Management-System'), { label: 'Live app', href: 'https://disaster-management-ms.streamlit.app', kind: 'demo' }],
   },
   {
-    id: 'P26', slug: 'founderlens-ai', name: 'FounderLens AI', category: 'agents', maturity: 'prototype', period: 'Dec 2025',
+    id: 'P26', slug: 'founderlens-ai', name: 'FounderLens AI', category: 'llm', maturity: 'prototype', period: 'Dec 2025',
     summary: 'A founder uploads business data and gets trends, anomalies and recommendations back as structured JSON from an LLM.',
     stack: ['Python', 'Streamlit', 'Gemini', 'Plotly'], links: [],
   },
@@ -194,64 +194,77 @@ export const projects: Project[] = [
 
   // Full-stack
   {
-    id: 'P11', slug: 'refera', name: 'Refera', category: 'fullstack', maturity: 'working', period: 'Sep-Oct 2026',
+    id: 'P11', slug: 'refera', name: 'Refera', category: 'systems', maturity: 'working', period: 'Sep-Oct 2026',
     summary: 'Fintech referral platform: affiliates refer leads for loans and cards, conversions pay multi-level commissions into an append-only ledger, and KYC-verified affiliates withdraw earnings.',
     stack: ['React Native', 'Expo', 'Express 5', 'Prisma', 'PostgreSQL', 'React', 'TypeScript'],
     links: [gh('Banksaathi-clone')], tests: '50 API tests.', caseStudy: true, featured: true,
   },
   {
-    id: 'P12', slug: 'dairy-collection-manager', name: 'Dairy Collection Manager', category: 'fullstack', maturity: 'deployed', period: 'Sep 2026',
+    id: 'P12', slug: 'dairy-collection-manager', name: 'Dairy Collection Manager', category: 'systems', maturity: 'deployed', period: 'Sep 2026',
     summary: 'Daily milk register for a collection centre: fat-based rate charts, supplier ledgers, advances repaid in instalments and one-transaction settlements.',
     stack: ['React', 'Vite', 'Supabase', 'PostgreSQL', 'Vercel'],
     links: [gh('Milk_management'), { label: 'Live app', href: 'https://milk-management-five.vercel.app', kind: 'demo' }], caseStudy: true,
   },
   {
-    id: 'P13', slug: 'community-platform', name: 'Community platform', category: 'fullstack', maturity: 'prototype', period: 'Mar 2026',
+    id: 'P13', slug: 'community-platform', name: 'Community platform', category: 'systems', maturity: 'prototype', period: 'Mar 2026',
     summary: 'Member registry, events, matrimonial profiles, donations and an admin approval workflow for a community association.',
     stack: ['React', 'TypeScript', 'Firebase', 'Razorpay', 'Tailwind'], links: [gh('Freelance')],
   },
   {
-    id: 'P14', slug: 'ride-booking-app', name: 'Ride booking app', category: 'fullstack', maturity: 'prototype', period: 'Apr 2026',
+    id: 'P14', slug: 'ride-booking-app', name: 'Ride booking app', category: 'systems', maturity: 'prototype', period: 'Apr 2026',
     summary: 'Booking flow with a wallet, driver dashboard and admin panel on real-time Firestore listeners and transactions.',
     stack: ['React', 'TypeScript', 'Firebase', 'Express'], links: [],
   },
   {
-    id: 'P16', slug: 'seedsphere', name: 'SeedSphere', category: 'fullstack', maturity: 'prototype', period: 'Mar 2026',
+    id: 'P16', slug: 'seedsphere', name: 'SeedSphere', category: 'systems', maturity: 'prototype', period: 'Mar 2026',
     summary: 'Storefront for agricultural seeds with a catalogue, cart, wishlist and cart recommendations.',
     stack: ['React', 'TypeScript', 'Firebase'], links: [gh('SeedSphere')],
   },
   {
-    id: 'P15', slug: 'portfolio', name: 'This website', category: 'fullstack', maturity: 'deployed', period: 'Mar-Oct 2026',
+    id: 'P15', slug: 'portfolio', name: 'This website', category: 'systems', maturity: 'deployed', period: 'Mar-Oct 2026',
     summary: 'Prerendered React site with a project archive, case studies and a contact form backed by a serverless function.',
     stack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Vercel'], links: [gh('Portfolio')],
   },
 
   // Algorithms and tools
   {
-    id: 'P10', slug: 'routecore', name: 'RouteCore', category: 'tools', maturity: 'working', period: 'Sep 2026',
+    id: 'P10', slug: 'routecore', name: 'RouteCore', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Route-optimisation and fleet-scheduling engine with a hand-built hash map, min-heap and k-d tree, Dijkstra, A* and 2-opt. No runtime dependencies.',
     stack: ['Java 17', 'Maven', 'JUnit'], links: [gh('RouteCore')], tests: '47 JUnit tests in 8 suites.', caseStudy: true, featured: true,
   },
   {
-    id: 'P55', slug: 'stock-cli', name: 'Indian stock lookup (terminal)', category: 'tools', maturity: 'notebook', period: 'Jan 2026',
+    id: 'P55', slug: 'stock-cli', name: 'Indian stock lookup (terminal)', category: 'systems', maturity: 'notebook', period: 'Jan 2026',
     summary: 'Look up any NSE stock with ticker autocomplete: live price, fundamentals and shareholding.', stack: ['Python', 'yfinance', 'prompt_toolkit'],
     links: [gh('Stock-price-details')], relation: 'A Flask version also exists.',
   },
   {
-    id: 'P56', slug: 'stock-website', name: 'Indian stock lookup (web)', category: 'tools', maturity: 'prototype', period: 'Jan 2025',
+    id: 'P56', slug: 'stock-website', name: 'Indian stock lookup (web)', category: 'systems', maturity: 'prototype', period: 'Jan 2025',
     summary: 'Flask version of the NSE stock lookup.', stack: ['Python', 'Flask', 'yfinance'], links: [],
   },
   {
-    id: 'P57', slug: 'whatsapp-greetings', name: 'WhatsApp greetings', category: 'tools', maturity: 'notebook', period: 'Aug 2025',
+    id: 'P57', slug: 'whatsapp-greetings', name: 'WhatsApp greetings', category: 'systems', maturity: 'notebook', period: 'Aug 2025',
     summary: 'Reads contacts from Excel and sends personalised messages through WhatsApp Web.', stack: ['Python', 'pandas', 'pywhatkit'],
     links: [gh('Whatsapp_message_automation')],
   },
   {
-    id: 'P58', slug: 'finance-tracker', name: 'Finance tracker', category: 'tools', maturity: 'notebook', period: 'Mar 2025',
+    id: 'P58', slug: 'finance-tracker', name: 'Finance tracker', category: 'systems', maturity: 'notebook', period: 'Mar 2025',
     summary: 'Command-line income and expense log with a running summary, using only the standard library.', stack: ['Python'], links: [gh('Finance-tracker')],
   },
 
   // Data and BI
+  {
+    id: 'P70', slug: 'job-market-tracker', name: 'job-market-tracker', category: 'data', maturity: 'working', period: 'Oct 2026',
+    summary: 'A daily pipeline from the public Greenhouse, Lever and Ashby job APIs into Parquet, DuckDB and dbt, measuring which skills entry-level AI, data science and data engineering postings ask for, with company-cluster bootstrap intervals.',
+    stack: ['Python', 'DuckDB', 'dbt', 'Parquet', 'Streamlit', 'Power BI'], links: [],
+    tests: '41 pytest tests, plus dbt tests (unique, not-null, freshness, row-count anomalies).',
+    caseStudy: true, featured: true,
+  },
+  {
+    id: 'P71', slug: 'olist-analytics', name: 'olist-analytics', category: 'data', maturity: 'working', period: 'Oct 2026',
+    summary: 'An analyst case study on the Olist e-commerce marketplace: a PostgreSQL 16 and dbt star schema with data-quality tests, a KPI tree with cohort retention, delivery-delay models with seller-cluster bootstrap intervals, a seller scorecard and an executive memo.',
+    stack: ['Python', 'PostgreSQL', 'dbt', 'pandas', 'Power BI'], links: [],
+    tests: '10 pytest tests and dbt tests on every mart.',
+  },
   {
     id: 'P40', slug: 'paytm-dashboard', name: 'Paytm stock dashboard', category: 'data', maturity: 'notebook', period: 'Sep 2025',
     summary: 'Four-stage ETL lining up Paytm’s share price with competitors and market events, feeding two Power BI dashboards.', stack: ['Python', 'yfinance', 'Power BI'], links: [],

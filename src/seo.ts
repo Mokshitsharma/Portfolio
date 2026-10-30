@@ -16,8 +16,8 @@ const suffix = `${profile.name}`;
 const fixed: PageMeta[] = [
   {
     path: '/',
-    title: `${profile.name}, applied AI and full-stack engineer`,
-    description: `${profile.currentRole} at Movigo, running a live delivery platform as its only engineer, and builder of AI agents with deterministic guardrails. Case studies, projects and experience.`,
+    title: `${profile.name}, applied AI and ML engineer`,
+    description: 'Applied AI and ML engineer: machine learning, agentic AI with MCP and LangGraph, RAG with measured retrieval, voice AI and data engineering. Interactive case studies with their architecture.',
     type: 'profile',
   },
   {

@@ -7,7 +7,7 @@ export const site = {
 
 export const profile = {
   name: 'Mokshit Sharma',
-  headline: 'Applied AI and full-stack engineer',
+  headline: 'Applied AI / ML Engineer',
   currentRole: 'Founding Engineer & Tech Lead',
   currentOrg: 'Movigo Innovations Pvt. Ltd.',
   currentOrgShort: 'Movigo',
@@ -18,7 +18,7 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',
   resume: '/resume/Mokshit_Sharma_Resume.pdf',
   intro:
-    'I run the whole technology stack of a live delivery marketplace as its only engineer, and I build AI agents that call real tools while plain code decides anything risky.',
+    'I build intelligent systems, agentic workflows and data-driven products, and I measure them on held-out data before I trust them. I run the AI and data layer of a live delivery marketplace in Indore as its only engineer.',
 };
 
 export const education = {

@@ -1,62 +1,103 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { caseStudies, caseStudyBySlug } from '../data/caseStudies';
 import { categories, projectBySlug } from '../data/projects';
 import type { CaseStudy, Project } from '../data/types';
-import { lineFor, lineHex, type Line } from '../data/visuals';
-import ProjectVisual from '../components/ProjectVisual';
+import { areaHex } from '../data/visuals';
+import { architectureFor, type Architecture, type NodeKind } from '../data/architecture';
+import ArchitectureExplorer, { kindName, type Driven } from '../components/ArchitectureExplorer';
 import { cardFor } from '../data/cards';
-import { Flow, SystemMap } from '../components/Diagrams';
-import ArchitectureExplorer from '../components/ArchitectureExplorer';
-import { architectureFor } from '../data/architecture';
-import { Links, StatusMark, lineBg, lineText } from '../components/ui';
+import { Links, StatusMark } from '../components/ui';
 import NotFound from './NotFound';
 
-interface Part {
-  id: string;
-  title: string;
-  node: ReactNode;
-  wide?: boolean;
+// A case study told in chapters: the problem, what I built, how it works (a real request followed step by step
+// beside a pinned diagram that lights each part as it is read), each component, the decisions, the results.
+// Everything comes from caseStudies.ts and the project's architecture sheet.
+
+function useWide() {
+  const [wide, setWide] = useState(true);
+  useEffect(() => {
+    const q = window.matchMedia('(min-width: 1024px)');
+    const on = () => setWide(q.matches);
+    on();
+    q.addEventListener('change', on);
+    return () => q.removeEventListener('change', on);
+  }, []);
+  return wide;
+}
+const smooth = (): ScrollBehavior => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+
+function Chapter({ id, n, title, children, tint }: { id: string; n: number; title: string; children: ReactNode; tint: string }) {
+  return (
+    <section id={id} aria-labelledby={`${id}-h`} className="cs-chapter scroll-mt-20">
+      <p className="label" style={{ color: tint }}>Chapter {n}</p>
+      <h2 id={`${id}-h`} className="display mt-2 text-[clamp(2rem,4.2vw,3.4rem)]">{title}</h2>
+      <div className="mt-10">{children}</div>
+    </section>
+  );
 }
 
-function Hero({ c, p, line }: { c: CaseStudy; p: Project; line: Line }) {
-  const cat = categories.find((x) => x.id === p.category)!;
-  const shot = c.figures?.[0];
+function Hero({ c, p, tint, chapters }: { c: CaseStudy; p: Project; tint: string; chapters: { id: string; title: string }[] }) {
+  const area = categories.find((x) => x.id === p.category)!;
+  const [name, ...rest] = c.title.split(': ');
+  const subtitle = rest.join(': ');
   return (
-    <header className="grid-texture relative overflow-hidden pt-28 text-charcoal md:pt-32">
+    <header className="cs-hero relative overflow-hidden pt-28 md:pt-32" style={{ ['--tint' as string]: tint }}>
       <div className="shell pb-14 md:pb-20">
         <nav aria-label="Breadcrumb" className="label text-slate">
           <ol className="flex flex-wrap gap-2">
             <li><Link to="/projects" className="link">Projects</Link><span aria-hidden> /</span></li>
+            <li><Link to={`/projects?category=${p.category}`} className="link">{area.title}</Link><span aria-hidden> /</span></li>
             <li aria-current="page" className="text-charcoal">{p.name}</li>
           </ol>
         </nav>
-        <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
+        <div className={c.figures?.length ? 'grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end' : ''}>
           <div>
-            <p className={`sign flex items-center gap-3 ${lineText[line]}`}>
-              <span className={`inline-block h-[2px] w-10 ${lineBg[line]}`} aria-hidden />{cat.title}
-            </p>
-            <h1 className="headline mt-5 text-[clamp(2.4rem,5.6vw,4.75rem)]">{c.title}</h1>
-            <p className="lede mt-6 max-w-2xl font-sans text-slate">{c.lede}</p>
+            <p className="label mt-10" style={{ color: tint }}>{area.title}</p>
+            <h1 className="display mt-3 text-[clamp(3rem,8vw,6.5rem)]">{name}</h1>
+            {subtitle && <p className="headline mt-4 max-w-[30ch] text-[clamp(1.5rem,2.8vw,2.3rem)] text-charcoal/85">{subtitle}</p>}
+            <p className="mt-7 max-w-[44rem] text-[1.1875rem] leading-[1.65] text-charcoal/85">{c.lede}</p>
           </div>
-          <div>
-            {shot ? (
-              <figure className="border border-charcoal/60 bg-limestone">
-                <img src={shot.src} alt={shot.alt} width={shot.width} height={shot.height} className="block h-auto w-full" />
-                <figcaption className="fine bg-night-2 px-3 py-2 text-slate">{shot.caption}</figcaption>
-              </figure>
-            ) : (
-              <div className="border border-charcoal/60"><ProjectVisual slug={p.slug} variant="hero" /></div>
-            )}
-            <dl className="ui mt-6 grid grid-cols-2 gap-x-6 gap-y-4">
-              <div><dt className="label text-slate">Status</dt><dd className="mt-1"><StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" /></dd></div>
-              <div><dt className="label text-slate">When</dt><dd className="mt-1 text-charcoal">{p.period}</dd></div>
-            </dl>
-          </div>
+          {c.figures?.[0] && (
+            <figure className="border border-charcoal/60 bg-white shadow-[0_30px_60px_-40px_rgb(22_32_43/0.5)]">
+              <img src={c.figures[0].src} alt={c.figures[0].alt} width={c.figures[0].width} height={c.figures[0].height} className="block h-auto w-full" />
+              <figcaption className="fine border-t border-seam px-3 py-2 text-slate">{c.figures[0].caption}</figcaption>
+            </figure>
+          )}
         </div>
+
+        <dl className="cs-meta mt-10">
+          <div><dt>Status</dt><dd><StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" /></dd></div>
+          <div><dt>When</dt><dd>{p.period}</dd></div>
+          <div className="sm:col-span-2"><dt>Built with</dt><dd>{p.stack.join(', ')}</dd></div>
+        </dl>
+        {(p.links.length > 0 || p.linkNote) && (
+          <div className="mt-6">
+            {p.links.length > 0 && <Links links={p.links} />}
+            {p.linkNote && <p className="ui mt-2 text-slate">{p.linkNote}</p>}
+          </div>
+        )}
+
+        {c.facts && c.facts.length > 0 && (
+          <dl className="cs-facts mt-12">
+            {c.facts.slice(0, 3).map((f) => (
+              <div key={f.label}>
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        <nav aria-label="Chapters" className="mt-12">
+          <ol className="cs-toc">
+            {chapters.map((ch, i) => (
+              <li key={ch.id}><a href={`#${ch.id}`}><span aria-hidden>{i + 1}</span>{ch.title}</a></li>
+            ))}
+          </ol>
+        </nav>
       </div>
-      <div className={`rail ${lineBg[line]}`} aria-hidden />
     </header>
   );
 }
@@ -65,77 +106,156 @@ function Prose({ children }: { children: ReactNode }) {
   return <div className="measure space-y-5 text-[1.1875rem] leading-[1.7]">{children}</div>;
 }
 
-function Overview({ c, p }: { c: CaseStudy; p: Project }) {
+// Chapter 2: what was built, as the system's parts grouped by who acts.
+function Built({ c, arch, tint }: { c: CaseStudy; arch?: Architecture; tint: string }) {
+  const groups: { kind: NodeKind; title: string }[] = [
+    { kind: 'io', title: 'Inputs and outputs' },
+    { kind: 'model', title: 'Models and agents' },
+    { kind: 'rule', title: 'Code that decides' },
+    { kind: 'human', title: 'People' },
+    { kind: 'store', title: 'Storage' },
+    { kind: 'external', title: 'External services' },
+  ];
   return (
-    <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_16rem]">
+    <div className="grid gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-16">
       <Prose>
-        <p>{c.context}</p>
-        <h3 className="headline !mt-10 text-2xl">My role</h3>
         <p>{c.role}</p>
-        <h3 className="headline !mt-10 text-2xl">Where it stands</h3>
         <p>{c.status}</p>
       </Prose>
-      <aside className="space-y-8 xl:border-l xl:border-seam xl:pl-8">
-        <div>
-          <h3 className="label text-slate">Stack</h3>
-          <ul className="ui mt-3 flex flex-wrap gap-2">{p.stack.map((s) => <li key={s} className="chip">{s}</li>)}</ul>
+      {arch && (
+        <div className="cs-parts" style={{ ['--tint' as string]: tint }}>
+          {groups.map((g) => {
+            const items = arch.nodes.filter((n) => n.kind === g.kind);
+            if (!items.length) return null;
+            return (
+              <div key={g.kind}>
+                <p className="label flex items-center gap-2 text-slate"><span className={`arch-swatch k-${g.kind}`} aria-hidden />{g.title}</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {items.map((n) => <li key={n.id} className="cs-part">{n.label}</li>)}
+                </ul>
+              </div>
+            );
+          })}
         </div>
-        <div>
-          <h3 className="label text-slate">Code and links</h3>
-          {p.links.length > 0 && <Links links={p.links} className="mt-3 flex-col !gap-2" />}
-          {p.linkNote && <p className="ui mt-2 text-slate">{p.linkNote}</p>}
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function Decisions({ c, line }: { c: CaseStudy; line: Line }) {
-  return (
-    <ul className="divide-y divide-seam border-y border-seam">
-      {c.decisions.map((d) => (
-        <li key={d.title} className="grid gap-4 py-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-10">
-          <h3 className="headline flex gap-3 text-2xl">
-            <span className={`mt-2 inline-block h-3 w-3 shrink-0 ${lineBg[line]}`} aria-hidden />
-            {d.title}
-          </h3>
-          <p className="measure text-[1.125rem] leading-[1.7]">{d.body}</p>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Facts({ c, slug }: { c: CaseStudy; slug: string }) {
-  return (
-    <div className="space-y-12">
-      {c.facts && c.facts.length > 0 && (
-        <dl className="grid gap-px bg-seam sm:grid-cols-2">
-          {c.facts.map((f) => (
-            <div key={f.label} className="bg-limestone p-6">
-              <dt className="label text-slate">{f.label}</dt>
-              <dd className="headline mt-3 text-[1.75rem] leading-tight">{f.value}</dd>
-              <dd className="fine mt-3 text-slate">{f.source}</dd>
-            </div>
-          ))}
-        </dl>
       )}
     </div>
   );
 }
 
-function Sections({ c, line }: { c: CaseStudy; line: Line }) {
+// Chapters 3 and 4: steps of a real request, then each component, beside one pinned diagram.
+function HowItWorks({ arch, tint, slug, wide, n }: { arch: Architecture; tint: string; slug: string; wide: boolean; n: (id: string) => number }) {
+  const walk = arch.walkthroughs[0];
+  const [driven, setDriven] = useState<Driven>({ walkthrough: walk.id, step: 0 });
+  const blocks = useRef<(HTMLElement | null)[]>([]);
+
+  useEffect(() => {
+    if (!wide) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const d = (e.target as HTMLElement).dataset;
+        setDriven(d.kind === 'step' ? { walkthrough: walk.id, step: Number(d.i) } : { walkthrough: walk.id, step: -1, node: d.node });
+      }
+    }, { rootMargin: '-42% 0px -48% 0px' });
+    blocks.current.forEach((b) => b && io.observe(b));
+    return () => io.disconnect();
+  }, [wide, walk.id]);
+
+  const toComponent = (id: string) => document.getElementById(`${slug}-part-${id}`)?.scrollIntoView({ behavior: smooth(), block: 'center' });
+  const nodeOf = (id: string) => arch.nodes.find((x) => x.id === id)!;
+  let k = 0;
+
+  const steps = (
+    <ol aria-label={`Follow ${walk.title}`}>
+      {walk.steps.map((s, i) => (
+        <li key={i} ref={(el) => { blocks.current[k++] = el; }} data-kind="step" data-i={i} className="cs-step" data-on={wide && driven.step === i ? true : undefined} style={{ ['--tint' as string]: tint }}>
+          <p className="fine text-slate">Step {i + 1} of {walk.steps.length}</p>
+          <p className="cs-step-node" style={{ color: tint }}>{nodeOf(s.node).label}</p>
+          <p className="mt-1 text-[1.125rem] leading-[1.6]">{s.say}</p>
+        </li>
+      ))}
+    </ol>
+  );
+
+  const parts = (
+    <div className="space-y-4">
+      {arch.nodes.map((x) => (
+        <article key={x.id} id={`${slug}-part-${x.id}`} ref={(el) => { blocks.current[k++] = el; }} data-kind="node" data-node={x.id} className="cs-card scroll-mt-28" data-on={wide && driven.node === x.id ? true : undefined} style={{ ['--tint' as string]: tint }}>
+          <p className="label flex items-center gap-2 text-slate"><span className={`arch-swatch k-${x.kind}`} aria-hidden />{kindName[x.kind]}</p>
+          <h4 className="headline mt-2 text-[1.5rem]">{x.label}</h4>
+          <p className="mt-2 text-[1.0625rem] leading-[1.6]">{x.what}</p>
+          {x.io && (
+            <dl className="ui mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+              <dt className="text-slate">In</dt><dd>{x.io.in}</dd>
+              <dt className="text-slate">Out</dt><dd>{x.io.out}</dd>
+            </dl>
+          )}
+          {x.why && <p className="ui mt-3 border-l-2 pl-3" style={{ borderColor: tint }}>{x.why}</p>}
+          {x.source && <p className="fine mt-3 text-slate">In the code: {x.source}</p>}
+        </article>
+      ))}
+    </div>
+  );
+
+  if (!wide) {
+    return (
+      <>
+        <Chapter id="how" n={n('how')} title="How it works" tint={tint}>
+          <ArchitectureExplorer arch={arch} />
+          <h3 className="headline mt-14 text-[1.5rem]">Follow {walk.title}</h3>
+          <div className="mt-6">{steps}</div>
+        </Chapter>
+        <Chapter id="parts" n={n('parts')} title="Each component" tint={tint}>{parts}</Chapter>
+      </>
+    );
+  }
+
   return (
-    <div className="space-y-12">
+    <div className="grid grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-14">
+      <div className="space-y-28">
+        <Chapter id="how" n={n('how')} title="How it works" tint={tint}>
+          <p className="ui mb-6 text-slate">Follow {walk.title}. The diagram lights each part as you read.</p>
+          {steps}
+        </Chapter>
+        <Chapter id="parts" n={n('parts')} title="Each component" tint={tint}>
+          <p className="ui mb-6 text-slate">Select a part on the diagram to jump to it.</p>
+          {parts}
+        </Chapter>
+      </div>
+      <div>
+        <div className="cs-pinned sticky top-20">
+          <ArchitectureExplorer arch={arch} driven={driven} compact onNodeClick={toComponent} />
+          <p className="ui mt-4 min-h-[3rem] text-charcoal" aria-live="polite">
+            {driven.step != null && driven.step >= 0
+              ? <><span className="font-semibold">Step {driven.step + 1}.</span> {walk.steps[driven.step].say}</>
+              : driven.node ? <><span className="font-semibold">{nodeOf(driven.node).label}.</span> {nodeOf(driven.node).what}</> : arch.caption}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Decisions({ c, tint }: { c: CaseStudy; tint: string }) {
+  return (
+    <div className="space-y-14">
+      <div className="grid gap-px border border-seam bg-seam md:grid-cols-2">
+        {c.decisions.map((d) => (
+          <article key={d.title} className="bg-ivory p-7">
+            <h3 className="headline flex gap-3 text-[1.4rem]"><span className="mt-2.5 inline-block h-2.5 w-2.5 shrink-0" style={{ background: tint }} aria-hidden />{d.title}</h3>
+            <p className="mt-3 text-[1.0625rem] leading-[1.65]">{d.body}</p>
+          </article>
+        ))}
+      </div>
       {c.sections.map((s) => (
         <div key={s.heading}>
-          <h3 className="headline text-3xl">{s.heading}</h3>
+          <h3 className="headline text-[1.75rem]">{s.heading}</h3>
           <div className="mt-4"><Prose>
             {s.body?.map((para) => <p key={para}>{para}</p>)}
             {s.points && (
               <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
                 {s.points.map((pt) => (
-                  <li key={pt} className="ui flex gap-3 border-t border-seam pt-2 text-[1rem]"><span className={`mt-2 inline-block h-2 w-2 shrink-0 ${lineBg[line]}`} aria-hidden />{pt}</li>
+                  <li key={pt} className="ui flex gap-3 border-t border-seam pt-2 text-[1rem]"><span className="mt-2 inline-block h-2 w-2 shrink-0" style={{ background: tint }} aria-hidden />{pt}</li>
                 ))}
               </ul>
             )}
@@ -146,32 +266,51 @@ function Sections({ c, line }: { c: CaseStudy; line: Line }) {
   );
 }
 
-function Figures({ c }: { c: CaseStudy }) {
-  const rest = c.figures ?? [];
+function Results({ c, p, tint }: { c: CaseStudy; p: Project; tint: string }) {
   return (
-    <div className="grid gap-12 lg:grid-cols-2">
-      {rest.map((f, i) => (
-        <figure key={f.src} className={i === 0 && rest.length % 2 === 1 ? 'lg:col-span-2' : ''}>
-          <div className="border border-charcoal/60 bg-limestone">
-            <img src={f.src} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" className="block h-auto w-full" />
-          </div>
-          <figcaption className="fine mt-4 text-slate">{f.caption}</figcaption>
-        </figure>
-      ))}
+    <div className="space-y-14">
+      {c.facts && c.facts.length > 0 && (
+        <dl className="grid gap-px border border-seam bg-seam sm:grid-cols-2 lg:grid-cols-3">
+          {c.facts.map((f) => (
+            <div key={f.label} className="bg-white p-6">
+              <dt className="label text-slate">{f.label}</dt>
+              <dd className="headline mt-3 text-[1.6rem] leading-tight">{f.value}</dd>
+              <dd className="fine mt-3 text-slate">{f.source}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {c.quality && c.quality.length > 0 && (
+        <div>
+          <h3 className="headline text-[1.5rem]">Testing and evaluation</h3>
+          <ul className="measure mt-5 space-y-4">
+            {c.quality.map((q) => (
+              <li key={q} className="flex gap-4 text-[1.0625rem] leading-[1.65]"><span className="mt-2 inline-block h-2.5 w-2.5 shrink-0" style={{ background: tint }} aria-hidden /><span>{q}</span></li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {/* The first screen is in the opening. */}
+      {c.figures && c.figures.length > 1 && (
+        <div className="grid gap-10 lg:grid-cols-2">
+          {c.figures.slice(1).map((f, i, rest) => (
+            <figure key={f.src} className={i === 0 && rest.length % 2 === 1 ? 'lg:col-span-2' : ''}>
+              <div className="border border-charcoal/60 bg-limestone">
+                <img src={f.src} alt={f.alt} width={f.width} height={f.height} loading="lazy" decoding="async" className="block h-auto w-full" />
+              </div>
+              <figcaption className="fine mt-3 text-slate">{f.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+      {(p.links.length > 0 || p.linkNote) && (
+        <div>
+          <h3 className="headline text-[1.5rem]">Code and links</h3>
+          {p.links.length > 0 && <Links links={p.links} className="mt-4" />}
+          {p.linkNote && <p className="ui mt-2 text-slate">{p.linkNote}</p>}
+        </div>
+      )}
     </div>
-  );
-}
-
-function Checklist({ items }: { items: string[] }) {
-  return (
-    <ul className="measure space-y-4">
-      {items.map((q) => (
-        <li key={q} className="flex gap-4 text-[1.125rem] leading-[1.65]">
-          <span className="mt-2 inline-block h-2.5 w-2.5 shrink-0 bg-brass" aria-hidden />
-          <span>{q}</span>
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -189,7 +328,7 @@ function Related({ c }: { c: CaseStudy }) {
             <Link to={`/projects/${next.slug}`} className="no-underline after:absolute after:inset-0 group-hover:text-brass">{nextProject.name}</Link>
           </h2>
           <p className="ui mt-3 max-w-md text-slate">{cardFor(next.slug).pitch}</p>
-          <ArrowUpRight size={28} className="mt-4 text-brass transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden />
+          <ArrowUpRight size={28} className="mt-4 text-brass" aria-hidden />
         </div>
         <div>
           <p className="label text-slate">Related</p>
@@ -206,7 +345,7 @@ function Related({ c }: { c: CaseStudy }) {
               </li>
             ))}
           </ul>
-          <Link to="/projects" className="btn-ghost-dark btn mt-8">All projects</Link>
+          <Link to="/projects" className="btn btn-line mt-8">All projects</Link>
         </div>
       </div>
     </section>
@@ -215,63 +354,38 @@ function Related({ c }: { c: CaseStudy }) {
 
 export default function CaseStudyPage() {
   const { slug = '' } = useParams();
+  const wide = useWide();
   const c = caseStudyBySlug(slug);
   const p = projectBySlug(slug);
   if (!c || !p) return <NotFound />;
-  const line = lineFor[p.category];
-
   const arch = architectureFor(slug);
-  const diagram: Part | null = arch
-    ? { id: 'architecture', title: 'Architecture', node: <ArchitectureExplorer arch={arch} />, wide: true }
-    : c.map
-    ? { id: 'architecture', title: 'Architecture', node: <SystemMap {...c.map} line={line} />, wide: true }
-    : c.flow
-      ? { id: 'architecture', title: c.flow.title, node: <Flow {...c.flow} line={line} />, wide: true }
-      : null;
-  const decisions: Part = { id: 'decisions', title: 'Decisions and trade-offs', node: <Decisions c={c} line={line} /> };
-  const hasEvidence = (c.facts?.length ?? 0) > 0;
-  const factTitle = { production: 'Scale', agent: 'Results', model: 'Evaluation', engineering: 'Measured' }[c.layout];
-  const facts: Part | null = hasEvidence ? { id: 'results', title: factTitle, node: <Facts c={c} slug={slug} /> } : null;
-  const sections: Part | null = c.sections.length ? { id: 'details', title: 'Implementation', node: <Sections c={c} line={line} /> } : null;
-  const figures: Part | null = (c.figures?.length ?? 0) > 1 ? { id: 'screens', title: 'Screens', node: <Figures c={{ ...c, figures: c.figures!.slice(1) }} /> } : null;
-  const quality: Part | null = c.quality?.length ? { id: 'quality', title: 'Testing and results', node: <Checklist items={c.quality} /> } : null;
-  const overview: Part = { id: 'overview', title: 'Overview', node: <Overview c={c} p={p} /> };
+  const tint = areaHex[p.category];
 
-  // Different subjects lead with different evidence.
-  const order: Record<CaseStudy['layout'], (Part | null)[]> = {
-    production: [overview, diagram, decisions, sections, facts, quality],
-    agent: [overview, diagram, decisions, sections, facts, figures, quality],
-    model: [overview, facts, diagram, decisions, sections, figures, quality],
-    engineering: [overview, decisions, facts, diagram, sections, figures, quality],
-  };
-  const parts = order[c.layout].filter(Boolean) as Part[];
+  const chapters = [
+    { id: 'problem', title: 'The problem' },
+    { id: 'built', title: 'What I built' },
+    ...(arch ? [{ id: 'how', title: 'How it works' }, { id: 'parts', title: 'Each component' }] : []),
+    { id: 'decisions', title: 'Decisions' },
+    { id: 'results', title: 'Results' },
+    ...(arch && wide ? [{ id: 'explore', title: 'Explore it yourself' }] : []),
+  ];
+  const n = (id: string) => chapters.findIndex((x) => x.id === id) + 1;
 
   return (
-    <article>
-      <Hero c={c} p={p} line={line} />
-      <div className="shell grid gap-10 py-16 md:py-20 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
-        <nav aria-label="On this page" className="hidden lg:block">
-          <ol className="sticky top-28 space-y-2 border-l-2 border-seam">
-            {parts.map((part) => (
-              <li key={part.id}>
-                <a href={`#${part.id}`} className="ui -ml-[2px] block border-l-2 border-transparent py-1 pl-4 text-slate no-underline hover:border-brass hover:text-charcoal">
-                  {part.title}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-        <div className="min-w-0 space-y-20">
-          {parts.map((part) => (
-            <section key={part.id} id={part.id} aria-labelledby={`${part.id}-h`} className="reveal">
-              <h2 id={`${part.id}-h`} className="headline mb-8 flex items-center gap-4 text-[clamp(2rem,3.5vw,2.75rem)]">
-                <span className={`inline-block h-[2px] w-10 ${lineBg[line]}`} aria-hidden />
-                {part.title}
-              </h2>
-              {part.node}
-            </section>
-          ))}
-        </div>
+    <article style={{ ['--tint' as string]: tint }}>
+      <Hero c={c} p={p} tint={tint} chapters={chapters} />
+      <div className="shell space-y-28 py-20 md:space-y-36 md:py-28">
+        <Chapter id="problem" n={n('problem')} title="The problem" tint={tint}><Prose><p>{c.context}</p></Prose></Chapter>
+        <Chapter id="built" n={n('built')} title="What I built" tint={tint}><Built c={c} arch={arch} tint={tint} /></Chapter>
+        {arch && <HowItWorks arch={arch} tint={tint} slug={slug} wide={wide} n={n} />}
+        <Chapter id="decisions" n={n('decisions')} title="Decisions" tint={tint}><Decisions c={c} tint={tint} /></Chapter>
+        <Chapter id="results" n={n('results')} title="Results" tint={tint}><Results c={c} p={p} tint={tint} /></Chapter>
+        {arch && wide && (
+          <Chapter id="explore" n={n('explore')} title="Explore it yourself" tint={tint}>
+            <p className="ui mb-8 max-w-[38rem] text-slate">Play any request through the system, step through it, or select a part. You can also ask my AI to walk you through it.</p>
+            <ArchitectureExplorer arch={arch} />
+          </Chapter>
+        )}
       </div>
       <Related c={c} />
     </article>

@@ -1,7 +1,8 @@
 // Content model for the whole site. Pages render from these types; no copy lives in components
 // except interface labels.
 
-export type Category = 'production' | 'agents' | 'ml' | 'fullstack' | 'data' | 'tools' | 'learning';
+// Areas of work. A project has one home area and may also be listed under others (`also`).
+export type Category = 'ml' | 'agents' | 'llm' | 'voice' | 'data' | 'systems' | 'learning';
 
 // How far a project got. Shown on every project so a reader can tell a live system from an exercise.
 export type Maturity =
@@ -24,6 +25,7 @@ export interface Project {
   slug: string;
   name: string;
   category: Category;
+  also?: Category[]; // other areas the project is listed under
   maturity: Maturity;
   period: string; // human-readable, e.g. "Oct 2026" or "Aug-Sep 2026"
   summary: string;
@@ -103,6 +105,7 @@ export interface Role {
   terms?: string; // e.g. "Part-time, remote, unpaid" when a document states it
   summary?: string;
   work?: string[];
+  workAreas?: string[]; // a short label for each `work` line, in the same order
   projects?: string[]; // project slugs
   proof?: ExternalLink[];
 }

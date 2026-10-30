@@ -434,6 +434,39 @@ export const sheets: SheetSpec[] = [
   },
 
   {
+    slug: 'job-market-tracker',
+    title: 'One day of collection, from job boards to findings',
+    caption: 'Drawn from the jmt package, the dbt project and the README. Raw data stays private; only suppressed aggregates are published.',
+    main: [
+      { id: 'apis', label: 'Public job APIs', sub: 'Greenhouse, Lever, Ashby', kind: 'external', what: 'The public job-board APIs of the companies on a hand-picked list.', source: 'companies.csv, jmt/fetchers' },
+      { id: 'fetch', label: 'Polite fetchers', sub: 'one request per company', kind: 'rule', what: 'Collects today’s open postings, one request per company.', why: 'The APIs show only what is open today, so history starts on the first collection day; each day is kept as its own snapshot.', source: 'jmt/ingest.py, jmt/http.py' },
+      { id: 'bronze', label: 'Bronze Parquet', sub: 'raw daily snapshots', kind: 'store', what: 'The raw snapshot of each day, kept private.', why: 'Email addresses and phone numbers are removed before anything is stored.', source: 'jmt/bronze.py' },
+      { id: 'dbt', label: 'DuckDB and dbt', sub: 'staging, silver', kind: 'rule', what: 'Models snapshots into facts and dimensions: posting snapshots and each posting’s lifecycle.', why: 'Loads are idempotent and incremental, and every run is logged.', source: 'dbt/models/staging, dbt/models/silver, jmt/runlog.py' },
+      { id: 'enrich', label: 'Enrichment', sub: 'role, seniority, skills', kind: 'rule', what: 'Assigns role, seniority, entry-level, skills and location with documented rules.', source: 'jmt/enrich, docs/enrichment.md' },
+      { id: 'gold', label: 'dbt gold', sub: 'tested marts', kind: 'store', what: 'The analysis-ready tables, checked by dbt tests for uniqueness, not-null, freshness and row-count anomalies.', source: 'dbt/models/gold, dbt/tests' },
+      { id: 'stats', label: 'Statistics', sub: 'cluster bootstrap, Kaplan-Meier', kind: 'rule', what: 'Skill shares with company-cluster bootstrap intervals, time to close with Kaplan-Meier, and a same-company weekly panel.', why: 'Postings from one company are not independent, so intervals resample companies, and small cells are suppressed.', source: 'jmt/analysis' },
+      { id: 'out', label: 'Streamlit and Power BI', kind: 'io', what: 'A Streamlit app over the published aggregates, and a star-schema export for Power BI.', source: 'app/streamlit_app.py, jmt/export.py' },
+    ],
+    side: [
+      { of: 'enrich', dir: 'in', node: { id: 'labels', label: 'Hand labels', sub: 'sample for accuracy', kind: 'human', what: 'A hand-labelling sample to measure the rules’ precision and recall.', source: 'labelling/, jmt/labelling.py' } },
+    ],
+    walkthroughs: [
+      {
+        id: 'day', title: 'one day’s collection', steps: [
+          { node: 'apis', say: 'Each company’s public job board is read.' },
+          { node: 'fetch', say: 'One polite request per company collects today’s open postings.' },
+          { node: 'bronze', say: 'The raw snapshot is stored privately, with contact details stripped.' },
+          { node: 'dbt', say: 'DuckDB and dbt turn it into posting snapshots and lifecycles.' },
+          { node: 'enrich', say: 'Rules assign role, seniority and skills.' },
+          { node: 'gold', say: 'Gold tables are built and tested.' },
+          { node: 'stats', say: 'Skill shares get company-cluster bootstrap intervals: Python appears in 72.8% of data-role postings.' },
+          { node: 'out', say: 'Suppressed aggregates reach the Streamlit app and the Power BI export.' },
+        ],
+      },
+    ],
+  },
+
+  {
     slug: 'dairy-collection-manager',
     title: 'From a day’s milk to a settlement',
     caption: 'Drawn from src/ and supabase/schema.sql. Amounts are computed in SQL; settling is one database function.',

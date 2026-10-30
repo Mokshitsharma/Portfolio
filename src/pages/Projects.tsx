@@ -94,7 +94,7 @@ export default function Projects() {
   const clear = () => setParams(new URLSearchParams(), { replace: true, preventScrollReset: true });
 
   const results = useMemo(
-    () => projects.filter((p) => (!cat || p.category === cat) && (!status || p.maturity === status) && (!onlyCases || p.caseStudy) && matches(p, q)),
+    () => projects.filter((p) => (!cat || p.category === cat || !!p.also?.includes(cat)) && (!status || p.maturity === status) && (!onlyCases || p.caseStudy) && matches(p, q)),
     [q, cat, status, onlyCases],
   );
   const filtering = Boolean(q || cat || status || onlyCases);

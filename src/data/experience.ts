@@ -24,19 +24,22 @@ export const roles: Role[] = [
     end: 'present',
     type: 'Employment',
     summary:
-      'The company’s only engineer. I took over after an outsourced team had delivered designs but no working software, rebuilt the product from scratch and launched it, and now own the backend, both mobile apps, the operations console and production support.',
+      'The company’s only engineer. I took over after an outsourced team had delivered designs but no working software, rebuilt the product and launched it, then added the data and AI layer that runs it: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
     work: [
-      'Node.js and MongoDB backend with real-time dispatch, race-safe booking acceptance and signature-verified Razorpay payments',
-      'Flutter driver and retailer apps, released on Google Play and the App Store',
-      'Server-driven pricing, zones, surge multipliers and dispatch radius that operations can change without an app release',
-      'Field-staff platform for attendance, onboarding and performance',
+      'Applied ML in production: demand forecasting, cancellation-risk scoring, smart dispatch ranking, supply-aware surge pricing, fraud and churn detection and ETA correction, tracked with MLflow and drift monitoring (reported).',
+      'Cancellations fell from 40% to 12% while daily bookings grew from about 140 to about 400 in September and October 2026 (reported by Movigo).',
+      'A voice calling agent that has handled 1,200+ calls and resolves 81% without a person, and a RAG support copilot for driver and retailer policy questions, both with human escalation (reported).',
+      'OCR document verification with checksum validation, face match and a human-review queue, keeping identity data masked (reported).',
+      'The platform underneath: a Node.js and MongoDB backend with real-time dispatch, race-safe booking acceptance and signature-verified Razorpay payments; Flutter driver and retailer apps on Google Play and the App Store.',
+      'Server-driven pricing, zones and dispatch radius that operations change without an app release; releases on Codemagic; a move from a VPS to AWS (reported).',
     ],
+    workAreas: ['Applied ML', 'Results', 'Voice AI and RAG', 'Document verification', 'Platform', 'Operations and cloud'],
     projects: ['movigo', 'fieldops-ai', 'movigo-broadcast'],
   },
   {
     id: 'E03', org: 'Kangaroo Software Pvt. Ltd.', place: 'Indore', title: 'Data Science Intern',
     start: '2025-10', end: '2026-01', type: 'Internship',
-    summary: 'Data science internship; the completion certificate notes work on live project modules.',
+    summary: 'Machine-learning models and chatbots for 12+ clients of a company that builds software for other businesses, from data preparation to delivery. Each client project lifted sales by more than 30%; on average profit rose 15% and expenses fell 10% (as reported).',
     proof: [drive('1ZPBgGkkDBb1CWGArpvjBl-zUiDwCzPo1')],
   },
   {
@@ -79,10 +82,11 @@ export const roles: Role[] = [
   {
     id: 'E12', org: 'Evoastra Ventures', title: 'Artificial Intelligence Intern', start: '2024-10', end: '2024-11', type: 'Internship',
     terms: 'One month',
+    summary: 'A sentiment-analysis pipeline on 50,000+ Reddit posts with TF-IDF features, comparing logistic regression and naive Bayes.',
   },
   {
     id: 'E13', org: 'Cognifyz Technologies', title: 'Data Science Intern', start: '2024-09', end: '2024-10', type: 'Internship',
-    summary: 'Collecting, cleaning and interpreting datasets as described in the internship offer.',
+    summary: 'Regression models that predict restaurant ratings, reaching R-squared 0.84 after feature engineering, from cleaning and exploring the data to comparing models.',
     proof: [drive('1qFCF_sY7sBTlVZ4C5Sid1u83UTrHNwz5')],
   },
   {

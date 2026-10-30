@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ArrowUpRight, FileText, Github, Smartphone } from 'lucide-react';
-import { maturityLabel } from '../data/projects';
+import { Link } from 'react-router-dom';
+import { maturityLabel, projectBySlug } from '../data/projects';
 import type { ExternalLink, Maturity } from '../data/types';
 import type { Line } from '../data/visuals';
 
@@ -69,4 +70,13 @@ export function PageHeader({ title, sign, children, crumb, line = 'route', aside
       <div className={`rail ${lineBg[line]}`} aria-hidden />
     </header>
   );
+}
+
+// Where a project name leads: its case study if it has one, otherwise the archive filtered to it.
+export const projectHref = (slug: string) => {
+  const p = projectBySlug(slug)!;
+  return p.caseStudy ? `/projects/${slug}` : `/projects?q=${encodeURIComponent(p.name)}`;
+};
+export function ProjectLink({ slug }: { slug: string }) {
+  return <Link to={projectHref(slug)} className="link text-charcoal">{projectBySlug(slug)!.name}</Link>;
 }

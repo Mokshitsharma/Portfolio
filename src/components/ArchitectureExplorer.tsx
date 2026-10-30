@@ -59,15 +59,22 @@ function useLayout(): Layout {
 
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
+// `driven` hands control to the page (a case study's scroll chapters set the step or the component); `compact`
+// leaves only the sheet and its key, for a pinned diagram beside text that already explains each step.
+export interface Driven { walkthrough?: string; step?: number; node?: string | null }
+
+export default function ArchitectureExplorer({ arch, driven, compact = false, onNodeClick }: { arch: Architecture; driven?: Driven; compact?: boolean; onNodeClick?: (id: string) => void }) {
   const l = useLayout();
   const byId = useMemo(() => new Map(arch.nodes.map((n) => [n.id, n])), [arch]);
   const paths = useMemo(() => new Map(arch.edges.map((e) => [e.id, route(e, byId, l)])), [arch, byId, l]);
-  const [wt, setWt] = useState(arch.walkthroughs[0].id);
-  const [step, setStep] = useState(-1); // -1: whole architecture, nothing lit
+  const [ownWt, setWt] = useState(arch.walkthroughs[0].id);
+  const [ownStep, setStep] = useState(-1); // -1: whole architecture, nothing lit
   const [playing, setPlaying] = useState(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [ownSelected, setSelected] = useState<string | null>(null);
   const root = useRef<HTMLElement>(null);
+  const wt = driven?.walkthrough ?? ownWt;
+  const step = driven ? driven.step ?? -1 : ownStep;
+  const selected = driven ? driven.node ?? null : ownSelected;
 
   const walk = arch.walkthroughs.find((w) => w.id === wt)!;
   const current = step >= 0 ? walk.steps[step] : null;
@@ -103,19 +110,21 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
   }, [arch, byId, play]);
 
   useEffect(() => {
+    if (compact) return; // the full explorer on the page answers the assistant
     const queued = takeQueued(arch.slug);
     if (queued) window.setTimeout(() => run(queued), 300);
     return onDiagram(run);
-  }, [arch.slug, run]);
+  }, [arch.slug, run, compact]);
 
   const [W, H] = arch.size[l];
   const [bw, bh] = BOX[l];
   const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+  const titleId = `${arch.slug}-arch-title${compact ? '-pinned' : ''}`;
 
   return (
-    <figure ref={root} className="arch scroll-mt-24" aria-labelledby={`${arch.slug}-arch-title`}>
+    <figure ref={root} className="arch scroll-mt-24" aria-labelledby={titleId}>
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-        <h3 id={`${arch.slug}-arch-title`} className="headline text-2xl md:text-3xl">{arch.title}</h3>
+        {compact ? <h3 id={titleId} className="sr-only">{arch.title}</h3> : <h3 id={titleId} className="headline text-2xl md:text-3xl">{arch.title}</h3>}
         <ul className="arch-key" aria-label="Key">
           {(['model', 'rule', 'human', 'store', 'io', 'external'] as NodeKind[]).filter((k) => arch.nodes.some((n) => n.kind === k)).map((k) => (
             <li key={k}><span className={`arch-swatch k-${k}`} aria-hidden />{kindName[k]}</li>
@@ -123,7 +132,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
         </ul>
       </div>
 
-      <div className="arch-controls mt-6" role="group" aria-label="Walkthrough">
+      {!compact && <div className="arch-controls mt-6" role="group" aria-label="Walkthrough">
         <label className="sr-only" htmlFor={`${arch.slug}-wt`}>Request to follow</label>
         <select id={`${arch.slug}-wt`} value={wt} onChange={(e) => { setWt(e.target.value); setStep(-1); setPlaying(false); }} className="arch-select">
           {arch.walkthroughs.map((w) => <option key={w.id} value={w.id}>Follow {w.title}</option>)}
@@ -144,6 +153,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
         </div>
       </div>
 
+      }
       <div className="arch-sheet mt-4" style={{ aspectRatio: `${W} / ${H}`, maxWidth: l === 'd' ? `${W * 1.05}px` : undefined }} data-lit={step >= 0 || undefined} data-layout={l}>
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 h-full w-full" aria-hidden>
           <defs>
@@ -181,7 +191,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
               className={`arch-node k-${n.kind}`}
               data-state={state || undefined}
               aria-pressed={focus === n.id}
-              onClick={() => { setPlaying(false); setSelected(n.id === selected ? null : n.id); }}
+              onClick={() => { if (onNodeClick) return onNodeClick(n.id); setPlaying(false); setSelected(n.id === selected ? null : n.id); }}
               style={{ left: pct(x - bw / 2, W), top: pct(y - bh / 2, H), width: pct(bw, W), height: pct(bh, H) }}
             >
               <span className="arch-node-label">{n.label}</span>
@@ -191,7 +201,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
         })}
       </div>
 
-      <div className="arch-readout mt-4 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      {!compact && <div className="arch-readout mt-4 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <p className="ui" aria-live="polite">
           {current ? (
             <><span className="font-semibold">Step {step + 1} of {walk.steps.length}.</span> {current.say}</>
@@ -219,7 +229,7 @@ export default function ArchitectureExplorer({ arch }: { arch: Architecture }) {
         ) : (
           <p className="fine text-slate">{arch.caption}</p>
         )}
-      </div>
+      </div>}
     </figure>
   );
 }

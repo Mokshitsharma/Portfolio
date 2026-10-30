@@ -7,14 +7,14 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: 'movigo',
     layout: 'production',
-    title: 'Movigo: dispatch, payments and two apps for a live delivery business',
+    title: 'Movigo: a live marketplace, and the AI layer that runs it',
     lede:
-      'Movigo connects retailers and customers in Indore with drivers on two-, three- and four-wheelers. I am the company’s only engineer: I rebuilt the product after an outsourced team delivered designs but no working software, and I run the backend, both apps and the infrastructure today.',
+      'Movigo connects retailers and customers in Indore with drivers on two-, three- and four-wheelers. As its only engineer I rebuilt the product after an outsourced team delivered designs but no working software, then added the data and AI layer on top: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
     context:
       'Retailers book a delivery, nearby drivers get a ringing offer, one driver wins it, and the booking is tracked live until a PIN confirms delivery. The operations team needs to change prices, zones and commission without waiting for an app release, and drivers work on low-end Android phones that kill background apps.',
     role:
       'Founding Engineer & Tech Lead since June 2026. I joined in April 2026 as App Developer and was promoted to Lead App Developer in May. I own the backend, the Flutter driver and retailer apps, the admin console, store releases and production support.',
-    status: 'In production. Driver and retailer apps on Google Play (1K+ installs each in October 2026); retailer app on the App Store.',
+    status: 'In production. Driver and retailer apps on Google Play (1K+ installs each in October 2026); retailer app on the App Store. The code is the company’s and private; the AI results here are as reported by Movigo for September and October 2026.',
     map: {
       title: 'System map',
       caption: 'Explanatory diagram drawn from the backend’s route groups and services. Not a screenshot.',
@@ -44,6 +44,19 @@ export const caseStudies: CaseStudy[] = [
     ],
     sections: [
       {
+        heading: 'Applied ML in a live marketplace',
+        body: ['Once the platform was stable, the work moved to the data on top of it. The models run in production and are tracked with MLflow and drift monitoring (reported).'],
+        points: ['Demand forecasting', 'Cancellation-risk scoring before a booking is dispatched', 'Smart dispatch ranking of candidate drivers', 'Supply-aware surge pricing, aligned with Porter and Rapido', 'Fraud and churn detection', 'ETA correction'],
+      },
+      {
+        heading: 'Voice AI and a support copilot',
+        body: ['A voice calling agent answers general queries and hands over to a person when it should; it has handled 1,200+ calls and resolves 81% without one (reported). A RAG support copilot answers driver and retailer policy questions, also with human escalation.'],
+      },
+      {
+        heading: 'Document verification',
+        body: ['Driver onboarding documents go through OCR with checksum validation and a face match, and anything uncertain lands in a human-review queue. Identity data stays masked throughout (reported).'],
+      },
+      {
         heading: 'Payments without double charges',
         body: [
           'Wallet top-ups and fees go through Razorpay. Every payment confirmation is verified before anything is credited, and each payment is credited exactly once, even when a callback is retried.',
@@ -57,16 +70,18 @@ export const caseStudies: CaseStudy[] = [
         ],
       },
       {
-        heading: 'Releases',
+        heading: 'Releases and infrastructure',
         body: [
-          'The driver and retailer apps ship to Google Play and the retailer app to the App Store, with iOS builds automated on Codemagic.',
+          'The driver and retailer apps ship to Google Play and the retailer app to the App Store, with iOS builds automated on Codemagic. The backend moved from a VPS to AWS (reported).',
         ],
       },
     ],
     facts: [
+      { label: 'Cancellation rate', value: '40% to 12%', source: 'Reported by Movigo, September to October 2026' },
+      { label: 'Daily bookings', value: 'About 140 to about 400', source: 'Reported by Movigo, September to October 2026' },
+      { label: 'Price-match accuracy', value: '65% to 92% within a month', source: 'Reported by Movigo' },
+      { label: 'Voice agent', value: '1,200+ calls, 81% resolved without a person', source: 'Reported by Movigo' },
       { label: 'API routes', value: '400+ across six route groups', source: 'Route declarations in the backend source, October 2026' },
-      { label: 'Data models', value: '40 Mongoose models', source: 'Backend models folder, October 2026' },
-      { label: 'Scheduled jobs', value: '8, plus a 15-second dispatch loop', source: 'Backend cron folder' },
       { label: 'Store presence', value: '2 apps on Google Play, 1 on the App Store', source: 'Public store listings, October 2026' },
       { label: 'Google Play installs', value: '1K+ per app', source: 'Public store listings, October 2026' },
     ],
@@ -114,7 +129,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     quality: [
       '146 unit, integration and end-to-end tests, including property tests for the ledger and a 50-way concurrency test that never overspends.',
-      'Receipts verify in 81 ms. In its evaluation: 0% false releases, and every injected or tampered proof detected.',
+      'Evaluation: 28 of 28 scenarios passed; 0 of 8 bad proofs paid; 0 of 10 out-of-mandate agent requests allowed; 49 of 49 single-field receipt tamperings caught; receipts verify in 81 ms.',
       'An evaluation harness with scripted scenarios and an accessibility pass with axe-core.',
     ],
     figures: [
@@ -158,7 +173,7 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Swagger Petstore', value: 'The tester sent design bugs back to the designer, which fixed them on the second round; security 84/100', source: 'examples/petstore/scorecard.json' },
       { label: 'xkcd', value: '2 tools, 2 of 2 passed, security 90/100 (plain-HTTP URL flagged)', source: 'examples/xkcd/scorecard.json' },
     ],
-    quality: ['24 pytest tests covering the spec loader (including reference cycles and Swagger 2 rejection), the pipeline and live stages.', 'Every build writes a scorecard, the full call log and per-step timings.', 'A 102-endpoint spec fits a 16,000-character prompt budget, so builds run on free-tier models.'],
+    quality: ['Offline benchmark on 18 real OpenAPI specs (1,441 endpoints): 94% parsed, and 38 planted-flaw and clean servers for the security audit.', '24 pytest tests covering the spec loader (including reference cycles and Swagger 2 rejection), the pipeline and live stages.', 'Every build writes a scorecard, the full call log and per-step timings.', 'A 102-endpoint spec fits a 16,000-character prompt budget, so builds run on free-tier models.'],
     related: ['settleai', 'naman'],
   },
 
@@ -185,7 +200,7 @@ export const caseStudies: CaseStudy[] = [
     decisions: [
       { title: 'Approval as a separate node', body: 'A resumed LangGraph step re-runs from its start. If the pause lived inside the tool step, tools that had already run would run again. Collecting approvals in their own node first means every tool runs exactly once after a resume, and there is a test for it.' },
       { title: 'Free-tier economics', body: 'It runs on Groq’s free tier with retries and a sliding history window, and the router’s single call returns the plan as well, so multi-step requests cost no extra call.' },
-      { title: 'Truth is checked by code', body: 'Job-outreach emails pass a code verifier, not a model, before they go out. Emails with an unsupported claim fell from 48 of 49 to 0 of 21, and a mutation test of the verifier caught all 107 planted errors with no false alarms.' },
+      { title: 'Truth is checked by code', body: 'Job-outreach emails pass a code verifier, not a model, before they go out. Emails with an unsupported claim fell from 48 of 49 to 0 of 21. On 120 hand-labelled sentences, with labels committed before it ran, the verifier reaches precision 0.947 and recall 0.818.' },
       { title: 'Send only the tools a request needs', body: 'Its 66 tools sit in 12 skill packs, and only the packs a request needs are sent to the model: "volume 30" loads 22 of the 66 tool schemas, and obvious commands skip the router’s model call entirely. Templated emails cost no AI tokens at all.' },
     ],
     sections: [
@@ -221,7 +236,7 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Rules before the model', body: 'Escalation keywords, FAQ matches and the booking flow are handled before the language model is asked anything, which keeps latency and cost down and makes hand-off predictable.' },
     ],
     sections: [],
-    quality: ['A pipeline timer breaks down latency per stage, and every turn is measured against a 1.5-second round-trip budget.', 'Escalation words, FAQ answers and booking steps take fast paths that need no model call.'],
+    quality: ['Offline evaluation on 160 labelled turns: 55.6% are handled on fast paths with no model call.', 'A pipeline timer breaks down latency per stage, and every turn is measured against a 1.5-second round-trip budget.'],
     related: ['naman', 'dociq'],
   },
 
@@ -249,7 +264,12 @@ export const caseStudies: CaseStudy[] = [
       { title: 'Degrade instead of failing', body: 'Without Redis it ingests inline; without Chroma it searches in memory; without a model key it returns extractive answers. Every part of the demo runs on a laptop.' },
     ],
     sections: [],
-    quality: ['A 16-check end-to-end script covering upload, ingestion, cited answers and the risk scan.', 'Offline evaluation: 11 of 11 retrieval hits and 1 of 1 correct refusal.', 'Unit tests for the chunker.'],
+    facts: [
+      { label: 'Retrieval hit@5', value: '98.3% with BM25', source: '58 hand-written test questions, 95% bootstrap interval 94.8 to 100 (eval run 20261027-150736)' },
+      { label: 'Citation accuracy', value: '92.2%', source: 'Same run and questions' },
+      { label: 'Refusing the unanswerable', value: '15.4% to 76.9%', source: 'With the query-coverage gate, tuned on a separate dev split; 13 unanswerable test questions' },
+    ],
+    quality: ['Seven retriever and embedder combinations (BM25, vector, hybrid, reciprocal-rank fusion; hashed and MiniLM embeddings) compared on the same questions with paired bootstrap differences.', 'A regression gate in CI: 7 of 7 evaluation floors met.', 'A 16-check end-to-end script covering upload, ingestion, cited answers and the risk scan.'],
     related: ['voicedesk', 'settleai'],
   },
 
@@ -323,6 +343,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     sections: [],
     facts: [
+      { label: 'Training data', value: '1,362,629 deliveries from 2,569 men’s ODIs', source: 'Cricsheet, 2002 to 2026' },
       { label: 'Dismissal probability', value: 'ROC-AUC 0.749, Brier score 0.0260', source: 'Evaluation report for the active model, 1,362,629 deliveries' },
       { label: 'Expected runs', value: 'Mean absolute error 0.867', source: 'Evaluation report for the active model' },
       { label: 'Data store', value: 'Parquet, about 15 times smaller than the CSV and about 10 times faster to load', source: 'Measured on the project’s own data' },
@@ -447,6 +468,43 @@ export const caseStudies: CaseStudy[] = [
       { src: '/images/ai-business-analytics-upload.jpg', alt: 'AI Business Analytics upload screen with a file drop zone and a list of what the report includes.', caption: 'The upload screen, running locally.', width: 1920, height: 640 },
     ],
     related: ['sensei-ai', 'cricxai'],
+  },
+
+  {
+    slug: 'job-market-tracker',
+    layout: 'model',
+    title: 'job-market-tracker: what entry-level AI and data roles actually ask for',
+    lede: 'A daily pipeline from the public job APIs of Greenhouse, Lever and Ashby into Parquet, DuckDB and dbt, answering which skills, tools and roles entry-level AI/ML, data science and data engineering postings ask for, with intervals that respect how postings cluster by company.',
+    context: 'For anyone deciding what to learn next, me included, who wants numbers rather than impressions. The sample is the companies on a hand-picked list that post through these three systems.',
+    role: 'Designed and built alone.',
+    status: 'Working: the first live snapshot is collected, modelled and analysed; collection runs daily.',
+    flow: {
+      title: 'From job boards to findings',
+      caption: 'Explanatory diagram drawn from the README and docs/architecture.md.',
+      stages: [
+        { label: 'Public job APIs', note: 'Greenhouse, Lever, Ashby', kind: 'io' },
+        { label: 'Polite fetchers', note: 'one request per company', kind: 'rule' },
+        { label: 'Bronze Parquet', note: 'raw snapshots, private', kind: 'io' },
+        { label: 'DuckDB and dbt', note: 'staging, silver, gold, tests', kind: 'rule' },
+        { label: 'Enrichment', note: 'role, seniority, skills, location', kind: 'rule' },
+        { label: 'Statistics', note: 'cluster bootstrap, Kaplan-Meier', kind: 'rule' },
+        { label: 'Streamlit and Power BI', kind: 'io' },
+      ],
+    },
+    decisions: [
+      { title: 'Intervals that respect companies', body: 'Postings from one company are not independent, so every share is reported with a company-cluster bootstrap interval, and cells with fewer than 5 postings or 3 companies are suppressed.' },
+      { title: 'Snapshots, not a scrape of history', body: 'The APIs show only what is open today, so each day is stored as an immutable snapshot. Loads are idempotent and incremental, every run is logged, and time to close comes from Kaplan-Meier once postings start disappearing.' },
+      { title: 'Rules you can audit', body: 'Role, seniority, skill and location come from documented rules, with a hand-labelling sample set up to measure their precision and recall.' },
+      { title: 'Privacy by construction', body: 'Raw descriptions never enter the repository, email addresses and phone numbers are stripped before storage, and only suppressed aggregates are published.' },
+    ],
+    sections: [],
+    facts: [
+      { label: 'First snapshot', value: '10,876 postings from 52 companies', source: 'Run 20261028T032809Z, 27 October 2026' },
+      { label: 'Data roles', value: '522', source: 'Same run; rule-based role labels' },
+      { label: 'Most-asked skill in data roles', value: 'Python, in 72.8% of postings', source: '95% company-cluster bootstrap interval 68.0% to 77.4%; SQL 46.6%, LLMs 41.4%' },
+    ],
+    quality: ['41 pytest tests, and dbt tests for uniqueness, not-null, freshness and row-count anomalies.', 'An offline reproduce check runs the whole pipeline on synthetic and recorded fixtures with no network.'],
+    related: ['olist-analytics', 'ai-business-analytics'],
   },
 
   {
