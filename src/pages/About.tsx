@@ -13,9 +13,8 @@ export default function About() {
       <div className="shell grid gap-16 py-16 md:py-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <div className="measure space-y-6 text-[1.25rem] leading-[1.75]">
           <p>
-            Since April 2026 I have been the only engineer at Movigo, a delivery marketplace in Indore. When I joined, an
-            outsourced team had produced designs but no working software. I rebuilt the product from scratch: the Node.js
-            backend, the Flutter apps for drivers and retailers, the operations console and the hosting. I started as an app
+            Since April 2026 I have been the only engineer at Movigo, a delivery marketplace in Indore. I built the product
+            from zero: the Node.js backend, the Flutter apps for drivers and retailers, the operations console and the hosting. I started as an app
             developer and have been Founding Engineer and Tech Lead since June.
           </p>
           <p>

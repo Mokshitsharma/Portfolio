@@ -24,7 +24,7 @@ export const roles: Role[] = [
     end: 'present',
     type: 'Employment',
     summary:
-      'The company’s only engineer. I took over after an outsourced team had delivered designs but no working software, rebuilt the product and launched it, then added the data and AI layer that runs it: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
+      'The company’s only engineer. I built the product from zero and launched it, then added the data and AI layer that runs it: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
     work: [
       'Applied ML in production: demand forecasting, cancellation-risk scoring, smart dispatch ranking, supply-aware surge pricing, fraud and churn detection and ETA correction, tracked with MLflow and drift monitoring (reported).',
       'Cancellations fell from 40% to 12% while daily bookings grew from about 140 to about 400 in September and October 2026 (reported by Movigo).',

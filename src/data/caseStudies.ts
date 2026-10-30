@@ -9,7 +9,7 @@ export const caseStudies: CaseStudy[] = [
     layout: 'production',
     title: 'Movigo: a live marketplace, and the AI layer that runs it',
     lede:
-      'Movigo connects retailers and customers in Indore with drivers on two-, three- and four-wheelers. As its only engineer I rebuilt the product after an outsourced team delivered designs but no working software, then added the data and AI layer on top: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
+      'Movigo connects retailers and customers in Indore with drivers on two-, three- and four-wheelers. As its only engineer I built the product from zero, then added the data and AI layer on top: forecasting, cancellation-risk scoring, dispatch ranking and pricing, a voice calling agent, a support copilot and document verification.',
     context:
       'Retailers book a delivery, nearby drivers get a ringing offer, one driver wins it, and the booking is tracked live until a PIN confirms delivery. The operations team needs to change prices, zones and commission without waiting for an app release, and drivers work on low-end Android phones that kill background apps.',
     role:
