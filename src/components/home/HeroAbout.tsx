@@ -124,6 +124,7 @@ export default function HeroAbout() {
   return (
     <section id="about" ref={section} data-section="about" aria-labelledby="hero-title" className="ha relative">
       {/* The illustration: pinned, and slid across by the scroll on wide screens. */}
+      <div className="ha-track">
       <div className="shell ha-stage">
         <div ref={fig} className="ha-figure">
           <div ref={box} className="ha-figure-box" style={{ aspectRatio: String(FIG_ASPECT) }}>
@@ -131,6 +132,7 @@ export default function HeroAbout() {
           </div>
           <p ref={caption} className="ha-caption" aria-live="polite">{profile.name}, {profile.location}</p>
         </div>
+      </div>
       </div>
 
       <svg className="ha-lines" aria-hidden>

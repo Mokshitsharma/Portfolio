@@ -458,7 +458,10 @@
 /* ------------------------------------------------------------------ Home 1-2: opening and about, figure slides right to left */
 @layer components {
   /* The stage is pinned under the header with no height of its own, so the text scrolls beside the figure. */
-  .ha-stage { position: sticky; top: 4.5rem; height: 0; z-index: 1; pointer-events: none; }
+  /* The track spans About exactly; the stage pins inside it, so the figure stops at the end of About and never
+     hangs over Projects. Being absolute, the track takes no room, and the text scrolls beside the figure. */
+  .ha-track { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .ha-stage { position: sticky; top: 4.5rem; height: calc(100svh - 5.5rem); pointer-events: none; }
   .ha-figure { position: absolute; left: 75%; translate: -50% 0; top: 0; height: calc(100svh - 5.5rem); display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ha-figure-box { position: relative; height: calc(100% - 3rem); }
   .ha-img { display: block; height: 100%; width: auto; filter: drop-shadow(0 22px 16px rgb(22 32 43 / 0.14)); }
@@ -473,6 +476,7 @@
   .ha-role h3 { transition: color 300ms ease; }
   @media (max-width: 1023px) {
     .ha-lines { z-index: 5; }
+    .ha-track { display: contents; } /* phones: the stage sits in the flow, pinned across About */
     .ha-stage { top: 4rem; height: 38svh; z-index: 4; background: var(--color-ivory); border-bottom: 1px solid var(--color-seam); }
     .ha-figure { position: relative; left: auto !important; translate: none; height: 100%; padding: 0.6rem 0; margin: 0 auto; width: fit-content; }
     .ha-open { width: auto; min-height: 0; padding-top: 2rem; }
