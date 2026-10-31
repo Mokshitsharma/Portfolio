@@ -514,7 +514,7 @@ export const caseStudies: CaseStudy[] = [
     lede: 'A daily milk register for a collection centre. Each supplier’s milk is priced from a fat-based rate chart, advances are repaid in instalments, and settling a period happens in a single database transaction.',
     context: 'Milk collection centres still run on paper registers. This replaces the register for one owner.',
     role: 'Designed and built alone.',
-    status: 'Deployed on Vercel with Supabase.',
+    status: 'Working build on React, Supabase and Vercel; the source is on GitHub.',
     decisions: [
       { title: 'Arithmetic in the database', body: 'Quantity is litres plus millilitres, amounts are computed in SQL and rounded to paise, and a fat percentage between two rate-chart rows is interpolated.' },
       { title: 'Settlement as one function', body: 'Settling deducts instalments from the oldest open advance first, capped by the milk amount and the amount still owed, records the net payout and locks the settled entries, all in one transaction that can be reversed.' },

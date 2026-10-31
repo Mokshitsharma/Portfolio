@@ -200,10 +200,10 @@ export const projects: Project[] = [
     links: [gh('Banksaathi-clone')], tests: '50 API tests.', caseStudy: true, featured: true,
   },
   {
-    id: 'P12', slug: 'dairy-collection-manager', name: 'Dairy Collection Manager', category: 'systems', maturity: 'deployed', period: 'Sep 2026',
+    id: 'P12', slug: 'dairy-collection-manager', name: 'Dairy Collection Manager', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Daily milk register for a collection centre: fat-based rate charts, supplier ledgers, advances repaid in instalments and one-transaction settlements.',
     stack: ['React', 'Vite', 'Supabase', 'PostgreSQL', 'Vercel'],
-    links: [gh('Milk_management'), { label: 'Live app', href: 'https://milk-management-five.vercel.app', kind: 'demo' }], caseStudy: true,
+    links: [gh('Milk_management')], caseStudy: true,
   },
   {
     id: 'P13', slug: 'community-platform', name: 'Community platform', category: 'systems', maturity: 'prototype', period: 'Mar 2026',
