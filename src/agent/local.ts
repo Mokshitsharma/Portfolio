@@ -49,7 +49,9 @@ function retrieve(question: string, slug?: string, k = 3) {
 // The record's opening sentence, and its first measured result if it has one.
 function summarise(d: Doc) {
   const lines = d.text.split('\n');
-  const first = lines[0].replace(/^[^(]{1,80}\([^)]*\)\.\s*/, '');
+  // A project's first line opens with "Name (area; status; period)."; the profile's is only that, so its intro
+  // (the next line) stands in.
+  const first = lines[0].replace(/^[^(]{1,80}\([^)]*\)\.\s*/, '') || lines[1] || '';
   const lead = first.indexOf('. ') === -1 ? first : first.slice(0, first.indexOf('. ') + 1);
   const result = lines.find((l) => l.startsWith('Result: '))?.replace(/^Result: /, '').replace(/ \(source:.*\)$/, '');
   return result ? `${lead} ${result}.` : lead;
