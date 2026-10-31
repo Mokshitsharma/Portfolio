@@ -14,28 +14,29 @@ export interface AboutRole {
   body: string;
   projects: string[];
   region: { x: number; y: number; r: number };
+  tint: string; // the line drawn to it, in the colour of the area
 }
 
 export const aboutRoles: AboutRole[] = [
   {
     id: 'ml', title: 'Applied AI / ML Engineer',
     body: 'Builds and evaluates machine-learning systems, predictive models and AI-powered applications: leakage-safe features, validation grouped so no match or company leaks into its own test, calibration, and SHAP explanations a non-specialist can read.',
-    projects: ['cricxai', 'sensei-ai', 'customer-churn-xai', 'ai-business-analytics'], region: { x: 0.53, y: 0.08, r: 0.09 },
+    projects: ['cricxai', 'sensei-ai', 'customer-churn-xai', 'ai-business-analytics'], region: { x: 0.53, y: 0.08, r: 0.09 }, tint: '#0d6e63',
   },
   {
     id: 'agents', title: 'Agentic AI Engineer',
     body: 'Designs tool-using agents, MCP integrations, RAG workflows, voice agents and human-in-the-loop systems, where the model proposes, plain code checks the plan, and a person approves the risky step.',
-    projects: ['settleai', 'toolforge', 'naman', 'dociq', 'voicedesk'], region: { x: 0.86, y: 0.47, r: 0.075 },
+    projects: ['settleai', 'toolforge', 'naman', 'dociq', 'voicedesk'], region: { x: 0.86, y: 0.47, r: 0.075 }, tint: '#6a3daf',
   },
   {
     id: 'data', title: 'Data & ML Engineer',
     body: 'Works with data pipelines, feature engineering, analytics, model evaluation and production ML workflows: daily ingestion into DuckDB and dbt, tested data, and intervals that respect how the data clusters.',
-    projects: ['job-market-tracker', 'olist-analytics', 'cricxai', 'paytm-dashboard'], region: { x: 0.24, y: 0.46, r: 0.075 },
+    projects: ['job-market-tracker', 'olist-analytics', 'cricxai', 'paytm-dashboard'], region: { x: 0.24, y: 0.46, r: 0.075 }, tint: '#4a6b16',
   },
   {
     id: 'systems', title: 'Backend & Systems Engineer',
     body: 'Builds reliable APIs, databases, distributed workflows, integrations and the infrastructure behind intelligent products: ledgers, state machines, payments, and Movigo’s backend, built from zero as its only engineer.',
-    projects: ['movigo', 'refera', 'hyperlocal-marketplace', 'routecore'], region: { x: 0.5, y: 0.83, r: 0.17 },
+    projects: ['movigo', 'refera', 'hyperlocal-marketplace', 'routecore'], region: { x: 0.5, y: 0.83, r: 0.17 }, tint: '#36495e',
   },
 ];
 

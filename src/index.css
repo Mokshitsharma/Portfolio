@@ -455,31 +455,34 @@
   @keyframes orb-hop { 0%, 40%, 80%, 100% { transform: translateY(0); } 20% { transform: translateY(-9%); } 60% { transform: translateY(-4%); } }
 }
 
-/* ------------------------------------------------------------------ Home 1-2: opening and about, pinned figure */
+/* ------------------------------------------------------------------ Home 1-2: opening and about, figure slides right to left */
 @layer components {
-  .ha-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 4rem; }
-  .ha-text { grid-column: 1; grid-row: 1; padding-bottom: 20vh; }
-  .ha-figure-col { grid-column: 2; grid-row: 1; }
-  .ha-figure { position: sticky; top: 5rem; height: calc(100svh - 6rem); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .ha-figure-box { position: relative; height: calc(100% - 3rem); aspect-ratio: 441 / 1200; }
+  /* The stage is pinned under the header with no height of its own, so the text scrolls beside the figure. */
+  .ha-stage { position: sticky; top: 4.5rem; height: 0; z-index: 1; pointer-events: none; }
+  .ha-figure { position: absolute; left: 75%; translate: -50% 0; top: 0; height: calc(100svh - 5.5rem); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ha-figure-box { position: relative; height: calc(100% - 3rem); }
   .ha-img { display: block; height: 100%; width: auto; filter: drop-shadow(0 22px 16px rgb(22 32 43 / 0.14)); }
-  /* The shade is masked to the figure's own outline, so only the illustration darkens, never the page. */
-  .ha-shade { position: absolute; inset: 0; opacity: 0; pointer-events: none; -webkit-mask: url(/images/me-figure.webp) center / contain no-repeat; mask: url(/images/me-figure.webp) center / contain no-repeat; }
-  .ha-ring { position: absolute; transform: translate(-50%, -50%); border-radius: 999px; border: 2px solid var(--color-brass); box-shadow: 0 0 0 6px rgb(35 67 181 / 0.12); opacity: 0; pointer-events: none; }
-  .ha-caption { margin-top: 0.75rem; min-height: 1.5rem; font-family: var(--font-sans); font-weight: 600; font-size: 0.9375rem; color: var(--color-charcoal); }
-  .ha-open { min-height: calc(100svh - 5rem); display: flex; flex-direction: column; justify-content: center; padding-top: 5rem; }
-  .ha-role { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0 2rem 1.4rem; border-left: 2px solid var(--color-seam); transition: border-color 300ms ease, opacity 300ms ease; opacity: 0.45; }
-  .ha-role[data-on] { border-left-color: var(--color-brass); opacity: 1; }
+  .ha-caption { margin-top: 0.75rem; min-height: 1.5rem; font-family: var(--font-sans); font-weight: 600; font-size: 0.9375rem; color: var(--color-charcoal); text-align: center; }
+  .ha-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 3; }
+  .ha-line { fill: none; stroke: var(--color-charcoal); stroke-width: 1.75; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .ha-dot { fill: var(--color-charcoal); stroke: var(--color-ivory); stroke-width: 3; }
+  .ha-open { position: relative; z-index: 2; width: 46%; min-height: calc(100svh - 4rem); display: flex; flex-direction: column; justify-content: center; padding-top: 4rem; }
+  .ha-about { position: relative; z-index: 2; margin-left: 52%; padding-top: 10vh; padding-bottom: 25vh; }
+  .ha-role { min-height: 64vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0; transition: opacity 300ms ease; opacity: 0.4; }
+  .ha-role[data-on] { opacity: 1; }
+  .ha-role h3 { transition: color 300ms ease; }
   @media (max-width: 1023px) {
-    .ha-grid { grid-template-columns: 1fr; gap: 0; }
-    .ha-figure-col { grid-column: 1; grid-row: 1; position: sticky; top: 4rem; z-index: 2; background: var(--color-ivory); border-bottom: 1px solid var(--color-seam); }
-    .ha-figure { position: static; height: 38svh; padding: 0.75rem 0; }
-    .ha-text { grid-row: 2; }
-    .ha-open { min-height: 0; padding-top: 2rem; }
-    .ha-role { min-height: 48vh; }
+    .ha-lines { z-index: 5; }
+    .ha-stage { top: 4rem; height: 38svh; z-index: 4; background: var(--color-ivory); border-bottom: 1px solid var(--color-seam); }
+    .ha-figure { position: relative; left: auto !important; translate: none; height: 100%; padding: 0.6rem 0; margin: 0 auto; width: fit-content; }
+    .ha-open { width: auto; min-height: 0; padding-top: 2rem; }
+    .ha-about { margin-left: 0; padding-top: 2rem; }
+    .ha-role { min-height: 52vh; padding-left: 1.2rem; }
   }
-  @media (prefers-reduced-motion: reduce) { .ha-role { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .ha-role, .ha-role h3 { transition: none; } }
+}
 
+@layer components {
   /* ---------------------------------------------------------------- 3: the bookshelf */
   .shelf-col { position: relative; display: flex; min-width: 0; overflow: hidden; border: 1px solid var(--color-seam); background: white; border-top: 5px solid var(--tint); flex-basis: 0; }
   .shelf-spine { display: flex; flex-direction: column; justify-content: space-between; align-items: center; width: 3.6rem; flex-shrink: 0; padding: 1rem 0;
