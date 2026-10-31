@@ -5,9 +5,9 @@ import { firstSentence, maturityLabel, projectBySlug, projects } from '../../dat
 import { projectHref } from '../ui';
 import { useReducedMotion, useScrollScene } from '../../hooks/useScrollScene';
 
-// Section 3: five shelves of work. On wide screens the section is a pinned stage: as you scroll, one shelf widens
-// and opens while the others narrow to their spines, in either direction. Shelf widths follow scroll progress
-// continuously and are written straight to the elements. On phones the shelves stack; the one in the middle of
+// Section 3: five shelves of work. On wide screens the section is a pinned stage: each fifth of the scroll belongs
+// to one shelf, which opens fully in a single short motion while the others close to their spines, in either
+// direction. On phones the shelves stack; the one in the middle of
 // the screen opens. Clicks open projects; scrolling never does.
 
 const BOOKS = 8;
@@ -63,15 +63,9 @@ export default function Bookshelf() {
   }, []);
 
   // Wide screens: widths follow scroll progress; the open shelf is the one closest to it.
+  // Scroll only chooses the open shelf; it then opens fully in one short motion (CSS), never part-way.
   useScrollScene(section, (p) => {
-    const pos = p * (shelves.length - 1);
-    cols.current.forEach((el, i) => {
-      if (!el) return;
-      const near = Math.max(0, 1 - Math.abs(pos - i));
-      el.style.flexGrow = String(1 + 11 * near * near);
-      el.style.setProperty('--open', String(near));
-    });
-    const now = Math.round(pos);
+    const now = Math.min(shelves.length - 1, Math.floor(p * shelves.length));
     if (now !== activeRef.current) { activeRef.current = now; setActive(now); }
   }, wide && !reduced);
 
@@ -122,7 +116,7 @@ export default function Bookshelf() {
         {header}
         <div className="shell mt-8 flex min-h-0 flex-1 gap-2">
           {shelves.map((s, i) => (
-            <div key={s.id} ref={(el) => { cols.current[i] = el; }} className="shelf-col" data-open={active === i || undefined} style={{ ['--tint' as string]: s.tint, flexGrow: i === 0 ? 12 : 1 }}>
+            <div key={s.id} ref={(el) => { cols.current[i] = el; }} className="shelf-col" data-open={active === i || undefined} style={{ ['--tint' as string]: s.tint, flexGrow: active === i ? 12 : 1 }}>
               <Spine i={i} />
               {active === i && <ShelfBody i={i} />}
             </div>
