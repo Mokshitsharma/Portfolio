@@ -18,21 +18,21 @@ export const lineFor: Record<Category, Line> = {
 
 // One colour per area of work, used by the map, the scenes and project pages. Each passes 4.5:1 on the page.
 export const areaHex: Record<Category, string> = {
-  ml: '#0d6e63', // teal
-  agents: '#6a3daf', // violet
-  llm: '#a3355a', // berry
-  voice: '#a8461b', // rust
-  data: '#4a6b16', // olive
-  systems: '#36495e', // slate
-  learning: '#5f6b78', // graphite
+  ml: '#7fc8b8', // sea green
+  agents: '#b8a0e8', // lavender
+  llm: '#e89ab4', // rose
+  voice: '#e3a072', // amber
+  data: '#b5cf7c', // olive
+  systems: '#a9bdd2', // steel
+  learning: '#a9b0a6', // stone
 };
 
 // The colour of each area of work.
 export const lineHex: Record<Line, string> = {
-  route: '#9a5310',
-  signal: '#6a3daf',
-  field: '#0d6e63',
-  ink: '#4f5b69',
+  route: '#e3a072',
+  signal: '#b8a0e8',
+  field: '#7fc8b8',
+  ink: '#a9b0a6',
 };
 
 // Hero transit map. Two real pipelines that meet where deterministic code takes over.

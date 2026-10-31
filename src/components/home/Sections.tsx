@@ -11,8 +11,8 @@ import ContactForm from '../ContactForm';
 function Head({ id, title, intro, dark = false }: { id: string; title: string; intro?: string; dark?: boolean }) {
   return (
     <>
-      <h2 id={`${id}-title`} className={`display text-[clamp(2.2rem,4.6vw,3.9rem)] ${dark ? 'text-ivory' : 'text-charcoal'}`}>{title}</h2>
-      {intro && <p className={`mt-4 max-w-[38rem] text-[1.0625rem] leading-[1.6] ${dark ? 'text-ivory/75' : 'text-slate'}`}>{intro}</p>}
+      <h2 id={`${id}-title`} className={`display text-[clamp(2.2rem,4.6vw,3.9rem)] ${dark ? 'text-charcoal' : 'text-charcoal'}`}>{title}</h2>
+      {intro && <p className={`mt-4 max-w-[38rem] text-[1.0625rem] leading-[1.6] ${dark ? 'text-charcoal/75' : 'text-slate'}`}>{intro}</p>}
     </>
   );
 }
@@ -184,14 +184,14 @@ export function KnowMore() {
 /* ---------------------------------------------------------------- 9. Contact and 10. Social links */
 export function Contact() {
   return (
-    <section id="contact" data-section="contact" aria-labelledby="contact-title" className="bg-charcoal py-24 text-ivory md:py-28">
+    <section id="contact" data-section="contact" aria-labelledby="contact-title" className="bg-limestone py-24 text-charcoal md:py-28">
       <div className="shell grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
         <div>
           <Head id="contact" title="Get in touch" dark intro={`${profile.availability}.`} />
-          <a href={`mailto:${profile.email}`} className="headline mt-8 inline-block break-all text-[clamp(1.25rem,2.4vw,1.8rem)] text-ivory underline decoration-1 underline-offset-[0.2em] hover:decoration-2">
+          <a href={`mailto:${profile.email}`} className="headline mt-8 inline-block break-all text-[clamp(1.25rem,2.4vw,1.8rem)] text-charcoal underline decoration-1 underline-offset-[0.2em] hover:decoration-2">
             {profile.email}
           </a>
-          <p className="ui mt-3 text-ivory/70">{profile.location}</p>
+          <p className="ui mt-3 text-charcoal/70">{profile.location}</p>
         </div>
         <ContactForm tone="dark" />
       </div>
@@ -201,7 +201,7 @@ export function Contact() {
 
 export function Social() {
   return (
-    <section data-section="contact" aria-label="Profiles and links" className="border-t border-ivory/15 bg-charcoal pb-20 pt-10 text-ivory">
+    <section data-section="contact" aria-label="Profiles and links" className="border-t border-charcoal/15 bg-limestone pb-20 pt-10 text-charcoal">
       <ul className="shell flex flex-wrap gap-3">
         {socials.map((s) => {
           const external = s.href.startsWith('http');

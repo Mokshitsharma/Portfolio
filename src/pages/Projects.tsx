@@ -24,7 +24,7 @@ function StatusBar() {
   const counts = maturities.map((m) => ({ m, n: projects.filter((p) => p.maturity === m).length })).filter((c) => c.n > 0);
   // From lit to unlit: the further a project got, the warmer its light.
   const shade: Record<Maturity, string> = {
-    production: '#16202b', deployed: '#2343b5', working: '#4f5b69', 'in-progress': '#0d6e63', prototype: '#9aa7b0', notebook: '#c3cdcb', coursework: '#dae2e0',
+    production: '#ede6d6', deployed: '#c9a45c', working: '#a9b0a6', 'in-progress': '#8fb59a', prototype: '#59645d', notebook: '#2b3430', coursework: '#1b221e',
   };
   return (
     <figure className="w-full max-w-md">

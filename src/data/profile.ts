@@ -91,3 +91,9 @@ export const portrait: Photo = {
 };
 // The companion in the opening story and beside the map: Naman, my own voice agent, drawn as its on-screen orb.
 export const companion = { name: 'Naman', slug: 'naman' };
+
+// Mokshit's pet, from the illustration he provided (30 Oct 2026). The name is not confirmed, so none is shown.
+export const petFigure: Photo = {
+  src: '/images/pet-figure.webp', width: 521, height: 900,
+  alt: 'Illustration of Mokshit’s dog sitting: black, tan and cream, head tilted, tongue out.',
+};

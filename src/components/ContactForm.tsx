@@ -22,7 +22,7 @@ function mailto(d: typeof empty) {
 // `tone` matches the surface the form sits on.
 export default function ContactForm({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   const dark = tone === 'dark';
-  const labelTone = dark ? 'text-ivory/75' : 'text-graphite';
+  const labelTone = dark ? 'text-charcoal/75' : 'text-graphite';
   const input = dark ? 'field-input-dark' : 'field-input';
   const errTone = dark ? 'text-[#ffb4a6]' : 'text-held';
   const [data, setData] = useState(empty);
@@ -95,7 +95,7 @@ export default function ContactForm({ tone = 'light' }: { tone?: 'light' | 'dark
       </div>
       <div>
         <label htmlFor="contact-message" className={`label block ${labelTone}`}>The project or opportunity</label>
-        <p id="contact-message-hint" className={`fine mt-1 ${dark ? 'text-ivory/60' : 'text-slate'}`}>The role or project, the team, and what you would want me to work on.</p>
+        <p id="contact-message-hint" className={`fine mt-1 ${dark ? 'text-charcoal/60' : 'text-slate'}`}>The role or project, the team, and what you would want me to work on.</p>
         <textarea
           id="contact-message"
           name="message"
@@ -116,13 +116,13 @@ export default function ContactForm({ tone = 'light' }: { tone?: 'light' | 'dark
         <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" value={data.website} onChange={onChange} />
       </div>
       <div className="flex flex-wrap items-center gap-5">
-        <button type="submit" disabled={status === 'sending'} className={`btn ${dark ? 'bg-ivory text-charcoal hover:bg-brass-fill' : 'btn-ink'} disabled:opacity-70`}>
+        <button type="submit" disabled={status === 'sending'} className={`btn ${dark ? 'bg-brass text-ivory hover:bg-charcoal' : 'btn-ink'} disabled:opacity-70`}>
           {status === 'sending' ? <><Loader2 size={18} className="animate-spin motion-reduce:animate-none" aria-hidden /> Sending</> : STATIC_SITE ? 'Write the email' : 'Send message'}
         </button>
         <p role="status" className="ui">
           {status === 'sent' && <span className={dark ? 'text-[#9be3c4]' : 'text-clear'}>Message sent. I reply to the email address you gave.</span>}
           {status === 'opened' && (
-            <span className={dark ? 'text-ivory/85' : 'text-charcoal'}>
+            <span className={dark ? 'text-charcoal/85' : 'text-charcoal'}>
               Your email app should now show the message; press send there. If nothing opened, write to{' '}
               <a className="link" href={`mailto:${profile.email}`}>{profile.email}</a>.
             </span>
@@ -134,7 +134,7 @@ export default function ContactForm({ tone = 'light' }: { tone?: 'light' | 'dark
           )}
         </p>
       </div>
-      {STATIC_SITE && <p className={`fine ${dark ? 'text-ivory/60' : 'text-slate'}`}>This copy of the site has no server, so the form opens your email app with the message filled in.</p>}
+      {STATIC_SITE && <p className={`fine ${dark ? 'text-charcoal/60' : 'text-slate'}`}>This copy of the site has no server, so the form opens your email app with the message filled in.</p>}
     </form>
   );
 }
