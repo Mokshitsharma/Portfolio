@@ -494,6 +494,7 @@
   .shelf-m { border: 1px solid var(--color-seam); border-left: 5px solid var(--tint); background: white; }
   .shelf-m-head { display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem; text-align: left; }
   .shelf-m .shelf-body { padding-top: 0; opacity: 1; }
+  .shelf-m .shelf-body > .label, .shelf-m .shelf-body > h3 { display: none; } /* the header row already names it */
 
   /* ---------------------------------------------------------------- 4: experience timeline */
   .tl { position: relative; border-left: 2px solid var(--color-seam); margin-left: 0.4rem; }

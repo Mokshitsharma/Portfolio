@@ -29,7 +29,7 @@ function ArchThumb({ p }: { p: Project }) {
         {a.nodes.map((n) => (
           <g key={n.id}>
             <rect x={n.d[0] - bw / 2} y={n.d[1] - bh / 2} width={bw} height={bh} rx={n.kind === 'human' ? bh / 2 : 0} fill="white" stroke={n.kind === 'model' ? tint : '#16202b'} strokeWidth="3" strokeDasharray={n.kind === 'external' ? '10 6' : undefined} />
-            <text x={n.d[0]} y={n.d[1] + 9} textAnchor="middle" fontSize="26" fontWeight="600" fill="#16202b" fontFamily="Archivo Variable, Archivo, sans-serif">{n.label.length > 13 ? `${n.label.slice(0, 12)}…` : n.label}</text>
+            <text x={n.d[0]} y={n.d[1] + 9} textAnchor="middle" fontSize="21" fontWeight="600" fill="#16202b" fontFamily="Archivo Variable, Archivo, sans-serif">{n.label.length > 12 ? `${n.label.slice(0, 11)}…` : n.label}</text>
           </g>
         ))}
       </svg>

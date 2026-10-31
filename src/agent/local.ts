@@ -56,7 +56,12 @@ function summarise(d: Doc) {
 }
 
 export function localAnswer(question: string, slug?: string): string {
-  const hits = retrieve(question, slug).filter((d) => d.id !== 'skills' || /skill/i.test(question));
+  let hits = retrieve(question, slug).filter((d) => d.id !== 'skills' || /skill/i.test(question));
+  // Questions about Mokshit himself lead with his profile.
+  if (/(who|what kind|engineer is|about him|background|education|interests?|open to|collaborate)/i.test(question)) {
+    const profile = build().docs.find((d) => d.id === 'profile')!;
+    hits = [profile, ...hits.filter((d) => d !== profile)].slice(0, 3);
+  }
   if (!hits.length) return 'I could not find that in the portfolio. The [projects page](/projects) lists everything, and you can write to Mokshit from the [contact section](/#contact).';
   const body = hits.map((d) => `- [${d.title.replace(/: profile$/, '')}](${d.url}): ${summarise(d)}`).join('\n');
   // "How does X work?" about a project with an architecture sheet: play its first walkthrough.
