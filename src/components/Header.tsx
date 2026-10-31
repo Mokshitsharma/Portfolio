@@ -71,11 +71,13 @@ export default function Header() {
             <li>
               <button type="button" onClick={() => openAssistant()} className="label relative py-2 text-mist hover:text-paper">{ASSISTANT.open}</button>
             </li>
-            <li>
-              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className={`btn !min-h-9 !px-4 ${home ? 'btn-brass' : 'btn-sodium'}`}>
-                Résumé<span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </li>
+            {profile.resume && (
+              <li>
+                <a href={profile.resume} target="_blank" rel="noopener noreferrer" className={`btn !min-h-9 !px-4 ${home ? 'btn-brass' : 'btn-sodium'}`}>
+                  Résumé<span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -105,11 +107,13 @@ export default function Header() {
                 </NavLink>
               </li>
             ))}
-            <li className="pt-4">
-              <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-route btn">
-                Résumé<span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </li>
+            {profile.resume && (
+              <li className="pt-4">
+                <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-route btn">
+                  Résumé<span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

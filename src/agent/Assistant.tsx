@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'rea
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUp, Play, X } from 'lucide-react';
 import { ASSISTANT } from './config';
+import { STATIC_SITE } from '../site';
 import { getContext, queueDiagram, showDiagram, type DiagramCommand } from './bus';
 import { projectBySlug, projects } from '../data/projects';
 import { projectHref } from '../components/ui';
@@ -114,6 +115,15 @@ export default function Assistant({ initial, onClose }: { initial: string; onClo
     setBusy(true);
     const c = getContext();
     let text = '';
+    if (STATIC_SITE) {
+      // No server in the static build: answer from the site's own records, in the browser.
+      const { localAnswer } = await import('./local');
+      const final = parseDirective(localAnswer(q, c.slug ?? pageSlug));
+      setMsgs((m) => [...m.slice(0, -1), { role: 'assistant', content: final.text, diagram: final.diagram }]);
+      if (final.diagram) runDiagram(final.diagram);
+      setBusy(false);
+      return;
+    }
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',

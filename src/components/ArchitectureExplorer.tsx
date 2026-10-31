@@ -8,7 +8,7 @@ import { onDiagram, openAssistant, setContext, takeQueued, type DiagramCommand }
 // or select a component through the bus.
 
 type Layout = 'd' | 'm';
-const BOX: Record<Layout, [number, number]> = { d: [170, 70], m: [140, 64] };
+export const BOX: Record<Layout, [number, number]> = { d: [170, 70], m: [140, 64] };
 const STEP_MS = 2300;
 
 export const kindName: Record<NodeKind, string> = {
@@ -33,7 +33,7 @@ function anchor(n: ArchNode, p: Pt, l: Layout): Pt {
   return [clamp(p[0], cx - w / 2 + 12, cx + w / 2 - 12), cy + Math.sign(dy) * (h / 2)];
 }
 
-function route(e: ArchEdge, byId: Map<string, ArchNode>, l: Layout): Pt[] {
+export function route(e: ArchEdge, byId: Map<string, ArchNode>, l: Layout): Pt[] {
   const a = byId.get(e.from)!;
   const b = byId.get(e.to)!;
   let via = e.via?.[l] ?? [];

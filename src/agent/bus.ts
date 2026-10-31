@@ -39,23 +39,3 @@ export function onOpenAssistant(fn: (q: string) => void) {
   target?.addEventListener('assistant', h);
   return () => target?.removeEventListener('assistant', h);
 }
-
-// Fig. 2 fetches a project: the map opens its area and points at it.
-export function fetchProject(slug: string) {
-  target?.dispatchEvent(new CustomEvent('fetch', { detail: slug }));
-}
-export function onFetchProject(fn: (slug: string) => void) {
-  const h = (e: Event) => fn((e as CustomEvent<string>).detail);
-  target?.addEventListener('fetch', h);
-  return () => target?.removeEventListener('fetch', h);
-}
-
-// The opening story's map asks the project map below to open an area.
-export function openArea(area: string) {
-  target?.dispatchEvent(new CustomEvent('area', { detail: area }));
-}
-export function onOpenArea(fn: (area: string) => void) {
-  const h = (e: Event) => fn((e as CustomEvent<string>).detail);
-  target?.addEventListener('area', h);
-  return () => target?.removeEventListener('area', h);
-}

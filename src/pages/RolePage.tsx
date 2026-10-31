@@ -50,7 +50,7 @@ export default function RolePage() {
         line={r.area}
         aside={
           <div className="flex flex-col gap-3">
-            <a href={r.resume.file} className="btn btn-brass" download><Download size={17} aria-hidden />Download résumé<span className="sr-only"> ({r.resume.label})</span></a>
+            {profile.resume && <a href={r.resume.file} className="btn btn-brass" download><Download size={17} aria-hidden />Download résumé<span className="sr-only"> ({r.resume.label})</span></a>}
             <a href={`mailto:${profile.email}`} className="btn btn-line">Email me</a>
           </div>
         }
@@ -105,7 +105,7 @@ export default function RolePage() {
         <p className="lede mt-3 max-w-2xl text-slate">{profile.availability}.</p>
         <a href={`mailto:${profile.email}`} className="headline mt-6 inline-block break-words text-[clamp(1.35rem,2.4vw,1.9rem)] text-brass no-underline hover:underline">{profile.email}</a>
         <div className="mt-6 flex flex-wrap gap-3">
-          <a href={r.resume.file} className="btn btn-brass" download><Download size={17} aria-hidden />Download résumé<span className="sr-only"> ({r.resume.label})</span></a>
+          {profile.resume && <a href={r.resume.file} className="btn btn-brass" download><Download size={17} aria-hidden />Download résumé<span className="sr-only"> ({r.resume.label})</span></a>}
           <Link to="/roles" className="btn btn-line">Other roles</Link>
         </div>
       </section>

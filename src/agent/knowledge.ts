@@ -31,7 +31,7 @@ export function buildKnowledge(): { docs: Doc[]; index: string; diagrams: string
       profile.intro,
       `Education: ${education.degree}, ${education.school}, ${education.years}, ${education.grade}.`,
       `Availability: ${profile.availability}.`,
-      `Email: ${profile.email}. GitHub: ${profile.github}. LinkedIn: ${profile.linkedin}. Résumé: ${profile.resume}.`,
+      `Email: ${profile.email}. GitHub: ${profile.github}. LinkedIn: ${profile.linkedin}.${profile.resume ? ` Résumé: ${profile.resume}.` : ''}`,
       ...inProgress.map((i) => `${i.title}: ${i.detail}`),
       'Engineering principles: ' + principles.map((p) => `${p.title}. ${p.body}`).join(' '),
     ),

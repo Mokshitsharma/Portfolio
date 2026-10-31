@@ -16,7 +16,8 @@ export const profile = {
   email: 'mokshitsharmalaptop@gmail.com',
   github: 'https://github.com/Mokshitsharma',
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',
-  resume: '/resume/Mokshit_Sharma_Resume.pdf',
+  // The final résumé is still to come (31 Oct 2026); every download link hides itself while this is null.
+  resume: null as string | null,
   intro:
     'I build intelligent systems, agentic workflows and data-driven products, and I measure them on held-out data before I trust them. I run the AI and data layer of a live delivery marketplace in Indore as its only engineer.',
 };
@@ -28,6 +29,8 @@ export const education = {
   grade: 'CGPA 8.2',
 };
 
+// Only credentials Mokshit has verified (31 Oct 2026): Google Data Analytics, the Freedom of AI course, HackerRank
+// and the Infosys Data Analyst Program stay off until their titles, dates and links are confirmed.
 // Drive links are the copies the issuers sent. The last three were confirmed by Mokshit on 2026-10-20 and have no
 // public link yet. `about` says only what the title and issuer establish; no grades, ranks or syllabus claims.
 export const credentials: Credential[] = [
@@ -49,24 +52,6 @@ export const credentials: Credential[] = [
   {
     title: 'Excel', issuer: 'Infosys Springboard', date: 'Nov 2024', href: 'https://drive.google.com/file/d/1C0E6VwPqfuZyaZkvkLYWOFl5JvfWJ48R/view?usp=sharing',
     about: 'An Infosys Springboard course in Microsoft Excel.',
-  },
-  {
-    title: 'AI Masterclass', issuer: 'Freedom of AI', date: 'Jan 2024', href: 'https://drive.google.com/file/d/1-0og7kJTOzSJeSR6zaWQwypVVCQjOU19/view?usp=sharing',
-    about: 'A masterclass from Freedom of AI on working with AI tools.',
-  },
-  {
-    title: 'Google Data Analytics Professional Certificate', issuer: 'Google',
-    about: 'Google’s professional certificate programme in data analytics.',
-    related: ['paytm-dashboard', 'nifty50-dashboard'],
-  },
-  {
-    title: 'Data Analyst Program', issuer: 'Infosys Springboard',
-    about: 'An Infosys Springboard programme for data analysts.',
-    related: ['paytm-dashboard', 'lamborghini-sales'],
-  },
-  {
-    title: '5-star in Python, SQL and C++', issuer: 'HackerRank',
-    about: 'A five-star rating in HackerRank’s Python, SQL and C++ skill tracks.',
   },
 ];
 

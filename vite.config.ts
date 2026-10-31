@@ -6,6 +6,9 @@ import {defineConfig} from 'vite';
 export default defineConfig(({mode}) => {
   return {
     plugins: [react(), tailwindcss()],
+    // `--mode static` builds the S3 copy: no server functions, so the form and the assistant use their
+    // in-browser versions (src/site.ts).
+    define: { 'import.meta.env.VITE_STATIC': JSON.stringify(mode === 'static' ? '1' : '') },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

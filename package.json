@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
+    "build:static": "vite build --mode static && vite build --mode static --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "preview": "vite preview --port 4173",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "lint": "tsc --noEmit"

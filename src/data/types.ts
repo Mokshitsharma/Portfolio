@@ -106,6 +106,7 @@ export interface Role {
   summary?: string;
   work?: string[];
   workAreas?: string[]; // a short label for each `work` line, in the same order
+  tech?: string[]; // technologies used in the role, where known
   projects?: string[]; // project slugs
   proof?: ExternalLink[];
 }
@@ -129,4 +130,5 @@ export interface Credential {
   href?: string; // shown only where the issuer's copy is on record
   about: string; // what the credential covers, as its title and issuer state it; nothing beyond that
   related?: string[]; // project slugs where the same subject shows up in my own work
+  image?: { src: string; width: number; height: number }; // the issued certificate itself
 }

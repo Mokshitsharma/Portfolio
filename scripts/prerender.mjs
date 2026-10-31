@@ -39,7 +39,10 @@ for (const url of routes) {
     write(path.join(dist, `${url.slice(1)}.html`), html);
   }
 }
-write(path.join(dist, '404.html'), page('/404'));
+const notFound = page('/404');
+write(path.join(dist, '404.html'), notFound);
+// S3 static website hosting serves this as its error document.
+write(path.join(dist, 'error.html'), notFound);
 
 const today = new Date().toISOString().slice(0, 10);
 const sitemap = [

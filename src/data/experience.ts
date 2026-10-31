@@ -33,6 +33,7 @@ export const roles: Role[] = [
       'The platform underneath: a Node.js and MongoDB backend with real-time dispatch, race-safe booking acceptance and signature-verified Razorpay payments; Flutter driver and retailer apps on Google Play and the App Store.',
       'Server-driven pricing, zones and dispatch radius that operations change without an app release; releases on Codemagic; a move from a VPS to AWS (reported).',
     ],
+    tech: ['Node.js', 'Express', 'MongoDB', 'Flutter', 'Pusher', 'Razorpay', 'Firebase Cloud Messaging', 'OSRM', 'Codemagic'],
     workAreas: ['Applied ML', 'Results', 'Voice AI and RAG', 'Document verification', 'Platform', 'Operations and cloud'],
     projects: ['movigo', 'fieldops-ai', 'movigo-broadcast'],
   },
@@ -41,10 +42,6 @@ export const roles: Role[] = [
     start: '2025-10', end: '2026-01', type: 'Internship',
     summary: 'Machine-learning models and chatbots for 12+ clients of a company that builds software for other businesses, from data preparation to delivery. Each client project lifted sales by more than 30%; on average profit rose 15% and expenses fell 10% (as reported).',
     proof: [drive('1ZPBgGkkDBb1CWGArpvjBl-zUiDwCzPo1')],
-  },
-  {
-    id: 'E05', org: 'CodeAlpha', title: 'Data Science Intern', start: '2025-11', end: '2025-12', type: 'Virtual internship',
-    proof: [drive('15s2gujKW4r4wR0aO3GLJVrzZFl3oQ1Ul')],
   },
   {
     id: 'E06', org: 'SaiKet Systems', title: 'Power BI Intern', start: '2025-09', end: '2025-10', type: 'Virtual internship',
@@ -61,7 +58,7 @@ export const roles: Role[] = [
     terms: 'One month, unpaid',
   },
   {
-    id: 'E09', org: 'Bluestock Fintech', title: 'Software Development Engineer Intern', start: '2025-05', end: '2025-06', type: 'Internship',
+    id: 'E09', org: 'Bluestock Fintech', title: 'Software Developer Intern', start: '2025-04', end: '2025-05', type: 'Internship',
     terms: 'Part-time, remote, unpaid',
     proof: [drive('1fRrLmzs8o4JA1FHBOWhm6W_OEsr9Cp1L')],
   },
@@ -82,11 +79,13 @@ export const roles: Role[] = [
   {
     id: 'E12', org: 'Evoastra Ventures', title: 'Artificial Intelligence Intern', start: '2024-10', end: '2024-11', type: 'Internship',
     terms: 'One month',
-    summary: 'A sentiment-analysis pipeline on 50,000+ Reddit posts with TF-IDF features, comparing logistic regression and naive Bayes.',
+    summary: 'A sentiment-analysis pipeline on 50,000+ Reddit posts: cleaned and prepared the text, then compared logistic regression and naive Bayes on TF-IDF features.',
+    tech: ['Python', 'TF-IDF', 'Logistic regression', 'Naive Bayes'],
   },
   {
-    id: 'E13', org: 'Cognifyz Technologies', title: 'Data Science Intern', start: '2024-09', end: '2024-10', type: 'Internship',
-    summary: 'Regression models that predict restaurant ratings, reaching R-squared 0.84 after feature engineering, from cleaning and exploring the data to comparing models.',
+    id: 'E13', org: 'Cognifyz Technologies', title: 'Data Scientist Intern', start: '2024-09', end: '2024-10', type: 'Internship',
+    summary: 'Regression models that predict restaurant ratings, reaching R-squared 0.84 after feature engineering.',
+    tech: ['Python', 'Regression models', 'Feature engineering'],
     proof: [drive('1qFCF_sY7sBTlVZ4C5Sid1u83UTrHNwz5')],
   },
   {

@@ -1,10 +1,15 @@
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
-import { categories, maturityLabel, projects } from '../data/projects';
+import { categories, firstSentence, maturityLabel, projects } from '../data/projects';
 import type { Category, Maturity, Project } from '../data/types';
-import { lineFor, lineHex } from '../data/visuals';
+import { areaHex } from '../data/visuals';
+import { shelves } from '../data/home';
 import { Links, PageHeader, StatusMark } from '../components/ui';
+import ProjectCardImage from '../components/ProjectCardImage';
+
+// The project catalogue: every published project as a card (four to a row on wide screens, two on tablets, one
+// on phones), filtered by shelf, area, status, case studies or a search, all kept in the URL.
 
 const maturities = Object.keys(maturityLabel) as Maturity[];
 
@@ -40,39 +45,34 @@ function StatusBar() {
   );
 }
 
-function ProjectRow({ p }: { p: Project }) {
-  const notes = [p.tests, p.relation, p.linkNote].filter(Boolean) as string[];
-  const color = lineHex[lineFor[p.category]];
+function ProjectCard({ p }: { p: Project }) {
+  const area = categories.find((c) => c.id === p.category)!;
+  const repo = p.links.find((l) => l.kind === 'repo' || l.kind === 'demo' || l.kind === 'store');
   return (
-    <li className="group relative grid gap-x-10 gap-y-3 border-b border-seam py-6 pl-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,14rem)]">
-      <span className="absolute left-0 top-6 bottom-6 w-[3px] transition-all group-hover:w-[5px]" style={{ background: color }} aria-hidden />
-      <div>
-        <h3 className="headline text-[1.6rem]">
-          {p.caseStudy ? (
-            <Link to={`/projects/${p.slug}`} className="link">{p.name}</Link>
-          ) : p.name}
-        </h3>
-        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+    <li className="card" style={{ ['--tint' as string]: areaHex[p.category] }}>
+      <ProjectCardImage p={p} />
+      <div className="flex flex-1 flex-col p-5">
+        <p className="label" style={{ color: areaHex[p.category] }}>{area.title}</p>
+        <h3 className="headline mt-1 text-[1.35rem] text-charcoal">{p.name}</h3>
+        <p className="ui mt-2 text-charcoal/85">{firstSentence(p.summary)}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
           <StatusMark maturity={p.maturity} tone="dark" className="text-charcoal" />
-          <span className="label text-slate">{p.period}</span>
+          <span className="fine text-slate">{p.period}</span>
         </div>
-      </div>
-      <div>
-        <p className="text-[1.0625rem] leading-relaxed text-charcoal/90">{p.summary}</p>
-        <details className="mt-2">
-          <summary className="label cursor-pointer text-slate hover:text-charcoal">Stack{notes.length ? ' and notes' : ''}</summary>
-          <p className="ui mt-2 text-slate">{p.stack.join(', ')}</p>
-          {notes.length > 0 && <ul className="ui mt-1 space-y-0.5 text-slate">{notes.map((n) => <li key={n}>{n}</li>)}</ul>}
-        </details>
-      </div>
-      <div className="flex flex-col gap-2">
-        {p.caseStudy && (
-          <Link to={`/projects/${p.slug}`} className="ui inline-flex items-center gap-1.5 font-semibold">
-            <span className="link">Case study</span><ArrowUpRight size={16} aria-hidden />
-          </Link>
-        )}
-        <Links links={p.links} className="flex-col !gap-2" />
-        {!p.caseStudy && p.links.length === 0 && <span className="ui text-slate">No public link</span>}
+        <div className="mt-auto pt-5">
+          {p.caseStudy ? (
+            <Link to={`/projects/${p.slug}`} className="btn btn-brass !min-h-10 w-full justify-center">Read the full project</Link>
+          ) : repo ? (
+            <Links links={[repo]} />
+          ) : (
+            <details>
+              <summary className="ui cursor-pointer font-semibold text-charcoal">More about it</summary>
+              <p className="fine mt-2 text-slate">{p.summary}</p>
+              <p className="fine mt-1 text-slate">{p.stack.join(', ')}</p>
+              {p.linkNote && <p className="fine mt-1 text-slate">{p.linkNote}</p>}
+            </details>
+          )}
+        </div>
       </div>
     </li>
   );
@@ -82,6 +82,7 @@ export default function Projects() {
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
   const cat = (params.get('category') ?? '') as Category | '';
+  const shelf = shelves.find((x) => x.id === params.get('shelf'));
   const status = (params.get('status') ?? '') as Maturity | '';
   const onlyCases = params.get('cases') === '1';
 
@@ -94,19 +95,20 @@ export default function Projects() {
   const clear = () => setParams(new URLSearchParams(), { replace: true, preventScrollReset: true });
 
   const results = useMemo(
-    () => projects.filter((p) => (!cat || p.category === cat || !!p.also?.includes(cat)) && (!status || p.maturity === status) && (!onlyCases || p.caseStudy) && matches(p, q)),
-    [q, cat, status, onlyCases],
+    () => projects
+      .filter((p) => (!shelf || shelf.slugs.includes(p.slug)) && (!cat || p.category === cat || !!p.also?.includes(cat)) && (!status || p.maturity === status) && (!onlyCases || p.caseStudy) && matches(p, q))
+      .sort((a, b) => Number(!!b.caseStudy) - Number(!!a.caseStudy)),
+    [q, cat, shelf, status, onlyCases],
   );
-  const filtering = Boolean(q || cat || status || onlyCases);
-  const groups = categories.map((c) => ({ ...c, items: results.filter((p) => p.category === c.id) })).filter((g) => g.items.length > 0);
+  const filtering = Boolean(q || cat || shelf || status || onlyCases);
   const caseCount = projects.filter((p) => p.caseStudy).length;
 
   return (
     <>
-      <PageHeader title="Projects" sign="The archive" line="signal" aside={<StatusBar />}>
+      <PageHeader title="All projects" sign="The catalogue" line="signal" aside={<StatusBar />}>
         <p>
-          All {projects.length} published projects, from a production logistics platform to first notebooks, each labelled
-          by how far it got. {caseCount} have full case studies.
+          All {projects.length} published projects, each labelled by how far it got. {caseCount} have a full case study with
+          their architecture; case studies come first.
         </p>
       </PageHeader>
 
@@ -136,16 +138,16 @@ export default function Projects() {
             </label>
           </div>
           <fieldset className="mt-4">
-            <legend className="label text-slate">Area</legend>
+            <legend className="label text-slate">Shelf</legend>
             <div className="mt-1.5 flex flex-wrap gap-px bg-seam p-px">
-              {[{ id: '', title: 'All areas' }, ...categories].map((c) => {
-                const active = cat === c.id;
+              {[{ id: '', title: 'All projects' }, ...shelves].map((c) => {
+                const active = (shelf?.id ?? '') === c.id;
                 return (
                   <button
                     key={c.id || 'all'}
                     type="button"
                     aria-pressed={active}
-                    onClick={() => update('category', c.id)}
+                    onClick={() => update('shelf', c.id)}
                     className={`ui min-h-10 flex-auto px-3 py-2 text-left transition-colors ${active ? 'bg-brass-fill font-semibold text-charcoal shadow-[inset_0_-2px_0_var(--color-brass)]' : 'bg-white/60 text-charcoal hover:bg-sand'}`}
                   >
                     {c.title}
@@ -170,21 +172,9 @@ export default function Projects() {
           </p>
         )}
 
-        {groups.map((g) => (
-          <section key={g.id} id={g.id} aria-labelledby={`${g.id}-title`} className="mt-16">
-            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate/60 pb-4">
-              <div>
-                <h2 id={`${g.id}-title`} className="headline flex items-center gap-4 text-[clamp(2rem,4vw,3rem)]">
-                  <span className="inline-block h-3 w-3" style={{ background: lineHex[lineFor[g.id]] }} aria-hidden />
-                  {g.title}
-                </h2>
-                <p className="ui mt-2 text-slate">{g.blurb}</p>
-              </div>
-              <p className="label text-slate">{g.items.length} {g.items.length === 1 ? 'project' : 'projects'}</p>
-            </div>
-            <ul>{g.items.map((p) => <ProjectRow key={p.slug} p={p} />)}</ul>
-          </section>
-        ))}
+        <ul className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {results.map((p) => <ProjectCard key={p.slug} p={p} />)}
+        </ul>
         <div className="h-24" />
       </div>
     </>

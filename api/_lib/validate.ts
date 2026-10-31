@@ -1,15 +1,17 @@
 // Shared by the contact form (client-side hints) and the API handlers (the real check).
 
-export const LIMITS = { name: 100, email: 254, message: 5000, minMessage: 10 } as const;
+export const LIMITS = { name: 100, email: 254, organisation: 120, type: 60, message: 5000, minMessage: 10 } as const;
 
 export interface ContactInput {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  organisation?: unknown; // optional
+  type?: unknown; // optional: the kind of enquiry
   website?: unknown; // honeypot: must be empty
 }
 
-export type ContactErrors = Partial<Record<'name' | 'email' | 'message', string>>;
+export type ContactErrors = Partial<Record<'name' | 'email' | 'organisation' | 'message', string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -24,6 +26,7 @@ export function validateContact(input: ContactInput): ContactErrors {
   else if (name.length > LIMITS.name) errors.name = `Keep your name under ${LIMITS.name} characters.`;
   if (!email) errors.email = 'Enter your email address.';
   else if (email.length > LIMITS.email || !EMAIL.test(email)) errors.email = 'Enter an email address like name@example.com.';
+  if (text(input.organisation).length > LIMITS.organisation) errors.organisation = `Keep the organisation under ${LIMITS.organisation} characters.`;
   if (!message) errors.message = 'Write a message.';
   else if (message.length < LIMITS.minMessage) errors.message = `Write at least ${LIMITS.minMessage} characters.`;
   else if (message.length > LIMITS.message) errors.message = `Keep the message under ${LIMITS.message} characters.`;
@@ -36,7 +39,13 @@ export const isBot = (input: ContactInput) => text(input.website).length > 0;
 export const oneLine = (s: string) => s.replace(/[\r\n]+/g, ' ').trim();
 
 export function clean(input: ContactInput) {
-  return { name: oneLine(text(input.name)), email: oneLine(text(input.email)), message: text(input.message) };
+  return {
+    name: oneLine(text(input.name)),
+    email: oneLine(text(input.email)),
+    organisation: oneLine(text(input.organisation)).slice(0, LIMITS.organisation),
+    type: oneLine(text(input.type)).slice(0, LIMITS.type),
+    message: text(input.message),
+  };
 }
 
 // Best-effort limiter. Serverless instances do not share memory, so this only slows down bursts that

@@ -29,7 +29,7 @@ export default function SiteFooter() {
           <ul className="ui space-y-2">
             <li><a href={profile.github} target="_blank" rel="noopener noreferrer" className="link text-charcoal/85 hover:text-charcoal">GitHub</a></li>
             <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="link text-charcoal/85 hover:text-charcoal">LinkedIn</a></li>
-            <li><a href={profile.resume} target="_blank" rel="noopener noreferrer" className="link text-charcoal/85 hover:text-charcoal">Résumé</a></li>
+            {profile.resume && <li><a href={profile.resume} target="_blank" rel="noopener noreferrer" className="link text-charcoal/85 hover:text-charcoal">Résumé</a></li>}
             <li><Link to="/roles" className="link text-charcoal/85 hover:text-charcoal">Roles</Link></li>
           </ul>
         </div>
