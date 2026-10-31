@@ -2,11 +2,12 @@ import { Link } from 'react-router-dom';
 import CinemaStory from '../components/home/CinemaStory';
 import Doors from '../components/home/Doors';
 import ProjectMap from '../components/home/ProjectMap';
-import { Certifications, Contact, Experience, KnowMore, Skills, Social, Testimonials } from '../components/home/Sections';
+import BackInTime from '../components/home/BackInTime';
+import ProjectCall from '../components/home/ProjectCall';
+import { Certifications, KnowMore, Skills, Social, Testimonials } from '../components/home/Sections';
 import { projects } from '../data/projects';
 
-// The home page as a cinematic walk (docs/redesign/DESIGN.md): the introduction, my dog taking over, the doors to
-// each room of the portfolio, then the project ecosystem, experience and the rest. The assistant's orb sits on
+// The home page as a cinematic walk (docs/redesign/DESIGN.md): the introduction, the doors to each room of the portfolio, then the project ecosystem, experience and the rest. The assistant's orb sits on
 // every page.
 
 function Ecosystem() {
@@ -34,12 +35,12 @@ export default function Home() {
       <CinemaStory />
       <Doors />
       <Ecosystem />
-      <Experience />
+      <BackInTime />
       <Certifications />
       <Skills />
       <Testimonials />
       <KnowMore />
-      <Contact />
+      <ProjectCall />
       <Social />
     </div>
   );

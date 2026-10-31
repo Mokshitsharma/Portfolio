@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import SiteFooter from './SiteFooter';
 import Launcher from '../agent/Launcher';
@@ -42,6 +42,8 @@ export default function Layout() {
       window.scrollTo(0, 0);
       main.current?.focus({ preventScroll: true });
     }
+    // Coming through a door: the room fades up out of the dark.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) main.current?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-out' });
   }, [pathname, hash]);
 
   return (
@@ -55,6 +57,7 @@ export default function Layout() {
       </main>
       {/* The home page ends on its own closing chapter. */}
       {pathname !== '/' && <SiteFooter />}
+      {pathname !== '/' && <Link to="/#doors" className="back-doors">Back to the doors</Link>}
       <Launcher />
     </>
   );

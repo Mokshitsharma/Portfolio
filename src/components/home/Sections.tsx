@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
-import { currentRole, formatMonth, formatRange, internships } from '../../data/experience';
-import { credentials, education, inProgress, profile } from '../../data/profile';
+import { credentials, education, inProgress } from '../../data/profile';
 import { personal, skillColumns, socials, testimonials } from '../../data/home';
-import ContactForm from '../ContactForm';
+import { Seal } from '../records';
 
-// Sections 4 to 10 of the home page, in the specified order: experience, certifications, skills, testimonials,
-// "want to know more about me", contact and social links. Everything renders from src/data.
+// Sections of the home page: certifications, skills, testimonials, "want to know more about me" and social links. Everything renders from src/data.
 
 function Head({ id, title, intro, dark = false }: { id: string; title: string; intro?: string; dark?: boolean }) {
   return (
@@ -17,92 +15,50 @@ function Head({ id, title, intro, dark = false }: { id: string; title: string; i
   );
 }
 
-/* ---------------------------------------------------------------- 4. Experience */
-export function Experience() {
-  const shown = internships.filter((r) => r.summary || r.terms || r.proof);
-  return (
-    <section id="experience" data-section="experience" aria-labelledby="experience-title" className="border-t border-seam py-24 md:py-28">
-      <div className="shell">
-        <Head id="experience" title="Experience" intro="One job and a run of internships. Projects are in their own section above; this is the work done for organisations." />
-        <ol className="tl mt-14">
-          <li className="tl-item tl-major">
-            <p className="tl-date">{formatRange(currentRole.start, currentRole.end)}</p>
-            <div>
-              <h3 className="headline text-[clamp(1.6rem,2.6vw,2.2rem)] text-charcoal">{currentRole.title}</h3>
-              <p className="ui mt-1 font-semibold text-charcoal">{currentRole.org}, {currentRole.place}</p>
-              <p className="ui mt-2 text-slate">{currentRole.titles!.map((t) => `${t.title} from ${formatMonth(t.from)}`).join('; ')}</p>
-              <p className="mt-5 max-w-[46rem] text-[1.0625rem] leading-[1.6] text-charcoal/90">{currentRole.summary}</p>
-              <dl className="tl-areas mt-6">
-                {currentRole.work!.map((w, i) => (
-                  <div key={w}>
-                    <dt className="label text-brass">{currentRole.workAreas?.[i]}</dt>
-                    <dd className="ui mt-1 text-charcoal/90">{w}</dd>
-                  </div>
-                ))}
-              </dl>
-              {currentRole.tech && <p className="fine mt-5 text-slate"><span className="font-semibold text-charcoal">Technologies: </span>{currentRole.tech.join(', ')}</p>}
-              <Link to="/projects/movigo" className="ui mt-4 inline-block font-semibold text-brass"><span className="link">How the platform works</span></Link>
-            </div>
-          </li>
-          {shown.map((r) => (
-            <li key={r.id} className="tl-item">
-              <p className="tl-date">{formatRange(r.start, r.end)}</p>
-              <div>
-                <h3 className="font-sans text-[1.1875rem] font-semibold text-charcoal">{r.title}</h3>
-                <p className="ui text-charcoal/85">{r.org}{r.terms ? `, ${r.terms.toLowerCase()}` : ''}</p>
-                {r.summary && <p className="ui mt-2 max-w-[44rem] text-charcoal/90">{r.summary}</p>}
-                {r.tech && <p className="fine mt-2 text-slate"><span className="font-semibold text-charcoal">Technologies: </span>{r.tech.join(', ')}</p>}
-                {r.proof?.[0] && (
-                  <a href={r.proof[0].href} target="_blank" rel="noopener noreferrer" className="fine mt-2 inline-flex items-center gap-1 text-brass">
-                    <span className="link">{r.proof[0].label}</span><ArrowUpRight size={13} aria-hidden /><span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                )}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
 /* ---------------------------------------------------------------- 5. Certifications */
+// A gallery wall: each certificate hangs as a framed paper under its own picture light.
 export function Certifications() {
   return (
-    <section id="certifications" data-section="certifications" aria-labelledby="certifications-title" className="border-t border-seam bg-limestone py-24 md:py-28">
+    <section id="certifications" data-section="certifications" aria-labelledby="certifications-title" className="gallery-wall border-t border-seam py-24 md:py-28">
       <div className="shell">
         <Head id="certifications" title="Certifications" intro="Only credentials with a verified title, issuer and date. Each links to the issuer’s copy." />
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <ul className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 xl:grid-cols-4">
           {credentials.map((c) => (
-            <li key={c.title} className="cert-card">
-              {c.image && <img src={c.image.src} alt={`${c.title} certificate from ${c.issuer}`} width={c.image.width} height={c.image.height} loading="lazy" decoding="async" className="cert-card-img" />}
-              <div className="flex flex-1 flex-col p-5">
-                <p className="fine text-slate">{c.issuer}</p>
-                <h3 className="headline mt-1 text-[1.25rem] text-charcoal">{c.title}</h3>
-                {c.date && <p className="fine mt-1 text-slate">{c.date}</p>}
-                {c.href && (
-                  <a href={c.href} target="_blank" rel="noopener noreferrer" className="btn btn-line mt-auto !min-h-10 self-start">
-                    View credential<ArrowUpRight size={15} aria-hidden /><span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                )}
+            <li key={c.title} className="hang">
+              <span className="hang-lamp" aria-hidden />
+              <div className="frame-wood">
+                <div className="paper">
+                  <Seal />
+                  <p className="fine text-slate">{c.issuer}</p>
+                  <h3 className="paper-title mt-2">{c.title}</h3>
+                  <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+                    {c.date && <p className="fine text-slate">{c.date}</p>}
+                    {c.href && (
+                      <a href={c.href} target="_blank" rel="noopener noreferrer" className="fine inline-flex items-center gap-1 font-semibold text-brass">
+                        <span className="link">View credential</span><ArrowUpRight size={13} aria-hidden /><span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
             </li>
           ))}
         </ul>
-        <div className="mt-12 grid gap-6 border-t border-seam pt-8 md:grid-cols-2">
-          <div>
-            <h3 className="headline text-[1.4rem] text-charcoal">Education</h3>
-            <p className="ui mt-2 text-charcoal">{education.degree}</p>
-            <p className="ui text-slate">{education.school}</p>
-            <p className="ui text-slate">{education.years}, {education.grade}</p>
+        <div className="mt-16 grid gap-5 md:grid-cols-2">
+          <div className="brass-plate">
+            <p className="fine text-slate">Education</p>
+            <h3 className="font-sans text-[1.25rem] font-semibold text-charcoal">{education.degree}</h3>
+            <p className="ui mt-1 text-slate">{education.school}. {education.years}, {education.grade}.</p>
           </div>
           {inProgress.map((i) => (
-            <div key={i.title}>
-              <h3 className="headline text-[1.4rem] text-charcoal">{i.title}</h3>
-              <p className="ui mt-2 text-slate">{i.detail}</p>
+            <div key={i.title} className="brass-plate">
+              <p className="fine text-slate">Under way</p>
+              <h3 className="font-sans text-[1.25rem] font-semibold text-charcoal">{i.title}</h3>
+              <p className="ui mt-1 text-slate">{i.detail}</p>
             </div>
           ))}
         </div>
+        <Link to="/achievements" className="pill mt-10">Every credential and achievement</Link>
       </div>
     </section>
   );
@@ -181,24 +137,7 @@ export function KnowMore() {
   );
 }
 
-/* ---------------------------------------------------------------- 9. Contact and 10. Social links */
-export function Contact() {
-  return (
-    <section id="contact" data-section="contact" aria-labelledby="contact-title" className="bg-limestone py-24 text-charcoal md:py-28">
-      <div className="shell grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
-        <div>
-          <Head id="contact" title="Get in touch" dark intro={`${profile.availability}.`} />
-          <a href={`mailto:${profile.email}`} className="headline mt-8 inline-block break-all text-[clamp(1.25rem,2.4vw,1.8rem)] text-charcoal underline decoration-1 underline-offset-[0.2em] hover:decoration-2">
-            {profile.email}
-          </a>
-          <p className="ui mt-3 text-charcoal/70">{profile.location}</p>
-        </div>
-        <ContactForm tone="dark" />
-      </div>
-    </section>
-  );
-}
-
+/* ---------------------------------------------------------------- 10. Social links */
 export function Social() {
   return (
     <section data-section="contact" aria-label="Profiles and links" className="border-t border-charcoal/15 bg-limestone pb-20 pt-10 text-charcoal">

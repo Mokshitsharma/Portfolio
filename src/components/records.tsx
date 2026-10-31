@@ -23,17 +23,31 @@ function Actions({ children }: { children: ReactNode }) {
 
 /* ------------------------------------------------------------ Framed credentials */
 
+// The embossed seal in the corner of a framed certificate.
+export function Seal() {
+  return (
+    <svg viewBox="0 0 40 48" className="paper-seal" aria-hidden>
+      <path d="M13 30 9 46l11-5 11 5-4-16" />
+      <circle cx="20" cy="18" r="15" />
+      <circle cx="20" cy="18" r="10.5" />
+      <path d="M15 18.5l3.5 3.5L26 14" />
+    </svg>
+  );
+}
+
 export function CredentialWall({ items, className = '' }: { items: Credential[]; className?: string }) {
   const d = useDetail<Credential>();
   return (
     <>
-      <ul className={`grid gap-5 sm:grid-cols-2 xl:grid-cols-3 ${className}`}>
+      <ul className={`grid gap-x-8 gap-y-14 sm:grid-cols-2 xl:grid-cols-3 ${className}`}>
         {items.map((c) => (
-          <li key={c.title}>
-            <button type="button" className="cert-frame" onClick={() => d.open(c)} aria-haspopup="dialog">
-              <span className="cert-mat">
+          <li key={c.title} className="hang">
+            <span className="hang-lamp" aria-hidden />
+            <button type="button" className="cert-frame frame-wood" onClick={() => d.open(c)} aria-haspopup="dialog">
+              <span className="cert-mat paper">
+                <Seal />
                 <span className="fine text-slate">{c.issuer}</span>
-                <span className="headline mt-2 block text-[1.35rem] text-charcoal">{c.title}</span>
+                <span className="paper-title mt-2 block">{c.title}</span>
                 <span className="fine mt-2 block text-slate">{c.about}</span>
                 <span className="fine mt-auto flex items-center justify-between gap-3 pt-3 text-slate">
                   <span>{c.date ?? ''}</span>
@@ -93,10 +107,11 @@ export function EducationFrame() {
   const d = useDetail<true>();
   return (
     <>
-      <button type="button" className="cert-frame cert-frame-diploma w-full" onClick={() => d.open(true)} aria-haspopup="dialog">
-        <span className="cert-mat">
+      <button type="button" className="cert-frame frame-wood cert-frame-diploma w-full" onClick={() => d.open(true)} aria-haspopup="dialog">
+        <span className="cert-mat paper">
+          <Seal />
           <span className="fine text-slate">Education</span>
-          <span className="headline mt-2 block text-[1.5rem] text-charcoal">{education.degree}</span>
+          <span className="paper-title mt-2 block !text-[1.6rem]">{education.degree}</span>
           <span className="ui mt-2 block text-slate">{education.school}</span>
           <span className="fine mt-3 flex items-center justify-between gap-3 text-slate">
             <span>{education.years}. {education.grade}.</span>
@@ -132,7 +147,7 @@ export function PlaqueWall({ items }: { items: Plaque[] }) {
       <ul className="grid gap-5 md:grid-cols-3">
         {items.map((x) => (
           <li key={x.id}>
-            <button type="button" className="plaque" onClick={() => d.open(x)} aria-haspopup="dialog">
+            <button type="button" className="plaque brass-plate" onClick={() => d.open(x)} aria-haspopup="dialog">
               <span className="fine text-slate">{x.context}</span>
               <span className="headline mt-2 block text-[1.45rem] text-charcoal">{x.title}</span>
               <span className="fine mt-4 flex items-center justify-between gap-3">

@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { petFigure, portrait, profile } from '../../data/profile';
+import { portrait, profile } from '../../data/profile';
 import { aboutRoles } from '../../data/home';
 import { mix, seg, useReducedMotion, useScrollScene } from '../../hooks/useScrollScene';
 import { openAssistant } from '../../agent/bus';
 
 // The opening, in one pinned scene driven by scroll:
 //   0.00-0.18  Name, a card that flips through my four roles, my portrait with three annotations.
-//   0.18-0.50  The name lifts away; the portrait slides left and dims; my dog walks in from the right.
-//   0.50-1.00  The dog takes the centre and points the way to the doors below.
+//   0.18-0.50  The name lifts away; the portrait steps back and dims.
+//   0.50-1.00  A line points the way to the doors below.
 // Styles are written straight to the elements each frame. With reduced motion the scene is laid out still.
 
 const ROLES = aboutRoles.map((r) => r.title);
@@ -45,8 +45,6 @@ export default function CinemaStory() {
   const intro = useRef<HTMLDivElement>(null);
   const me = useRef<HTMLDivElement>(null);
   const notes = useRef<HTMLDivElement>(null);
-  const dog = useRef<HTMLDivElement>(null);
-  const cap1 = useRef<HTMLDivElement>(null);
   const cap2 = useRef<HTMLDivElement>(null);
 
   useScrollScene(section, (p) => {
@@ -58,18 +56,11 @@ export default function CinemaStory() {
     const move = seg(p, 0.18, 0.48);
     set(me.current, {
       // Phones: the portrait starts low, below the buttons, and rises as the introduction lifts away.
-      transform: wide ? `translateX(${mix(0, -38, move)}vw) scale(${mix(1, 0.86, move)})` : `translateY(${mix(30, -4, seg(p, 0.08, 0.3))}vh) scale(${mix(1, 0.8, move)})`,
-      opacity: String(mix(1, 0.18, seg(p, 0.3, 0.55))),
+      transform: wide ? `translateX(${mix(0, 4, move)}vw) scale(${mix(1, 0.9, move)})` : `translateY(${mix(30, -4, seg(p, 0.08, 0.3))}vh) scale(${mix(1, 0.8, move)})`,
+      opacity: String(mix(1, 0.3, seg(p, 0.3, 0.55))),
       filter: `grayscale(${seg(p, 0.3, 0.5)})`,
     });
-    const walk = seg(p, 0.3, 0.55);
-    set(dog.current, {
-      transform: wide ? `translateX(${mix(60, 0, walk)}vw)` : `translateX(${mix(110, 0, walk)}vw)`,
-      opacity: String(walk),
-    });
-    const c1 = seg(p, 0.45, 0.55) * (1 - seg(p, 0.72, 0.8));
-    set(cap1.current, { opacity: String(c1), transform: `translateY(${(1 - c1) * 16}px)` });
-    const c2 = seg(p, 0.8, 0.9);
+    const c2 = seg(p, 0.5, 0.64);
     set(cap2.current, { opacity: String(c2), transform: `translateY(${(1 - c2) * 16}px)` });
   }, !reduced);
 
@@ -93,16 +84,13 @@ export default function CinemaStory() {
           <div>{introBlock}</div>
           <img src={portrait.src} alt={portrait.alt} width={portrait.width} height={portrait.height} className="mx-auto h-[28rem] w-auto" />
         </div>
-        <div className="shell mt-16 flex items-end gap-8">
-          <img src={petFigure.src} alt={petFigure.alt} width={petFigure.width} height={petFigure.height} className="h-56 w-auto" loading="lazy" />
-          <p className="pb-4 text-[1.25rem] text-charcoal">This is my dog. Everything I have built is behind the doors below.</p>
-        </div>
+        <p className="shell mt-16 text-[1.25rem] text-charcoal">Everything I have built is behind the doors below.</p>
       </section>
     );
   }
 
   return (
-    <section id="intro" ref={section} data-section="about" aria-labelledby="hero-title" className="cine relative h-[320vh]">
+    <section id="intro" ref={section} data-section="about" aria-labelledby="hero-title" className="cine relative h-[260vh]">
       <div className="cine-stage sticky top-0 h-[100svh] overflow-hidden">
         <div className="cine-glow" aria-hidden />
         <div ref={intro} className="cine-intro shell">{introBlock}</div>
@@ -130,14 +118,6 @@ export default function CinemaStory() {
           </div>
         </div>
 
-        <div ref={dog} className="cine-dog">
-          <img src={petFigure.src} alt={petFigure.alt} width={petFigure.width} height={petFigure.height} loading="lazy" decoding="async" />
-        </div>
-
-        <div ref={cap1} className="cine-cap shell">
-          <p className="cine-cap-big">And this is my dog.</p>
-          <p className="mt-3 max-w-[24rem] text-[1.0625rem] text-charcoal/75">He knows his way around. Follow him to the work.</p>
-        </div>
         <div ref={cap2} className="cine-cap shell">
           <p className="cine-cap-big">Everything I have built is behind a door.</p>
           <p className="mt-3 max-w-[26rem] text-[1.0625rem] text-charcoal/75">Projects, experience, education, skills, certifications and achievements, one room each. <Link to="/projects" className="link text-brass">Or go straight to the projects.</Link></p>
