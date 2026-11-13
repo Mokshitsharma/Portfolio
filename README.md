@@ -3,15 +3,15 @@
 
 # 🏠 Portfolio
 
-**My portfolio: a scroll-driven 3D house in three.js with prerendered React pages**
+**My portfolio: a cinematic, door-by-door tour of my work, with an AI assistant that answers from my records**
 
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /> <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /> <img src="https://img.shields.io/badge/three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white" alt="three.js" /> <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /> <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /> <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" /> <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /> <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /> <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /> <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /> <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" /> <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 
 </div>
 
 ## ✨ Highlights
 
-- Walk through a 3D house; each room opens a part of my work
+- Seven painted doors, each opening a part of my work, and a "back in time" timeline of my journey
 - Prerendered pages for projects, case studies and roles
 - Live at [mokshitsharma27.vercel.app](https://mokshitsharma27.vercel.app/)
 
@@ -19,16 +19,16 @@
 Personal site of Mokshit Sharma, Founding Engineer & Tech Lead at Movigo, working across applied AI, machine
 learning and full-stack software. Live at **[mokshitsharma27.vercel.app](https://mokshitsharma27.vercel.app)**.
 
-The home page is a walk through a daylit house, built in three.js: a gateway with the nameplate, a gallery of skill
-boards, four project rooms (machine learning, agentic AI, data, software), a study with the credentials wall and a
-courtyard with the contact details. Every fact on the page is ordinary HTML; the 3D scene is never needed to read
-or reach anything.
+The home page is a dark, cinematic tour: a hero with flip-card roles and an annotated portrait, seven painted
+panelled doors you walk into, a "let's go back in time" year timeline, a projects room of stacked case-study cards,
+certificates as framed papers, and a "Got a project?" card. Moksh AI, an assistant in the corner of every page,
+answers questions from the site's own records. Every fact on the page is ordinary HTML.
 
 ## Pages
 
 | Route | Content |
 |---|---|
-| `/` | The house: gallery of skills, four project rooms with their evidence, study, courtyard |
+| `/` | The tour: roles, the doors, the timeline, selected projects, certificates and contact |
 | `/projects` | Every published project: search by name, technology or idea, filter by area and status, or show case studies only (filters live in the URL) |
 | `/projects/:slug` | Case studies, for example Movigo, SettleAI, ToolForge, Naman, docIQ, RouteCore and CricXAI |
 | `/roles`, `/roles/:slug` | One page per role (data analyst, ML engineer, agentic AI engineer, full-stack developer and more), each with five projects and the matching résumé |
@@ -39,17 +39,15 @@ or reach anything.
 
 ## How it is built
 
-- **Stack:** React 19, TypeScript, Vite 6, Tailwind CSS 4, React Router 7, three.js, lucide-react. Fonts are
+- **Stack:** React 19, TypeScript, Vite 6, Tailwind CSS 4, React Router 7, lucide-react. Fonts are
   self-hosted.
 - **Prerendered routes:** every route is rendered to static HTML at build time (`src/entry-server.tsx` and
   `scripts/prerender.mjs`) with its own title, description, canonical URL, Open Graph tags and a sitemap, then
   hydrated in the browser.
-- **The 3D house** (`src/scene/`) is procedural: no downloaded models or textures; walls, wood, stone and every
-  printed board are drawn on canvases. It loads as its own chunk after first paint, builds in small steps, compiles
-  shaders and uploads textures without blocking scrolling, and is driven by one number taken from the scroll
-  position, so scrolling back reverses every movement. Until it is ready, the page shows a still rendered from the
-  scene itself, which is also the backdrop on devices without WebGL2.
-- **Accessibility:** reduced-motion mode shows still frames with no camera travel; detail views are native dialogs
+- **Moksh AI** (`api/chat.ts`, `src/agent/`): a chat assistant on Groq models that answers only from a knowledge
+  base generated from `src/data/` at build time (`api/_lib/knowledge.gen.ts`). Without a `GROQ_API_KEY` it still
+  answers by quoting the matching records.
+- **Accessibility:** reduced-motion mode turns the scroll animations off; detail views are native dialogs
   with focus return; Lighthouse accessibility, best practices and SEO score 100.
 - **Contact form:** posts to a Vercel function (`api/contact.ts`) that validates input, drops honeypot submissions
   and sends mail with Nodemailer. Locally the same handler runs inside the Express server (`server.ts`).
@@ -61,14 +59,14 @@ Content lives in `src/data/`, separate from the pages:
 | File | Drives |
 |---|---|
 | `profile.ts` | Name, role, links, education, certificates |
-| `projects.ts` | The project archive, the rooms on the home page (`featured`, `caseStudy`, `archiveOnly`) |
+| `projects.ts` | The project archive and the projects on the home page (`featured`, `caseStudy`, `archiveOnly`) |
 | `caseStudies.ts` | Case-study pages; every figure traces to code, tests or a public listing |
 | `rolePages.ts` | The role pages and which résumé each links |
 | `experience.ts`, `skills.ts`, `achievements.ts` | The matching pages and home-page sections |
 | `types.ts` | The content model |
 
 A new case study needs an entry in `caseStudies.ts` and `caseStudy: true` on the project; the prerender step picks
-it up automatically. Design notes for the house are in `docs/redesign/DESIGN.md`.
+it up automatically.
 
 ## Running locally
 
@@ -87,7 +85,7 @@ and run `npx tsx server.ts`.
 ## Deployment
 
 Pushing to `main` deploys to Vercel. `vercel.json` sets clean URLs, the `/internships` redirect and cache headers.
-Set `CONTACT_EMAIL_USER`, `CONTACT_EMAIL_PASS` and optionally `CONTACT_EMAIL_TO` in the Vercel project's environment
+Set `GROQ_API_KEY` (for Moksh AI), `CONTACT_EMAIL_USER`, `CONTACT_EMAIL_PASS` and optionally `CONTACT_EMAIL_TO` in the Vercel project's environment
 variables. The contact function needs Node.js 20 or newer.
 
 ## Contact
