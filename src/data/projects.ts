@@ -75,10 +75,10 @@ export const projects: Project[] = [
     links: [gh('ToolForge')], tests: '24 pytest tests.', caseStudy: true, featured: true,
   },
   {
-    id: 'P03', slug: 'naman', name: 'Naman', category: 'agents', also: ['voice'], maturity: 'working', period: 'Sep-Oct 2026',
-    summary: 'A voice agent on my laptop and phone. It opens apps, controls media, tracks tasks and searches for jobs, and waits for a yes before anything that changes data.',
+    id: 'P03', slug: 'naman', name: 'Naman', category: 'agents', also: ['voice'], maturity: 'working', period: 'Sep-Nov 2026',
+    summary: 'A voice agent on my laptop and phone, plus a team of parallel agents that find jobs, score them, draft and send applications and read the replies. It waits for a yes before anything that changes data.',
     stack: ['Python', 'LangGraph', 'Groq', 'MCP', 'faster-whisper', 'Telegram', 'SQLite'],
-    links: [{ label: 'Demo and architecture (code on request)', href: 'https://github.com/Mokshitsharma/Naman', kind: 'repo' }], tests: '164 pytest tests.',
+    links: [{ label: 'Demo and architecture (code on request)', href: 'https://github.com/Mokshitsharma/Naman', kind: 'repo' }], tests: '866 passing pytest tests.',
     caseStudy: true, featured: true,
   },
   {
@@ -227,6 +227,12 @@ export const projects: Project[] = [
   },
 
   // Algorithms and tools
+  {
+    id: 'P72', slug: 'system-design-atlas', name: 'System Design Atlas', category: 'systems', also: ['learning'], maturity: 'deployed', period: 'Oct 2026',
+    summary: 'Beginner-friendly tutorials on how apps like Uber, Netflix, IRCTC and Rapido could be designed: interactive workflow diagrams, failure views and capacity calculators, with every claim labelled Public, Inferred or Assumption.',
+    stack: ['Next.js 16', 'React 19', 'TypeScript', 'Zod', 'Vitest', 'Playwright'],
+    links: [gh('System-Design-Atlas'), { label: 'Live site', href: 'https://sdatlas.vercel.app/', kind: 'site' }],
+  },
   {
     id: 'P10', slug: 'routecore', name: 'RouteCore', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Route-optimisation and fleet-scheduling engine with a hand-built hash map, min-heap and k-d tree, Dijkstra, A* and 2-opt. No runtime dependencies.',
