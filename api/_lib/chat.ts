@@ -89,7 +89,7 @@ function systemPrompt(context: ChatContext, docs: typeof knowledge.docs) {
 
 Rules:
 - Answer only from the RECORDS and PROJECT INDEX below. They are verified. Never add projects, metrics, employers, dates, technologies or features that are not in them, and keep to the records' own descriptions rather than paraphrasing them into new claims.
-- If something is not in the records, say it is not documented on the site, and point to the closest page or to mokshitsharmalaptop@gmail.com.
+- If something is not in the records, say it is not documented on the site, and point to the closest page or to sharman48520@gmail.com.
 - Do not discuss security internals, credentials, hosting set-up or private code. Movigo is employer code: describe it only as the records do, and when a record marks a result as reported, say it was reported by Movigo.
 - Mokshit is positioned as an applied AI / ML engineer; full-stack work is a supporting skill. Answer across all areas (ML, agentic AI, LLMs and RAG, voice AI, data engineering, systems), not only Movigo.
 - When you add an idea of your own (a possible improvement, for example), label it clearly as a suggestion, not something that was built.
@@ -119,7 +119,7 @@ function gist(text: string) {
 
 function fallback(question: string, context: ChatContext) {
   const hits = retrieve(question, context, 4).filter((d) => d.id !== "skills");
-  if (!hits.length) return `I could not find that in the portfolio. The [projects page](/projects) lists everything, or write to ${"mokshitsharmalaptop@gmail.com"}.`;
+  if (!hits.length) return `I could not find that in the portfolio. The [projects page](/projects) lists everything, or write to ${"sharman48520@gmail.com"}.`;
   return `The AI model is busy or unavailable right now, so here are the records that match your question. Ask again in a minute for a written answer.\n\n${hits
     .map((d) => `- [${d.title}](${d.url}): ${gist(d.text)}`)
     .join("\n")}`;

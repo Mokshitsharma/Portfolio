@@ -45,7 +45,7 @@ export const projects: Project[] = [
     id: 'P07', slug: 'fieldops-ai', name: 'FieldOps', category: 'systems', maturity: 'prototype', period: 'May 2026',
     summary: 'Workforce platform for a field team of about 20: GPS attendance from an Android foreground service, driver and retailer onboarding, call logs, HR records and a points engine whose weights live in the database.',
     stack: ['TypeScript', 'Express', 'Sequelize', 'MariaDB', 'Socket.io', 'Next.js', 'Flutter'],
-    links: [], linkNote: 'Built for Movigo; company code.', caseStudy: true,
+    links: [gh('FieldOps-AI')], linkNote: 'Built for Movigo; company code.', caseStudy: true,
   },
   {
     id: 'P08', slug: 'movigo-broadcast', name: 'Movigo Broadcast', category: 'systems', maturity: 'working', period: 'Sep 2026',
@@ -56,7 +56,7 @@ export const projects: Project[] = [
     id: 'P09', slug: 'hyperlocal-marketplace', name: 'Hyperlocal Marketplace', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Customers order from local Indore shops and riders deliver in about 30 minutes. The order state machine survives races, payment webhooks and server restarts.',
     stack: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle', 'Socket.io', 'React', 'Next.js', 'TypeScript'],
-    links: [], linkNote: 'Built for Movigo; company code.', tests: '52 backend tests, all passing.', caseStudy: true,
+    links: [gh('Hyperlocal-Marketplace')], linkNote: 'Built for Movigo; company code.', tests: '52 backend tests, all passing.', caseStudy: true,
   },
 
   // Agents
@@ -64,7 +64,7 @@ export const projects: Project[] = [
     id: 'P01', slug: 'settleai', name: 'SettleAI', category: 'agents', maturity: 'in-progress', period: 'Oct 2026',
     summary: 'Escrow for work that AI agents hire people to do. Agents scope the job, judge photo proof and propose dispute splits; a deterministic guard approves every payout, and every step becomes a signed receipt anyone can verify offline.',
     stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Drizzle', 'MCP', 'PayPal APIs', 'Zod', 'Playwright'],
-    links: [], linkNote: 'Entry for the PayPal AI Hackathon 2026.',
+    links: [gh('settleai'), { label: 'Live demo', href: 'https://settleai-07ue.onrender.com', kind: 'demo' }], linkNote: 'Entry for the PayPal AI Hackathon 2026.',
     tests: '146 unit, integration and end-to-end tests.',
     caseStudy: true, featured: true,
   },
@@ -72,36 +72,36 @@ export const projects: Project[] = [
     id: 'P02', slug: 'toolforge', name: 'ToolForge', category: 'agents', maturity: 'working', period: 'Sep 2026',
     summary: 'Point it at an OpenAPI spec and agents design an MCP server, test it against the live API and audit it for security problems, with a person approving the tool plan.',
     stack: ['Python', 'LangGraph', 'MCP', 'Pydantic', 'Typer', 'pytest'],
-    links: [], tests: '24 pytest tests.', caseStudy: true, featured: true,
+    links: [gh('ToolForge')], tests: '24 pytest tests.', caseStudy: true, featured: true,
   },
   {
     id: 'P03', slug: 'naman', name: 'Naman', category: 'agents', also: ['voice'], maturity: 'working', period: 'Sep-Oct 2026',
     summary: 'A voice agent on my laptop and phone. It opens apps, controls media, tracks tasks and searches for jobs, and waits for a yes before anything that changes data.',
     stack: ['Python', 'LangGraph', 'Groq', 'MCP', 'faster-whisper', 'Telegram', 'SQLite'],
-    links: [], tests: '164 pytest tests.',
+    links: [{ label: 'Demo and architecture (code on request)', href: 'https://github.com/Mokshitsharma/Naman', kind: 'repo' }], tests: '164 pytest tests.',
     caseStudy: true, featured: true,
   },
   {
     id: 'P04', slug: 'voicedesk', name: 'VoiceDesk', category: 'voice', maturity: 'working', period: 'Sep 2026',
     summary: 'A real-time voice receptionist for local businesses. It answers questions, books appointments from spoken dates and hands off to a person; callers can interrupt it mid-sentence.',
     stack: ['Node.js', 'WebSocket', 'AudioWorklet', 'Deepgram', 'Groq', 'MongoDB'],
-    links: [gh('VoiceDesk---AI-Voice-calling-agent')], caseStudy: true,
+    links: [gh('VoiceDesk')], caseStudy: true,
   },
   {
     id: 'P05', slug: 'dociq', name: 'docIQ', category: 'llm', maturity: 'working', period: 'Sep 2026',
     summary: 'Ask questions of contracts and invoices and get answers that cite the passage. A risk scan flags clauses; with no API key it quotes passages instead of failing.',
     stack: ['Node.js', 'Express', 'MongoDB', 'Chroma', 'BullMQ', 'Next.js', 'Gemini', 'Groq'],
-    links: [], tests: 'A 16-check end-to-end script and unit tests for the chunker.', caseStudy: true,
+    links: [gh('docIQ')], tests: 'A 16-check end-to-end script and unit tests for the chunker.', caseStudy: true,
   },
   {
     id: 'P23', slug: 'disaster-response-agent', name: 'Disaster Response Agent', category: 'llm', maturity: 'prototype', period: 'Dec 2025',
     summary: 'A chat assistant for disaster safety that searches the web live through Claude tool use, gives evacuation guidance and keeps conversation memory.',
-    stack: ['Python', 'Streamlit', 'Anthropic Claude API'], links: [gh('Disaster-Management-System'), { label: 'Live app', href: 'https://disaster-management-ms.streamlit.app', kind: 'demo' }],
+    stack: ['Python', 'Streamlit', 'Anthropic Claude API'], links: [gh('Disaster-Response-Assistant'), { label: 'Live app', href: 'https://disaster-management-ms.streamlit.app', kind: 'demo' }],
   },
   {
     id: 'P26', slug: 'founderlens-ai', name: 'FounderLens AI', category: 'llm', maturity: 'prototype', period: 'Dec 2025',
     summary: 'A founder uploads business data and gets trends, anomalies and recommendations back as structured JSON from an LLM.',
-    stack: ['Python', 'Streamlit', 'Gemini', 'Plotly'], links: [],
+    stack: ['Python', 'Streamlit', 'Gemini', 'Plotly'], links: [gh('FounderLens-AI')],
   },
 
   // Applied ML
@@ -121,12 +121,12 @@ export const projects: Project[] = [
     id: 'P19', slug: 'ai-business-analytics', name: 'AI Business Analytics', category: 'ml', maturity: 'working', period: 'Aug 2026',
     summary: 'Upload a CSV and get cleaning, exploratory analysis, trained models, SHAP explanations and an LLM-written summary, packaged as an HTML and PDF report.',
     stack: ['Python', 'scikit-learn', 'SHAP', 'Gemini', 'FastAPI', 'Streamlit', 'ReportLab'],
-    links: [gh('ai-business-analytics')], caseStudy: true,
+    links: [gh('AI-Business-Analytics')], caseStudy: true,
   },
   {
     id: 'P22', slug: 'customer-churn-xai', name: 'Customer churn with explanations', category: 'ml', maturity: 'working', period: 'Mar 2026',
     summary: 'Predicts which customers will leave and explains each prediction in plain English with a retention suggestion, using XGBoost and SHAP.',
-    stack: ['Python', 'XGBoost', 'SHAP', 'Streamlit'], links: [gh('Customer_Churn_using_XAI')],
+    stack: ['Python', 'XGBoost', 'SHAP', 'Streamlit'], links: [gh('Customer-Churn-XAI')],
     relation: 'Third version, after a SHAP prototype and an exploratory notebook.',
   },
   {
@@ -142,7 +142,7 @@ export const projects: Project[] = [
   {
     id: 'P25', slug: 'finsight', name: 'FinSight', category: 'ml', maturity: 'working', period: 'Feb 2026',
     summary: 'Measures how market events moved a stock: event-window returns, volatility and news sentiment on a dark Plotly dashboard.',
-    stack: ['Python', 'Streamlit', 'Plotly', 'yfinance', 'NLTK'], links: [gh('Finsight_Smart_Stock_Event_Impact_Analyzer')],
+    stack: ['Python', 'Streamlit', 'Plotly', 'yfinance', 'NLTK'], links: [gh('Finsight')],
   },
   {
     id: 'P28', slug: 'credit-card-default', name: 'Credit card default', category: 'ml', maturity: 'notebook', period: 'Oct 2025',
@@ -152,25 +152,25 @@ export const projects: Project[] = [
   {
     id: 'P29', slug: 'credit-card-fraud', name: 'Credit card fraud detection', category: 'ml', maturity: 'notebook', period: 'Oct 2025',
     summary: 'Fraud detection on a heavily imbalanced dataset with SMOTE and a random forest, judged on precision-recall rather than accuracy.',
-    stack: ['Python', 'scikit-learn', 'imbalanced-learn'], links: [gh('Credit-Card-fraud-detection')],
+    stack: ['Python', 'scikit-learn', 'imbalanced-learn'], links: [gh('Credit-Card-Fraud-Detection')],
   },
   {
     id: 'P34', slug: 'kaggle-student-scores', name: 'Kaggle Playground: student scores', category: 'ml', maturity: 'notebook', period: 'Jan 2026',
     summary: 'Regression with heavy feature engineering, K-fold validation and a stacked ensemble of HistGradientBoosting and XGBoost under a ridge meta-model.',
-    stack: ['Python', 'scikit-learn', 'XGBoost'], links: [],
+    stack: ['Python', 'scikit-learn', 'XGBoost'], links: [gh('Kaggle-Competitions')],
   },
   {
     id: 'P35', slug: 'kaggle-diabetes', name: 'Kaggle Playground: diabetes', category: 'ml', maturity: 'notebook', period: 'Jan 2026',
-    summary: 'Binary classification over 26 health features with a blended CatBoost and LightGBM model.', stack: ['Python', 'CatBoost', 'LightGBM'], links: [],
+    summary: 'Binary classification over 26 health features with a blended CatBoost and LightGBM model.', stack: ['Python', 'CatBoost', 'LightGBM'], links: [gh('Kaggle-Competitions')],
   },
   {
     id: 'P36', slug: 'product-recommender', name: 'Product recommender', category: 'ml', maturity: 'notebook', period: 'Oct 2025',
-    summary: 'Content-based recommendations for Amazon India products using TF-IDF and cosine similarity.', stack: ['Python', 'scikit-learn'], links: [],
+    summary: 'Content-based recommendations for Amazon India products using TF-IDF and cosine similarity.', stack: ['Python', 'scikit-learn'], links: [gh('Product-Recommendation-System')],
   },
   {
     id: 'P37', slug: 'house-price-regressor', name: 'Tabular regressor', category: 'ml', maturity: 'notebook', period: 'Aug 2025',
     summary: 'A reusable scikit-learn pipeline that compares linear regression with a random forest, keeps the lower-RMSE model and saves it.',
-    stack: ['Python', 'scikit-learn'], links: [gh('House-Price-Regression-Generic-Tabular-Regressor-')],
+    stack: ['Python', 'scikit-learn'], links: [gh('House-Price-Regression')],
   },
   {
     id: 'P30', slug: 'spam-detector', name: 'Spam mail detector', category: 'ml', maturity: 'notebook', period: 'Aug 2025',
@@ -180,7 +180,7 @@ export const projects: Project[] = [
   {
     id: 'P31', slug: 'sentiment-web-app', name: 'Sentiment web app', category: 'ml', maturity: 'notebook', period: 'Oct 2025',
     summary: 'Paste any text and get its polarity, subjectivity and a label. A single-file Flask app on TextBlob.',
-    stack: ['Python', 'Flask', 'TextBlob'], links: [gh('Sentiment_analysis')],
+    stack: ['Python', 'Flask', 'TextBlob'], links: [gh('Reddit-Sentiment-Analysis')],
   },
   {
     id: 'P33', slug: 'moodmate', name: 'MoodMate', category: 'ml', maturity: 'prototype', period: 'Jul 2025',
@@ -189,7 +189,7 @@ export const projects: Project[] = [
   {
     id: 'P52', slug: 'face-attendance', name: 'Face attendance', category: 'ml', maturity: 'working', period: 'Aug 2025',
     summary: 'Register faces from a webcam, recognise them live, log attendance to SQLite and export reports by date range.',
-    stack: ['Python', 'face_recognition', 'OpenCV', 'SQLite'], links: [],
+    stack: ['Python', 'face_recognition', 'OpenCV', 'SQLite'], links: [gh('Face-Attendance')],
   },
 
   // Full-stack
@@ -197,18 +197,18 @@ export const projects: Project[] = [
     id: 'P11', slug: 'refera', name: 'Refera', category: 'systems', maturity: 'working', period: 'Sep-Oct 2026',
     summary: 'Fintech referral platform: affiliates refer leads for loans and cards, conversions pay multi-level commissions into an append-only ledger, and KYC-verified affiliates withdraw earnings.',
     stack: ['React Native', 'Expo', 'Express 5', 'Prisma', 'PostgreSQL', 'React', 'TypeScript'],
-    links: [gh('Banksaathi-clone')], tests: '50 API tests.', caseStudy: true, featured: true,
+    links: [gh('Refera')], tests: '50 API tests.', caseStudy: true, featured: true,
   },
   {
     id: 'P12', slug: 'dairy-collection-manager', name: 'Dairy Collection Manager', category: 'systems', maturity: 'working', period: 'Sep 2026',
     summary: 'Daily milk register for a collection centre: fat-based rate charts, supplier ledgers, advances repaid in instalments and one-transaction settlements.',
     stack: ['React', 'Vite', 'Supabase', 'PostgreSQL', 'Vercel'],
-    links: [gh('Milk_management')], caseStudy: true,
+    links: [gh('Dairy-Collection-Manager')], caseStudy: true,
   },
   {
     id: 'P13', slug: 'community-platform', name: 'Community platform', category: 'systems', maturity: 'prototype', period: 'Mar 2026',
     summary: 'Member registry, events, matrimonial profiles, donations and an admin approval workflow for a community association.',
-    stack: ['React', 'TypeScript', 'Firebase', 'Razorpay', 'Tailwind'], links: [gh('Freelance')],
+    stack: ['React', 'TypeScript', 'Firebase', 'Razorpay', 'Tailwind'], links: [],
   },
   {
     id: 'P14', slug: 'ride-booking-app', name: 'Ride booking app', category: 'systems', maturity: 'prototype', period: 'Apr 2026',
@@ -235,16 +235,16 @@ export const projects: Project[] = [
   {
     id: 'P55', slug: 'stock-cli', name: 'Indian stock lookup (terminal)', category: 'systems', maturity: 'notebook', period: 'Jan 2026',
     summary: 'Look up any NSE stock with ticker autocomplete: live price, fundamentals and shareholding.', stack: ['Python', 'yfinance', 'prompt_toolkit'],
-    links: [gh('Stock-price-details')], relation: 'A Flask version also exists.',
+    links: [gh('Stock-Price-CLI')], relation: 'A Flask version also exists.',
   },
   {
     id: 'P56', slug: 'stock-website', name: 'Indian stock lookup (web)', category: 'systems', maturity: 'prototype', period: 'Jan 2025',
-    summary: 'Flask version of the NSE stock lookup.', stack: ['Python', 'Flask', 'yfinance'], links: [],
+    summary: 'Flask version of the NSE stock lookup.', stack: ['Python', 'Flask', 'yfinance'], links: [gh('Indian-Stock-Lookup')],
   },
   {
     id: 'P57', slug: 'whatsapp-greetings', name: 'WhatsApp greetings', category: 'systems', maturity: 'notebook', period: 'Aug 2025',
     summary: 'Reads contacts from Excel and sends personalised messages through WhatsApp Web.', stack: ['Python', 'pandas', 'pywhatkit'],
-    links: [gh('Whatsapp_message_automation')],
+    links: [gh('WhatsApp-Message-Automation')],
   },
   {
     id: 'P58', slug: 'finance-tracker', name: 'Finance tracker', category: 'systems', maturity: 'notebook', period: 'Mar 2025',
@@ -267,16 +267,16 @@ export const projects: Project[] = [
   },
   {
     id: 'P40', slug: 'paytm-dashboard', name: 'Paytm stock dashboard', category: 'data', maturity: 'notebook', period: 'Sep 2025',
-    summary: 'Four-stage ETL lining up Paytm’s share price with competitors and market events, feeding two Power BI dashboards.', stack: ['Python', 'yfinance', 'Power BI'], links: [],
+    summary: 'Four-stage ETL lining up Paytm’s share price with competitors and market events, feeding two Power BI dashboards.', stack: ['Python', 'yfinance', 'Power BI'], links: [gh('Paytm-stock-dashboard')],
   },
   {
     id: 'P41', slug: 'nifty50-dashboard', name: 'NIFTY 50 dashboard', category: 'data', maturity: 'notebook', period: 'Sep 2025',
     summary: 'Fundamentals and price history for all 50 constituents, modelled in Power BI.', stack: ['Python', 'pandas', 'yfinance', 'Power BI'],
-    links: [gh('nifty-50-dashboard-using-python-and-power-bi')],
+    links: [gh('NIFTY50-Dashboard')],
   },
   {
     id: 'P42', slug: 'nifty50-live', name: 'NIFTY 50 live feed', category: 'data', maturity: 'notebook', period: 'Oct 2025',
-    summary: 'Polls prices and fundamentals for all 50 stocks every minute into sheets a dashboard can read.', stack: ['Python', 'yfinance'], links: [gh('nifty-50-live')],
+    summary: 'Polls prices and fundamentals for all 50 stocks every minute into sheets a dashboard can read.', stack: ['Python', 'yfinance'], links: [gh('NIFTY50-Live')],
   },
   {
     id: 'P43', slug: 'zomato-sql', name: 'Zomato SQL analysis', category: 'data', maturity: 'notebook', period: 'Oct 2025',
@@ -293,7 +293,7 @@ export const projects: Project[] = [
   },
   {
     id: 'P46', slug: 'lamborghini-sales', name: 'Lamborghini sales BI', category: 'data', maturity: 'notebook', period: 'Nov 2025',
-    summary: 'BI on simulated dealership data: customers, vehicles, dealers and marketing campaigns.', stack: ['pandas', 'SQLite', 'Power BI'], links: [],
+    summary: 'BI on simulated dealership data: customers, vehicles, dealers and marketing campaigns.', stack: ['pandas', 'SQLite', 'Power BI'], links: [gh('Lamborghini-sales-analysis')],
   },
   {
     id: 'P47', slug: 'zudio-eda', name: 'Zudio retail analysis', category: 'data', maturity: 'notebook', period: 'Feb 2026',
@@ -305,26 +305,26 @@ export const projects: Project[] = [
   },
   {
     id: 'P49', slug: 'quick-commerce-inventory', name: 'Quick-commerce inventory', category: 'data', maturity: 'notebook', period: 'Jan 2026',
-    summary: 'Cleans Zepto inventory data and reports items running low.', stack: ['pandas'], links: [gh('inventory-management-system')],
+    summary: 'Cleans Zepto inventory data and reports items running low.', stack: ['pandas'], links: [gh('Quick-Commerce-Inventory')],
   },
   {
     id: 'P50', slug: 'eda-toolkit', name: 'EDA script', category: 'data', maturity: 'notebook', period: 'Oct 2025',
     summary: 'Exploratory analysis for any CSV: summary statistics, bar and scatter charts and a correlation heatmap.', stack: ['pandas', 'matplotlib'],
-    links: [gh('EDA-on-a-data-frame')],
+    links: [gh('EDA-with-pandas')],
   },
 
   // Learning
   {
     id: 'P53', slug: 'face-detection', name: 'Face detection', category: 'learning', maturity: 'notebook', period: 'Feb 2025',
-    summary: 'Real-time webcam face detection with Haar cascades.', stack: ['Python', 'OpenCV'], links: [gh('Face_detection')],
+    summary: 'Real-time webcam face detection with Haar cascades.', stack: ['Python', 'OpenCV'], links: [gh('Face-Detection')],
   },
   {
     id: 'P54', slug: 'motion-detection', name: 'Motion detection', category: 'learning', maturity: 'notebook', period: 'May 2025',
-    summary: 'Highlights moving objects with MOG2 background subtraction and contours.', stack: ['Python', 'OpenCV'], links: [gh('Motion-datection')],
+    summary: 'Highlights moving objects with MOG2 background subtraction and contours.', stack: ['Python', 'OpenCV'], links: [gh('Motion-Detection')],
   },
   {
     id: 'P38', slug: 'digit-classifier', name: 'Handwritten digit classifier', category: 'learning', maturity: 'notebook', period: 'Feb 2025',
-    summary: 'An SVM on scikit-learn’s digits dataset with visualised predictions.', stack: ['Python', 'scikit-learn'], links: [],
+    summary: 'An SVM on scikit-learn’s digits dataset with visualised predictions.', stack: ['Python', 'scikit-learn'], links: [gh('Handwritten-Digit-Classifier')],
   },
 ];
 

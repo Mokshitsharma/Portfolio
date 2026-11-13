@@ -13,7 +13,7 @@ export const profile = {
   currentOrgShort: 'Movigo',
   location: 'Indore, India',
   availability: 'Available for internships and full-time roles, remote, hybrid or on-site in India',
-  email: 'mokshitsharmalaptop@gmail.com',
+  email: 'sharman48520@gmail.com',
   github: 'https://github.com/Mokshitsharma',
   linkedin: 'https://www.linkedin.com/in/mokshit-sharma-75b5ab305/',
   // The final résumé is still to come (31 Oct 2026); every download link hides itself while this is null.
