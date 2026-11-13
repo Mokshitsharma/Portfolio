@@ -15,3 +15,27 @@ dist-server/
 
 # private content-review notes; never commit
 private/
+# Security hardening
+*.pem
+*.key
+serviceAccountKey.json
+google-services.json
+GoogleService-Info.plist
+firebase-applet-config.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.db
+*.sqlite
+*.pt
+*.pkl
+*.joblib
+*.h5
+*.onnx
+*.zip
+.idea/
+.vscode/
+
+# private working notes
+brain/
