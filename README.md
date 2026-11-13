@@ -48,7 +48,7 @@ answers questions from the site's own records. Every fact on the page is ordinar
   base generated from `src/data/` at build time (`api/_lib/knowledge.gen.ts`). Without a `GROQ_API_KEY` it still
   answers by quoting the matching records.
 - **Accessibility:** reduced-motion mode turns the scroll animations off; detail views are native dialogs
-  with focus return; Lighthouse accessibility, best practices and SEO score 100.
+  with focus return.
 - **Contact form:** posts to a Vercel function (`api/contact.ts`) that validates input, drops honeypot submissions
   and sends mail with Nodemailer. Locally the same handler runs inside the Express server (`server.ts`).
 
