@@ -1,5 +1,21 @@
-# Mokshit Sharma — Portfolio
+<!-- readme-refresh 2026-11 -->
+<div align="center">
 
+# 🏠 Portfolio
+
+**My portfolio: a scroll-driven 3D house in three.js with prerendered React pages**
+
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /> <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /> <img src="https://img.shields.io/badge/three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white" alt="three.js" /> <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /> <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /> <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" /> <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+
+</div>
+
+## ✨ Highlights
+
+- Walk through a 3D house; each room opens a part of my work
+- Prerendered pages for projects, case studies and roles
+- Live at [mokshitsharma27.vercel.app](https://mokshitsharma27.vercel.app/)
+
+<!-- body -->
 Personal site of Mokshit Sharma, Founding Engineer & Tech Lead at Movigo, working across applied AI, machine
 learning and full-stack software. Live at **[mokshitsharma27.vercel.app](https://mokshitsharma27.vercel.app)**.
 
@@ -76,6 +92,10 @@ variables. The contact function needs Node.js 20 or newer.
 
 ## Contact
 
-- Email: mokshitsharmalaptop@gmail.com
+- Email: sharman48520@gmail.com
 - LinkedIn: [mokshit-sharma](https://www.linkedin.com/in/mokshit-sharma-75b5ab305/)
 - GitHub: [Mokshitsharma](https://github.com/Mokshitsharma)
+
+---
+
+<div align="center"><sub>Built by <a href="https://github.com/Mokshitsharma">Mokshit Sharma</a> · <a href="https://mokshitsharma27.vercel.app/">Portfolio</a> · <a href="https://www.linkedin.com/in/mokshit-sharma-75b5ab305">LinkedIn</a></sub></div>
